@@ -1,6 +1,10 @@
-\chapter{Implementierung eines ROS-Packages}
+\chapter{Portierung des Laufplaners nach ROS und Gazebo}
 
-\section{Allgemeiner Aufbau}
+\section{Analyse bestehender Laufplaner}
+
+Herms, Ruffler, und AKrobat GitHub (gibt es dazu eine Arbeit?)
+
+\section{Allgemeiner Aufbau des Pakets}
 
 Ordnerstruktur oder vllt in Baustein, Laufzeit und Verteilungssicht?
 
@@ -10,7 +14,7 @@ Ordnerstruktur oder vllt in Baustein, Laufzeit und Verteilungssicht?
 
 Notes: urdf, xacro, Collissions, Inertia + Berechnung + STL-Dateien ( Vereinfachung durch einfaches Geometry Object wenn möglich, sonst vereinfachtes STL, sonst das Original STL) / MeshLab
 
-\subsection{Definition der Gelenke- und Motoren mittels ros\_control}
+\subsection{Definition der Gelenkmotoren mittels ros\_control}
 
 Notes: URDF-File, config file, Controller
 
@@ -18,9 +22,9 @@ Notes: URDF-File, config file, Controller
 
 launch-files
 
-\subsection{Erstellung der ros-Node für die Steuerung der Laufroboters}
+\subsection{Aufsetzen der Fußsteuerung des Laufroboters}
 
-\section{Laufalgorithmen}
+\section{Aufsetzen von Laufalgorithmen}
 
 \subsection{Implementierung}
 \subsection{Generierung von Bewegungen als xml-Datei}

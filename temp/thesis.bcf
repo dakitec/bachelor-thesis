@@ -1996,6 +1996,14 @@
     <bcf:datasource type="file" datatype="bibtex">literatur.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
+    <bcf:citekey order="1">herms2004</bcf:citekey>
+    <bcf:citekey order="2">herms2004</bcf:citekey>
+    <bcf:citekey order="3">ruffler2006</bcf:citekey>
+    <bcf:citekey order="4">herms2004</bcf:citekey>
+    <bcf:citekey order="5">herms2004</bcf:citekey>
+    <bcf:citekey order="6">herms2004</bcf:citekey>
+    <bcf:citekey order="7">herms2004</bcf:citekey>
+    <bcf:citekey order="8">herms2004</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

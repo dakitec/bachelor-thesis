@@ -2004,6 +2004,10 @@
     <bcf:citekey order="6">herms2004</bcf:citekey>
     <bcf:citekey order="7">herms2004</bcf:citekey>
     <bcf:citekey order="8">herms2004</bcf:citekey>
+    <bcf:citekey order="9">akrobat</bcf:citekey>
+    <bcf:citekey order="10">hopper</bcf:citekey>
+    <bcf:citekey order="11">LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136</bcf:citekey>
+    <bcf:citekey order="12">gazebo-inertial</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

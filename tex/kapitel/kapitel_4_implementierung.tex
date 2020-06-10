@@ -2,23 +2,83 @@
 
 \section{Analyse bestehender Laufplaner}
 
-Herms, Ruffler, und AKrobat GitHub (gibt es dazu eine Arbeit?)
+Herms, Ruffler + ---> verlinken: Die Darstellung geschieht mit Hilfe der 3D- Bibliothek OpenInventor [33]
 
-\section{Allgemeiner Aufbau des Pakets}
+\section{Vorgehensweise und Aufbau des Pakets}
 
-Die zuvor genannten Pakete müssen nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung mittels Random Sampling extrahiert und mit \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
+Die zuvor analysierten Laufplaner müssen nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
+\begin{itemize}
+  \item Code-technisch ist der Laufplaner \textit{fest verdrahtet mit dem Terrain der OpenInventor-Oberfläche}, während das neue Paket auf Gazebo laufen soll.
+  \item Der Laufplaner nutzt für geometrische Berechnungen \textit{Klassen aus der OpenInventor-Bibliothek}, während \ac{ROS} auf die Klassen des TF-Frameworks zurückzugreifen soll.
+  \item Durch \textit{unterschiedliche Robotermodelle} können Maße innerhalb des Codes anders definiert sein und müssen angepasst werden.
+\end{itemize}
 
+Da eine komplette Kopie des vorherigen Projekts auf Grund verschiedener Umgebungen nicht möglich ist, ist die Vorgehensweise schrittweise wichtige Codestellen zu übertragen und zu testen. Dies hat den Vorteil, dass Funktionen unabhängig voneinander getestet werden können. Damit ergibt sich der folgende Gesamtablauf für die Portierung:
+\begin{enumerate}
+  \item Aufsetzen des \ac{ROS}-Pakets
+  \item Aufsetzen der Simulation
+  \begin{enumerate}
+    \item Aufsetzen des Roboter-Modells
+    \item Aufsetzen der Gelenkmotoren
+  \end{enumerate}
+  \item Aufsetzen der Fußsteuerung
+  \item Testen der Fußsteuerung
+  \item Portierung des Laufalgorithmus
+\end{enumerate}
 
+Während der Arbeit hat es sich als sinnvoll herausgestellt, die Portierung erst zum Schluss zu beginnen. Der Grund dafür ist, dass es damit während der Portierung möglich ist schon Artefakte in der Simulation zu testen. Damit lässt sich wesentlich besser einschätzen, ob das Übertragene auch funktioniert. Außerdem basiert der Laufplaner auf Funktionalitäten wie dem Roboter-Modell und der Definition der Gelenkmotoren. Mit dieser Vorgehensweise kann das Paket nun schrittweise implementiert werden.
 
-Ordnerstruktur oder vllt in Baustein, Laufzeit und Verteilungssicht?
+\autoref{Kap4:ROSPackageFolderStructure} definiert die Ordnerstruktur des \ac{ROS}-Pakets. Die Ordnerstruktur ist typisch für \ac{ROS}-Pakete und findet sich ähnlich in vielen weiteren Paketen der \ac{ROS}-Community. Der Aufbau des Pakets ist an das Akrobat-Paket \autocite{akrobat} sowie das Hopper-Paket \autocite{hopper} angelehnt. Beide Pakete nutzen wichtige Konzepte für das Robotermodelle und die Gelenksteuerung, die auch für dieses Projekt wichtig sind.
 
 \section{Aufsetzen der Simulation}
 
-\subsection{Aufsetzen des Roboter-Modells mittels urdf}
+Das erste Ziel ist es nun, den Akrobat in Gazebo anzuzeigen. Dazu muss das Robotermodell integriert werden, die Gelenkmotoren definiert werden und die Gazebo-Welt aufgesetzt werden.
 
-Notes: urdf, xacro, Collissions, Inertia + Berechnung + STL-Dateien ( Vereinfachung durch einfaches Geometry Object wenn möglich, sonst vereinfachtes STL, sonst das Original STL) / MeshLab
+\subsection{Aufsetzen des Robotermodells mittels urdf}
+
+Als erstes wird das Robotermodell in das neue \ac{ROS}-Paket integriert. Die vorliegende Roboterbeschreibung liegt im \textit{urdf}-Format vor. Desweiteren existieren die 3D-Modelle im \textit{stl}-Format, welche im Robotermodell eingebunden sind. Damit das Robotermodell auch bei späteren Änderungen noch wartbar bleibt, wird die zusammenhängende Datei aufgeteilt, so dass nun eine Datei für die Robotermitte und eine Datei für jedes einzelne Bein existiert. Dabei ist das Wrapper-Format von urdf mit dem Namen \textit{xacro} sehr von Vorteil, da es mehr Flexibilität in urdf-Dateien bringt. Dadurch lassen sich unter anderem andere xacro-Dateien per \textit{include} einbinden, was sich in diesem Fall als nützlich herausgestellt hat. Mit diesem Aufbau könnte das Robotermodell nun schon über ein Launch-File im 3D Visualisierungs-Tool "`rviz"' angezeigt werden. \autoref{Kap4:AkrobatRviz} zeigt stellt dies sowie die Koordinatensystemen des Roboters dar.
+
+\begin{figure}[b!]
+  \centering
+  \includegraphics[height=8cm]{kapitel4/akrobat-rviz}
+  \caption{Darstellung des Akrobats im rviz}
+  \label{Kap4:AkrobatRviz}
+\end{figure}
+
+Für das spätere Hinzufügen des Akrobats in die \textit{Gazebo}-Simulation müssen neben der Visualisierung, die für den rviz ausreichend war, noch weitere Anpassungen am Roboter-Modell vorgenommen werden:
+\begin{itemize}
+  \item Aufsetzen des Kollisionsmodells durch das Attribut <collission>
+  \item Aufsetzen der Massenträgheit durch das Attribut <inertia>
+\end{itemize}
+
+\subsubsection{Aufsetzen des Kollisionsmodells}
+
+Das Kollisionsmodell muss für jedes Körperteil einzeln definiert werden. Es wird durch ein Ursprung und einem geometrischen Objekt definiert. Das \ac{ROS} stellt hierfür eine Schnittstelle zur Verfügung, die zwei Möglichkeiten anbietet. Zum einen können einfache geometrische Objekte wie ein Zylinder oder ein Quader als Kollisionsmodell definiert werden. Dies ist in unserem Fall nicht möglich, da sich die Beinsegmente nicht exakt durch einzelne geometrische Objekte modellieren lassen. Daher ist es sinnvoll auf die zweite Variante zurückzugreifen und die exakten 3D-Modelle über die stl-Dateien als Kollisionsmodelle anzugeben. Da diese viel detaillierter sind, wird daher zwar mehr Rechenleistung benötigt, aber auch die physikalischen Bewegungen sehen realer aus. Eine Möglichkeit wäre es die 3D-Modelle mittels MeshLab \autocite{LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136} runterzurechnen, so dass sie später besser von Gazebo verarbeitet werden können, da sie optimiert sind.
+
+\subsubsection{Aufsetzen der Massenträgheit}
+
+\begin{figure}[b!]
+  \centering
+  \includegraphics[height=8cm]{kapitel4/meshlab-inertia}
+  \caption{Auslesen der Trägheitsmomente mit MeshLab}
+  \label{Kap4:MeshLabInertia}
+\end{figure}
+
+Ebenfalls muss die Massenträgheit für jedes Körperteil einzeln definiert werden. Dabei wird eine Masse sowie das Trägheitsmoment angegeben. Die Masse lässt sich durch Wiegen der einzelnen Körperteile herausfinden. Um das Trägheitsmoment für das jeweilige Körperteil herauszufinden, bietet Gazebo die Möglichkeit die Werte über MeshLab auszulesen und umzuwandeln \autocite{gazebo-inertial}. \autoref{Kap4:MeshLabInertia} zeigt die Extraktion der Trägheitsmomente aus MeshLab. Dies erfolgt über mehrere Schritte, um möglichst genaue Ergebnisse zu erhalten:
+\begin{itemize}
+  \item Skalierung in MeshLab mit Faktor 10 bis 100
+  \item Automatische Berechnung der Trägheitsmomente in MeshLab
+  \item Teilen des Ergebnisses durch den zuvor skalierten Faktor
+  \item Multiplizieren des Ergebnisses mit der berechneten Masse
+  \item Teilen des Ergebnisses durch das berechnete Volumen
+  \item Eintragen der berechneten Werte in \ac{ROS}
+\end{itemize}
 
 \subsection{Definition der Gelenkmotoren mittels ros\_control}
+
+Das zuvor aufgesetzte Robotermodell könnte nun in Gazebo angezeigt werden. Allerdings ist dieses noch nicht beweglich, da keine Gelenkmotoren definiert sind. Diese werden in diesem Abschnitt behandelt.
+
+
 
 Notes: URDF-File, config file, Controller
 
@@ -26,10 +86,69 @@ Notes: URDF-File, config file, Controller
 
 launch-files
 
-\subsection{Aufsetzen der Fußsteuerung des Laufroboters}
+\section{Aufsetzen der Fußsteuerung}
+
+Das nächste Ziel ist es, die Fußsteuerung aufzusetzen, so dass der Roboter sich zu Beginn in seine Ausgangsstellung begibt und von dort aus auf weitere Befehle warten kann.
+
+\section{Testen der Fußsteuerung}
+
+Todo: testen der steuerung mit z.B Tripod Gait
 
 \section{Aufsetzen von Laufalgorithmen}
+
+Todo: setup algorithmus
 
 \subsection{Implementierung}
 \subsection{Generierung von Bewegungen als xml-Datei}
 \subsection{Einlesen und Abspielen der Bewegungen}
+
+\begin{figure}[p!]
+\dirtree{%
+.1 hexapod.
+.2 config.
+.3 config.rviz.
+.3 hexapod.yaml.
+.2 urdf.
+.3 hexapod.xacro.
+.3 leg-1.xacro.
+.3 leg-2.xacro.
+.3 leg-3.xacro.
+.3 leg-4.xacro.
+.3 leg-5.xacro.
+.3 leg-6.xacro.
+.2 launch.
+.3 rviz.launch.
+.3 gazebo.launch.
+.3 model.launch.
+.3 akrobat\_walk.launch.
+.3 control.launch.
+.2 include.
+.3 akrobat.
+.4 akrobat\_init.h.
+.4 JointStateToGazebo.h.
+.4 ControlRandomSampling.h.
+.4 JointStateToDynamixel.h.
+.4 FootConfiguration.h.
+.4 Akrobat.h.
+.3 pugixml.
+.2 worlds.
+.3 default.world.
+.2 stl.
+.3 hexapod\_link.stl.
+.3 coxa\_r\_link.stl.
+.3 coxa\_l\_link.stl.
+.3 femur\_link.stl.
+.3 tibia\_link.stl.
+.2 src.
+.3 akrobat.
+.4 akrobat\_main.cpp.
+.4 JointStateToGazebo.cpp.
+.4 FootConfiguration.cpp.
+.4 JointStateToDynamixel.cpp.
+.4 Akrobat.cpp.
+.4 ControlRandomSampling.cpp.
+.3 pugixml.
+}
+\caption{Dateibaum des ROS-Pakets}
+\label{Kap4:ROSPackageFolderStructure}
+\end{figure}

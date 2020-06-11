@@ -214,15 +214,13 @@ f(z) = -0,5 * cos(z + 0,5) + 0,5
 
 Der in \autoref{kap4:cosinterpolation}, \autoref{kap4:cosinterpolation2} sowie \autoref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. In der Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
 
-Code-technisch ist das mit drei Variablen umgesetzt, die die aktuelle Zwischenposition bestimmen. Die erste Variable gibt die maximale Zahl der Zwischenpositionen an (\emph{maxTicks}). Die zweite Variable gibt die aktuelle Stelle (\emph{tick}) an, so dass der Algorithmus über die Funktion ausrechnen kann, was die nächste Position sein wird. Die Variable \emph{diff} ist der Vektor von der Start- zur Zielposition. Damit ergibt sich für die Berechnung einer Zwischenposition die Formeln in \autoref{kap4:cosinterpolationcode}, \autoref{kap4:cosinterpolationcode2} und \autoref{kap4:cosinterpolationcode3} :
-\begin{eqnarray}
-\label{kap4:cosinterpolationcode}
-x = diff.x() * (-0.5 * cos(\pi * tick / maxTicks) + 0.5) \\
-\label{kap4:cosinterpolationcode2}
-y = diff.y() * (-0.5 * cos(\pi * tick / maxTicks) + 0.5) \\
-z = diff.z() * (-0.5 * cos(\pi * tick / maxTicks) + 0.5)
-\label{kap4:cosinterpolationcode3}
-\end{eqnarray}
+Code-technisch ist das mit drei Variablen umgesetzt, die die aktuelle Zwischenposition bestimmen. Die erste Variable gibt die maximale Zahl der Zwischenpositionen an (\emph{maxTicks}). Die zweite Variable gibt die aktuelle Stelle (\emph{tick}) an, so dass der Algorithmus über die Funktion ausrechnen kann, was die nächste Position sein wird. Die Variable \emph{diff} ist der Vektor von der Start- zur Zielposition. \autoref{interpolationZwischenwerte} zeigt die vollständige Berechnung einer Zwischenposition.
+
+\begin{lstlisting}[label={interpolationZwischenwerte}, language=C++, caption={Interpolation der Zwischenpositionen}]
+double x = diff.x() * (-0.5 * cos(M_PI * tick / maxTicks) + 0.5);
+double y = diff.y() * (-0.5 * cos(M_PI * tick / maxTicks) + 0.5);
+double z = diff.z() * (-0.5 * cos(M_PI * tick / maxTicks) + 0.5);
+\end{lstlisting}
 
 In jedem Schritt wird der \emph{tick} um eins nach oben gesetzt, bis er bei der Grenze von \emph{maxTicks} angekommen ist. Dann wird dieser zurückgesetzt und die nächste Bewegung wird ausgeführt.
 
@@ -230,9 +228,19 @@ In jedem Schritt wird der \emph{tick} um eins nach oben gesetzt, bis er bei der 
 
 Bevor das Random Sampling aufgesetzt wird, ist es sinnvoll die gesamte Simulation zunächst mit einem statischen Laufmuster zu prüfen. Das macht es später einfacher zwischen einem Fehler in der Simulation und einem Fehler in der Laufplanung zu unterscheiden.
 
-todo wie funktioniert dreifußgang - vllt mit quelle?
-wie ist es aufgesetzt
+Beim Dreifußgang kann ein Fuß einen von zwei Stati annehmen:
+\begin{enumerate}
+  \item Der Fuß wird angehoben und umgesetzt.
+  \item Der Fuß ist für das Verschieben der Körpermitte verantwortlich.
+\end{enumerate}
+
+Zunächst werden die Stati für jeden Fuß in einem Array in C++ gesetzt. Die Füße 1, 4 und 5 starten in der ersten Phase, die Füße 2, 3 und 6 starten in der zweiten Phase. Mit jeder Bewegung wird dies abgewechselt sowie die Positionen relativ zum Fußpunkt gesetzt. Für Phase 1 muss die z-Koordinate positiv gesetzt werden, damit der Fuß angehoben wird. In Phase 2 muss die z-Koordinate auf null gesetzt werden, damit der Fuß die Körpermitte verschieben und stützen kann sowie die Position ein wenig nach hinten verschoben werden, damit der Körper sich nach vorne bewegt. Die stützenden Füße sind so gewählt, dass der Stability Margin größer als null ist, damit der Roboter nicht umkippt. Das Ergebnis wird als Bewegungsdatei exportiert und kann vom Roboter eingelesen werden.
 
 \section{Aufsetzen des Random Samplings}
 
-todo
+Wie auch bei den Vorgängern ist die Implementierung mit C++ durchgeführt. Im folgenden werden einige Unterschiede bei der Implementierung dargestellt:
+
+- Abstrahierung der Fußkonfiguration
+- Bitlogik der Füße (footPos und footConf zusammengefasst in eine FootConfiguration Klasse)
+- Vereinfachung von Code-Stellen
+- Anpassung aller Maße

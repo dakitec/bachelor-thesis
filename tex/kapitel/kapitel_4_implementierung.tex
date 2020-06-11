@@ -1,5 +1,7 @@
 \chapter{Portierung des Laufplaners nach ROS und Gazebo}
 
+Dieses Kapitel geht auf die Einzelheiten und die Abläufe der Portierung des Laufplaners nach \ac{ROS} und Gazebo ein. Zunächst werden die bestehenden Laufplaner analysiert. Dann wird ein eigenes \ac{ROS}-Paket entworfen, welches die Basis für den neuen Laufplaner darstellt. Das Kapitel stellt alle nötigen Schritte dar, um die Simulation aufzusetzen und den Roboter dazu zu bringen, Fußbewegungen auszuführen.
+
 \section{Analyse bestehender Laufplaner}
 
 Herms, Ruffler + ---> verlinken: Die Darstellung geschieht mit Hilfe der 3D- Bibliothek OpenInventor [33]
@@ -140,7 +142,7 @@ Abschließend muss die Konfigurationsdatei geladen und zwei \ac{ROS}-Nodes gesta
 \begin{figure}[p!]
   \centering
   \includegraphics[height=23cm]{kapitel4/rosgraph}
-  \caption{Topics für ros\_control}
+  \caption{ROS-Topics der Simulation}
   \label{Kap4:RosControlTopics}
 \end{figure}
 
@@ -184,16 +186,53 @@ Da \ac{ROS}-Nodes allgemein in einer Schleife laufen, wird der folgende Ablauf k
   \item Die drei Winkel werden nun in das Topic \textit{goal\_joint\_states} geschrieben, was ein tatsächliches Verändern der Winkel in der Simulation oder am echten Roboter verursacht. Dabei wird vorher geprüft, ob die Winkel gültig sind, d.h. dass sie sich über dem minimal und unter dem maximal erlaubten Winkel befinden. Ist das nicht der Fall, wird eine Warnung ausgegeben.
 \end{enumerate}
 
-\section{Generierung von Bewegungen als xml-Datei}
+\section{Generieren und Einlesen von Bewegungen als xml-Datei}
 
-\section{Einlesen und Abspielen der Bewegungen}
+Da der Laufplaner und die Simulation voneinander getrennt sein sollen, damit das System flexibel für den Austausch von Komponenten bleibt, benötigt der Laufplaner ebenso wie bei André Herms \autocite{herms2004} und Uli Ruffler \autocite{ruffler2006} eine xml-Schnittstelle, welche Bewegungen repräsentiert.
 
-\autocite{pugixml}
+Die hier entwickelte Schnittstelle ist eine Abwandlung der vorherigen Schnittstellen, da diese nicht die Dauer von Bewegungen speichert, sondern lediglich für jeden Schritt die Fußpositionen relativ zur definierten Ausgangsposition.
 
-\section{Testen der Fußsteuerung}
+Die Generierung erfolgt durch die Iteration über die von einem Algorithmus generierten Schritte für die Fußpositionen. Statt für die Generierung eine xml-Bibliothek zu nutzen, reicht hier eine einfache Ausgabe in einer Datei mittels \textit{ofstream}.
 
-- mit Hilfe von Tripod Gait
-- Setup Tripod Gait
-- 4 Screenshots wo man ein paar Bewegungen sieht
+\autoref{lst:MovementExample} zeigt eine abgespeckte XML-Bewegung der ersten beiden Füße, welche den Fuß an der 1. Stelle ein wenig in y-Richtung verschieben würde, was einer Verschiebung der Robotermitte verursacht, sofern die anderen Füße, welche auf dem Boden sind, das auch tun. Des Weiteren wird der Fuß an der 2. Stelle ein Stück angehoben.
 
-\section{Aufsetzen von Random Sampling}
+Für das Einlesen der XML-Datei wird Pugixml \autocite{pugixml} verwendet, welches unkompliziert und schnell xml-Dateien generieren oder einlesen kann. Die eingelesene Bewegung wird als Vektor in C++ gespeichert und an den Akrobat weitergegeben. Dieser ist dann für das Abspielen der Bewegung zuständig.
+
+\lstinputlisting[language=Xml,caption={Aufbau der Bewegungsdatei},label=lst:MovementExample,float=t!]{\srcloc/movement-1.xml}
+
+\section{Abspielen der Bewegungen}
+
+Das \ac{ROS} läuft in einer Schleife, bei der die Periode definiert werden kann. Als geeignet hat sich ein Wert von 20 Millisekunden herausgestellt. Auf Grund der Tatsache, dass die xml-Datei keine Bewegungsdauern speichert, muss eine Synchronisation zwischen dem \ac{ROS}-Loop und dem Abspielen der Bewegung aufgesetzt werden. Damit die Bewegungen nicht unrealistisch aussehen und linear von Position zu Position wechseln, wird eine Interpolation zwischen den einzelnen Punkten mittels einer trigonometrischen Funktion aufgesetzt.
+\begin{eqnarray}
+\label{kap4:cosinterpolation}
+f(x) = -0,5 * cos(x + 0,5) + 0,5 \\
+\label{kap4:cosinterpolation2}
+f(y) = -0,5 * cos(y + 0,5) + 0,5 \\
+\label{kap4:cosinterpolation3}
+f(z) = -0,5 * cos(z + 0,5) + 0,5
+\end{eqnarray}
+
+Der in \autoref{kap4:cosinterpolation}, \autoref{kap4:cosinterpolation2} sowie \autoref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. In der Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
+
+Code-technisch ist das mit drei Variablen umgesetzt, die die aktuelle Zwischenposition bestimmen. Die erste Variable gibt die maximale Zahl der Zwischenpositionen an (\textit{maxTicks}). Die zweite Variable gibt die aktuelle Stelle (\textit{tick}) an, so dass der Algorithmus über die Funktion ausrechnen kann, was die nächste Position sein wird. Die Variable \textit{diff} ist der Vektor von der Start- zur Zielposition. Damit ergibt sich für die Berechnung einer Zwischenposition die Formeln in \autoref{kap4:cosinterpolationcode}, \autoref{kap4:cosinterpolationcode2} und \autoref{kap4:cosinterpolationcode3} :
+\begin{eqnarray}
+\label{kap4:cosinterpolationcode}
+x = diff.x() * (-0.5 * cos(\pi * tick / maxTicks) + 0.5) \\
+\label{kap4:cosinterpolationcode2}
+y = diff.y() * (-0.5 * cos(\pi * tick / maxTicks) + 0.5) \\
+z = diff.z() * (-0.5 * cos(\pi * tick / maxTicks) + 0.5)
+\label{kap4:cosinterpolationcode3}
+\end{eqnarray}
+
+In jedem Schritt wird der \textit{tick} um eins nach oben gesetzt, bis er bei der Grenze von \textit{maxTicks} angekommen ist. Dann wird dieser zurückgesetzt und die nächste Bewegung wird ausgeführt.
+
+\section{Aufsetzen des Dreifußgangs}
+
+Bevor das Random Sampling aufgesetzt wird, ist es sinnvoll die gesamte Simulation zunächst mit einem statischen Laufmuster zu prüfen. Das macht es später einfacher zwischen einem Fehler in der Simulation und einem Fehler in der Laufplanung zu unterscheiden.
+
+todo wie funktioniert dreifußgang - vllt mit quelle?
+wie ist es aufgesetzt
+
+\section{Aufsetzen des Random Samplings}
+
+todo

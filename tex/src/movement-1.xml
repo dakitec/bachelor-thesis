@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<movement>
+  <foot number="0">
+    <step>
+      <x>0</x>
+      <y>0.03992</y>
+      <z>0</z>
+    </step>
+  </foot>
+  <foot number="1">
+    <step>
+      <x>0</x>
+      <y>-0.04</y>
+      <z>0.04</z>
+    </step>
+    </step>
+  </foot>
+</movement>

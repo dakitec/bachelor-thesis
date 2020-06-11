@@ -10,9 +10,9 @@ Herms, Ruffler + ---> verlinken: Die Darstellung geschieht mit Hilfe der 3D- Bib
 
 Die zuvor analysierten Laufplaner müssen nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
 \begin{itemize}
-  \item Code-technisch ist der Laufplaner \textit{fest verdrahtet mit dem Terrain der OpenInventor-Oberfläche}, während das neue Paket auf Gazebo laufen soll.
-  \item Der Laufplaner nutzt für geometrische Berechnungen \textit{Klassen aus der OpenInventor-Bibliothek}, während \ac{ROS} auf die Klassen des TF-Frameworks zurückzugreifen soll.
-  \item Durch \textit{unterschiedliche Robotermodelle} können Maße innerhalb des Codes anders definiert sein und müssen angepasst werden.
+  \item Code-technisch ist der Laufplaner \emph{fest verdrahtet mit dem Terrain der OpenInventor-Oberfläche}, während das neue Paket auf Gazebo laufen soll.
+  \item Der Laufplaner nutzt für geometrische Berechnungen \emph{Klassen aus der OpenInventor-Bibliothek}, während \ac{ROS} auf die Klassen des TF-Frameworks zurückzugreifen soll.
+  \item Durch \emph{unterschiedliche Robotermodelle} können Maße innerhalb des Codes anders definiert sein und müssen angepasst werden.
 \end{itemize}
 
 Da eine komplette Kopie des vorherigen Projekts auf Grund verschiedener Umgebungen nicht möglich ist, ist die Vorgehensweise schrittweise wichtige Codestellen zu übertragen und zu testen. Dies hat den Vorteil, dass Funktionen unabhängig voneinander getestet werden können. Damit ergibt sich der folgende Gesamtablauf für die Portierung:
@@ -89,7 +89,7 @@ Das erste Ziel ist es nun, den Akrobat in Gazebo anzuzeigen. Dazu muss das Robot
 
 \subsection{Aufsetzen des Robotermodells mittels urdf}
 
-Als erstes wird das Robotermodell in das neue \ac{ROS}-Paket integriert. Die vorliegende Roboterbeschreibung liegt im \textit{urdf}-Format vor. Desweiteren existieren die 3D-Modelle im \textit{stl}-Format, welche im Robotermodell eingebunden sind. Damit das Robotermodell auch bei späteren Änderungen noch wartbar bleibt, wird die zusammenhängende Datei aufgeteilt, so dass nun eine Datei für die Robotermitte und eine Datei für jedes einzelne Bein existiert. Dabei ist das Wrapper-Format von urdf mit dem Namen \textit{xacro} sehr von Vorteil, da es mehr Flexibilität in urdf-Dateien bringt. Dadurch lassen sich unter anderem andere xacro-Dateien per \textit{include} einbinden, was sich in diesem Fall als nützlich herausgestellt hat. Mit diesem Aufbau könnte das Robotermodell nun schon über ein Launch-File im 3D Visualisierungs-Tool "`rviz"' angezeigt werden. \autoref{Kap4:AkrobatRviz} zeigt stellt dies sowie die Koordinatensystemen des Roboters dar.
+Als erstes wird das Robotermodell in das neue \ac{ROS}-Paket integriert. Die vorliegende Roboterbeschreibung liegt im \emph{urdf}-Format vor. Desweiteren existieren die 3D-Modelle im \emph{stl}-Format, welche im Robotermodell eingebunden sind. Damit das Robotermodell auch bei späteren Änderungen noch wartbar bleibt, wird die zusammenhängende Datei aufgeteilt, so dass nun eine Datei für die Robotermitte und eine Datei für jedes einzelne Bein existiert. Dabei ist das Wrapper-Format von urdf mit dem Namen \emph{xacro} sehr von Vorteil, da es mehr Flexibilität in urdf-Dateien bringt. Dadurch lassen sich unter anderem andere xacro-Dateien per \emph{include} einbinden, was sich in diesem Fall als nützlich herausgestellt hat. Mit diesem Aufbau könnte das Robotermodell nun schon über ein Launch-File im 3D Visualisierungs-Tool "`rviz"' angezeigt werden. \autoref{Kap4:AkrobatRviz} zeigt stellt dies sowie die Koordinatensystemen des Roboters dar.
 
 \begin{figure}[b!]
   \centering
@@ -98,7 +98,7 @@ Als erstes wird das Robotermodell in das neue \ac{ROS}-Paket integriert. Die vor
   \label{Kap4:AkrobatRviz}
 \end{figure}
 
-Für das spätere Hinzufügen des Akrobats in die \textit{Gazebo}-Simulation müssen neben der Visualisierung, die für den rviz ausreichend war, noch weitere Anpassungen am Roboter-Modell vorgenommen werden:
+Für das spätere Hinzufügen des Akrobats in die \emph{Gazebo}-Simulation müssen neben der Visualisierung, die für den rviz ausreichend war, noch weitere Anpassungen am Roboter-Modell vorgenommen werden:
 \begin{itemize}
   \item Aufsetzen des Kollisionsmodells durch das Attribut <collission>
   \item Aufsetzen der Massenträgheit durch das Attribut <inertia>
@@ -131,13 +131,13 @@ Ebenfalls muss die Massenträgheit für jedes Körperteil einzeln definiert werd
 
 Das zuvor aufgesetzte Robotermodell könnte nun in Gazebo angezeigt werden. Allerdings ist dieses noch nicht durch Eingaben von außen beweglich, da keine Gelenkmotoren definiert sind. Diese werden in diesem Abschnitt behandelt.
 
-Hierbei hat sich das Paket \textit{ros\_control} als geeignet herausgestellt. Für das Aufsetzen des Pakets wird eine Konfigurationsdatei für die Definition aller Controller benötigt. Außerdem muss im Robotermodell ein Gelenk auf einen Controller abgebildet werden, damit das Gelenk angesteuert werden kann. Außerdem müssen zwei wesentliche Plugins eingebunden und konfiguriert werden:
+Hierbei hat sich das Paket \emph{ros\_control} als geeignet herausgestellt. Für das Aufsetzen des Pakets wird eine Konfigurationsdatei für die Definition aller Controller benötigt. Außerdem muss im Robotermodell ein Gelenk auf einen Controller abgebildet werden, damit das Gelenk angesteuert werden kann. Außerdem müssen zwei wesentliche Plugins eingebunden und konfiguriert werden:
 \begin{itemize}
   \item gazebo\_ros\_control
   \item p3d\_base\_controller
 \end{itemize}
 
-Abschließend muss die Konfigurationsdatei geladen und zwei \ac{ROS}-Nodes gestartet werden. Dies ist zum einen der \textit{robot\_state\_publisher}, der die publizierten Bewegungen an den Roboter weitergibt, sowie ein \textit{controller\_manager}, der letztendlich die einzelnen Gelenke in der Simulation bewegt. Hier lässt sich statt dem \textit{controller\_manager} auch direkt ein \textit{dynamixel\_manager} anbinden, so dass später leicht zwischen Simulation und dem realen Roboter gewechselt werden kann. Durch die Einbindung existieren nun zur Laufzeit einige wichtige \ac{ROS}-Topics, wie in \autoref{Kap4:RosControlTopics} zu sehen ist.
+Abschließend muss die Konfigurationsdatei geladen und zwei \ac{ROS}-Nodes gestartet werden. Dies ist zum einen der \emph{robot\_state\_publisher}, der die publizierten Bewegungen an den Roboter weitergibt, sowie ein \emph{controller\_manager}, der letztendlich die einzelnen Gelenke in der Simulation bewegt. Hier lässt sich statt dem \emph{controller\_manager} auch direkt ein \emph{dynamixel\_manager} anbinden, so dass später leicht zwischen Simulation und dem realen Roboter gewechselt werden kann. Durch die Einbindung existieren nun zur Laufzeit einige wichtige \ac{ROS}-Topics, wie in \autoref{Kap4:RosControlTopics} zu sehen ist.
 
 \begin{figure}[p!]
   \centering
@@ -150,10 +150,10 @@ Abschließend muss die Konfigurationsdatei geladen und zwei \ac{ROS}-Nodes gesta
 
 Nun fehlt nur noch die Gazebo-Umgebung. Diese lässt sich mit einem von Gazebo bereitgestellten Launch-File starten. Es besteht die Möglichkeit Parameter mitzugeben. Die folgende Auflistung beschreibt einige wichtige Parameter:
 \begin{itemize}
-  \item \textit{world\_name}: Dateipfad zur gewünschten Welt
-  \item \textit{debug}: Gibt Informationen zur Analyse während der Laufzeit aus
-  \item \textit{gui}: Startet die grafische Oberfläche
-  \item \textit{paused}: Pausiert die Simulation
+  \item \emph{world\_name}: Dateipfad zur gewünschten Welt
+  \item \emph{debug}: Gibt Informationen zur Analyse während der Laufzeit aus
+  \item \emph{gui}: Startet die grafische Oberfläche
+  \item \emph{paused}: Pausiert die Simulation
 \end{itemize}
 
 Damit ist das Aufsetzen des Roboters sowie der Simulationsumgebung vollständig. Der Roboter wird nun in Gazebo angezeigt, wie in \autoref{kap4:gazeboflach} zu sehen ist.
@@ -181,9 +181,9 @@ Der Roboter wird nun zwar im Gazebo angezeigt, allerdings liegt dieser nun flach
 
 Da \ac{ROS}-Nodes allgemein in einer Schleife laufen, wird der folgende Ablauf kontinuierlich ausgeführt. Der Ablauf sorgt wie in \autoref{kap4:gazebooben} zu sehen, dafür, dass der Roboter in den nächsten Durchläufen in der Ausgangsposition steht. Dies erfolgt in mehreren Schritten: 
 \begin{enumerate}
-  \item Zunächst wird über das \textit{TF-Framework} mit Hilfe von Transformationen und Rotationen die Ausgangsposition vom obersten Gelenk zum Endeffektor berechnet. Dies wird im weiteren Verlauf als Ausgangsposition definiert und eingelesene Bewegungen sind relativ zu dieser Position.
-  \item Die dazugehörigen Winkel, die benötigt werden, um in die Ausgangsposition zu kommen, werden nun mittels \textit{inverser Kinematik} berechnet.
-  \item Die drei Winkel werden nun in das Topic \textit{goal\_joint\_states} geschrieben, was ein tatsächliches Verändern der Winkel in der Simulation oder am echten Roboter verursacht. Dabei wird vorher geprüft, ob die Winkel gültig sind, d.h. dass sie sich über dem minimal und unter dem maximal erlaubten Winkel befinden. Ist das nicht der Fall, wird eine Warnung ausgegeben.
+  \item Zunächst wird über das \emph{TF-Framework} mit Hilfe von Transformationen und Rotationen die Ausgangsposition vom obersten Gelenk zum Endeffektor berechnet. Dies wird im weiteren Verlauf als Ausgangsposition definiert und eingelesene Bewegungen sind relativ zu dieser Position.
+  \item Die dazugehörigen Winkel, die benötigt werden, um in die Ausgangsposition zu kommen, werden nun mittels \emph{inverser Kinematik} berechnet.
+  \item Die drei Winkel werden nun in das Topic \emph{goal\_joint\_states} geschrieben, was ein tatsächliches Verändern der Winkel in der Simulation oder am echten Roboter verursacht. Dabei wird vorher geprüft, ob die Winkel gültig sind, d.h. dass sie sich über dem minimal und unter dem maximal erlaubten Winkel befinden. Ist das nicht der Fall, wird eine Warnung ausgegeben.
 \end{enumerate}
 
 \section{Generieren und Einlesen von Bewegungen als xml-Datei}
@@ -192,7 +192,7 @@ Da der Laufplaner und die Simulation voneinander getrennt sein sollen, damit das
 
 Die hier entwickelte Schnittstelle ist eine Abwandlung der vorherigen Schnittstellen, da diese nicht die Dauer von Bewegungen speichert, sondern lediglich für jeden Schritt die Fußpositionen relativ zur definierten Ausgangsposition.
 
-Die Generierung erfolgt durch die Iteration über die von einem Algorithmus generierten Schritte für die Fußpositionen. Statt für die Generierung eine xml-Bibliothek zu nutzen, reicht hier eine einfache Ausgabe in einer Datei mittels \textit{ofstream}.
+Die Generierung erfolgt durch die Iteration über die von einem Algorithmus generierten Schritte für die Fußpositionen. Statt für die Generierung eine xml-Bibliothek zu nutzen, reicht hier eine einfache Ausgabe in einer Datei mittels \emph{ofstream}.
 
 \autoref{lst:MovementExample} zeigt eine abgespeckte XML-Bewegung der ersten beiden Füße, welche den Fuß an der 1. Stelle ein wenig in y-Richtung verschieben würde, was einer Verschiebung der Robotermitte verursacht, sofern die anderen Füße, welche auf dem Boden sind, das auch tun. Des Weiteren wird der Fuß an der 2. Stelle ein Stück angehoben.
 
@@ -214,7 +214,7 @@ f(z) = -0,5 * cos(z + 0,5) + 0,5
 
 Der in \autoref{kap4:cosinterpolation}, \autoref{kap4:cosinterpolation2} sowie \autoref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. In der Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
 
-Code-technisch ist das mit drei Variablen umgesetzt, die die aktuelle Zwischenposition bestimmen. Die erste Variable gibt die maximale Zahl der Zwischenpositionen an (\textit{maxTicks}). Die zweite Variable gibt die aktuelle Stelle (\textit{tick}) an, so dass der Algorithmus über die Funktion ausrechnen kann, was die nächste Position sein wird. Die Variable \textit{diff} ist der Vektor von der Start- zur Zielposition. Damit ergibt sich für die Berechnung einer Zwischenposition die Formeln in \autoref{kap4:cosinterpolationcode}, \autoref{kap4:cosinterpolationcode2} und \autoref{kap4:cosinterpolationcode3} :
+Code-technisch ist das mit drei Variablen umgesetzt, die die aktuelle Zwischenposition bestimmen. Die erste Variable gibt die maximale Zahl der Zwischenpositionen an (\emph{maxTicks}). Die zweite Variable gibt die aktuelle Stelle (\emph{tick}) an, so dass der Algorithmus über die Funktion ausrechnen kann, was die nächste Position sein wird. Die Variable \emph{diff} ist der Vektor von der Start- zur Zielposition. Damit ergibt sich für die Berechnung einer Zwischenposition die Formeln in \autoref{kap4:cosinterpolationcode}, \autoref{kap4:cosinterpolationcode2} und \autoref{kap4:cosinterpolationcode3} :
 \begin{eqnarray}
 \label{kap4:cosinterpolationcode}
 x = diff.x() * (-0.5 * cos(\pi * tick / maxTicks) + 0.5) \\
@@ -224,7 +224,7 @@ z = diff.z() * (-0.5 * cos(\pi * tick / maxTicks) + 0.5)
 \label{kap4:cosinterpolationcode3}
 \end{eqnarray}
 
-In jedem Schritt wird der \textit{tick} um eins nach oben gesetzt, bis er bei der Grenze von \textit{maxTicks} angekommen ist. Dann wird dieser zurückgesetzt und die nächste Bewegung wird ausgeführt.
+In jedem Schritt wird der \emph{tick} um eins nach oben gesetzt, bis er bei der Grenze von \emph{maxTicks} angekommen ist. Dann wird dieser zurückgesetzt und die nächste Bewegung wird ausgeführt.
 
 \section{Aufsetzen des Dreifußgangs}
 

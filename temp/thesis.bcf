@@ -1997,20 +1997,24 @@
   </bcf:bibdata>
   <bcf:section number="0">
     <bcf:citekey order="1">herms2004</bcf:citekey>
-    <bcf:citekey order="2">herms2004</bcf:citekey>
+    <bcf:citekey order="2">inventor</bcf:citekey>
     <bcf:citekey order="3">ruffler2006</bcf:citekey>
     <bcf:citekey order="4">herms2004</bcf:citekey>
     <bcf:citekey order="5">herms2004</bcf:citekey>
-    <bcf:citekey order="6">herms2004</bcf:citekey>
+    <bcf:citekey order="6">ruffler2006</bcf:citekey>
     <bcf:citekey order="7">herms2004</bcf:citekey>
     <bcf:citekey order="8">herms2004</bcf:citekey>
-    <bcf:citekey order="9">akrobat</bcf:citekey>
-    <bcf:citekey order="10">hopper</bcf:citekey>
-    <bcf:citekey order="11">LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136</bcf:citekey>
-    <bcf:citekey order="12">gazebo-inertial</bcf:citekey>
-    <bcf:citekey order="13">herms2004</bcf:citekey>
-    <bcf:citekey order="14">ruffler2006</bcf:citekey>
-    <bcf:citekey order="15">pugixml</bcf:citekey>
+    <bcf:citekey order="9">herms2004</bcf:citekey>
+    <bcf:citekey order="10">herms2004</bcf:citekey>
+    <bcf:citekey order="11">herms2004</bcf:citekey>
+    <bcf:citekey order="12">inventor</bcf:citekey>
+    <bcf:citekey order="13">akrobat</bcf:citekey>
+    <bcf:citekey order="14">hopper</bcf:citekey>
+    <bcf:citekey order="15">LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136</bcf:citekey>
+    <bcf:citekey order="16">gazebo-inertial</bcf:citekey>
+    <bcf:citekey order="17">herms2004</bcf:citekey>
+    <bcf:citekey order="18">ruffler2006</bcf:citekey>
+    <bcf:citekey order="19">pugixml</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

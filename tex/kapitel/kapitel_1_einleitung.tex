@@ -1,7 +1,28 @@
 \chapter{Einleitung}
+\label{kap1}
 
 \section{Motivation}
 
+Die einfachste Art einen Laufroboter zu steuern, ist die Anwendung eines \emph{statischen Laufmusters} wie dem Dreifußgang. Diese Laufmuster funktionieren auf ebenem Untergrund für beispielsweise sechsbeinige Laufroboter sehr gut und stabil. Anders sieht es allerdings aus, wenn das Gelände Hindernisse aufweist. Dann macht es in erster Linie Sinn, zusätzlich zu dem statischen Laufmuster mit einem \emph{reaktiven Laufmuster} auf die Umgebung zu reagieren. Ist ein Gelände allerdings stark uneben und besteht eventuell sogar aus unüberwindbaren Abschnitten, würde das reaktive Laufmuster dominieren. Der Laufroboter würde sich nur noch langsam mittels des reaktiven Laufmusters nach vorne tasten.
+
+Planende Verfahren verbessern diesen Prozess, indem sie Lösungen für unebenes Gelände schon vor oder während des Laufens berechnen und daher nicht mehr darauf reagieren müssen, sondern aktiv einen gültigen Weg zu Ziel planen. Dies ist in Fällen wie der Bergung von Opfern in einem unebenen Gelände oder einem Kernkraftwerk-Unfall der Fall, in dem in unterschiedlichsten Umgebungen gelaufen werden muss. Aber auch bei Service-Robotern könnte eine solche Planung sinnvoll sein.
+
+Diese Arbeit nutzt ein bestehendes planendes Verfahren und portiert dieses auf eine Umgebung im \ac{ROS} für den sechsbeinigen Laufroboter Akrobat.
+
 \section{Ziel der Arbeit}
 
+André Herms \autocite{herms2004} hat initial verschiedene Algorithmen zur Laufplanung analysiert und eine Auswahl in einer bestehenden OpenInventor-Umgebung \autocite{inventor} für den sechsbeinigen Laufroboter \emph{LAURON} aufgesetzt. Dabei hat sich aus einer Auswahl von sieben Algorithmen und den Auswahlkriterien Anytime-Fähigkeit, Parallelisierbarkeit, Speicherbedarf und Anwendbarkeit das Random Sampling als beste Wahl herausgestellt. Uli Ruffler \autocite{ruffler2006} hat diesen Algorithmus auf eine inkrementelle Funktionsweise weiterentwickelt sowie weitere Anpassungen vorgenommen.
+
+Das Ziel dieser Arbeit ist nun diesen Laufplaner für den \emph{Akrobat} bereitzustellen. Da dieser Laufroboter auf \ac{ROS} aufgesetzt ist, muss die OpenInventor-Umgebung migriert werden. Da es sich um ein anderes Robotermodell handelt, müssen auch weitere Anpassungen vorgenommen werden.
+
+Als Simulationsumgebung bietet sich Gazebo an, da Gazebo eine Physik-Engine bereitstellt. Später soll es einfach möglich sein, zwischen der Simulationsumgebung und der realen Ausführung zu wechseln. Alle Ergebnisse sollen in einem \ac{ROS}-Paket gebündelt werden.
+
 \section{Aufbau der Arbeit}
+
+Die Arbeit beginnt in \autoref{kap2} mit den Grundlagen, die für die Portierung des Laufplaners in das \ac{ROS} und Gazebo nötig sind. Dabei geht die Arbeit auf den Laufroboter, auf Koordinatensysteme, direkte und inverse Kinematik sowie Grundlagen zur Laufplanung ein. Außerdem werden die benötigten Frameworks wie \ac{ROS}, Gazebo und MeshLab vorgestellt.
+
+Nach den Grundlagen folgt in \autoref{kap3} die konzeptionelle Darstellung des Algorithmus Random Sampling, welcher zur Laufplanung genutzt werden soll. Zunächst wird der Algorithmus mit weiteren Algorithmen verglichen und dann detailliert erklärt. Das Kapitel geht darauf ein, wie gültige Lösungen generiert, aber auch bewertet werden können.
+
+\autoref{kap4} analysiert existierende Laufplaner und stellt einen Ansatz dar, diese in ein \ac{ROS}-Paket, welches Gazebo als Simulationsumgebung nutzt, zu migrieren. Da die vorherigen Laufplaner über die 3D-Bibliothek OpenInventor laufen, sind einige Anpassungen nötig, damit der Laufplaner in Gazebo funktionieren kann. Die Ergebnisse werden in \autoref{kap5} getestet.
+
+\autoref{kap6} fasst alle Ergebnisse zusammen und \autoref{kap7} gibt einen Ausblick darüber, wie der Laufplaner in Zukunft weiterentwickelt werden könnte.

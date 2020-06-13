@@ -1,15 +1,35 @@
 \chapter{Portierung des Laufplaners nach ROS und Gazebo}
 \label{kap4}
 
-Dieses Kapitel geht auf die Einzelheiten und die Abläufe der Portierung des Laufplaners nach \ac{ROS} und Gazebo ein. Zunächst werden die bestehenden Laufplaner analysiert. Dann wird ein eigenes \ac{ROS}-Paket entworfen, welches die Basis für den neuen Laufplaner darstellt. Das Kapitel stellt alle nötigen Schritte dar, um die Simulation aufzusetzen und den Roboter dazu zu bringen, Fußbewegungen auszuführen.
+Dieses Kapitel geht auf die Einzelheiten und die Abläufe der Portierung des Laufplaners nach \ac{ROS} und Gazebo ein. Zunächst werden die wesentlichen Aspekte des bestehenden Laufplaner analysiert und mögliche Herausforderungen dargestellt. Dann wird ein eigenes \ac{ROS}-Paket entworfen, welches die Basis für den neuen Laufplaner darstellt. Das Kapitel stellt alle nötigen Schritte dar, um die Simulation aufzusetzen und den Roboter dazu zu bringen, Fußbewegungen auszuführen.
 
 \section{Analyse bestehender Laufplaner}
 
-Herms, Ruffler + ---> verlinken: Die Darstellung geschieht mit Hilfe der 3D- Bibliothek OpenInventor \autocite{inventor}
+Der von André Herms \autocite{herms2004} und von Uli Ruffler \autocite{ruffler2006} weiterentwickelte Laufplaner für den \emph{LAURON} basiert auf der 3D-Bibliothek OpenInventor \autocite{inventor}. Dieses ToolKit basiert wiederum auf OpenGL und ist in C++ implementiert. Des Weiteren ist es objektorientiert und daher orientiert sich auch der Laufplaner an diesem Programmierstil. Auf Grund dieser Tatsache existieren Klassen bzw. Objekte, die nun beschrieben werden:
+\begin{itemize}
+  \item \emph{World}: speichert die Objekte der Sicht auf die Landschaft und den Roboter. 
+  \item \emph{Terrain}: enthält die Informationen über die Höhenkarte.
+  \item \emph{Eyes}: stellt die Sicht auf die Landschaft dar.
+  \item \emph{Robot}: ist verantwortlich für die Robotersteuerung und definiert außerdem die inneren Objekte \emph{Head} und \emph{Leg}.
+  
+\begin{figure}[t!]
+  \centering
+  \includegraphics[height=8cm]{kapitel4/openinventor-lauron}
+  \caption{Screenshot aus der OpenInventor-Umgebung}
+  \label{Kap4:OpenInventorLauron}
+\end{figure}
+
+Für jedes dieser Darstellungsobjekt in OpenInventor wird ein \emph{SoSeperator} benötigt. Da der Name dieses Objekts einzigartig sein muss, sind die Objekte auch nur einmalig nutzbar. Dies erschwert die Aufgabe, später einmal mehrere Roboter gleichzeitig in der Simulation zu testen. Code-technisch sollte das dem Design-Pattern \emph{Singleton} folgen. Der Laufplaner sichert diese allerdings nicht derart ab.
+
+Des Weiteren stellt das Terrain-Objekt die Höhenkarte der Landschaft in OpenInventor zur Verfügung. Dies entspricht nicht dem, was dem Roboter tatsächlich an Kartenmaterial zur Verfügung hat. Diese Tatsache erschwert die Portierung auf ein anderes System, da eine Möglichkeit geschaffen werden muss, dem Roboter beizubringen, was er sieht, um weiterhin mit Höhenangaben arbeiten zu können.
+
+Eine Konfigurationsdatei existiert bereits in dieser Umgebung, die es ermöglichen soll, auch andere Robotermodelle zu testen. Genau dieser Fall ist an dieser Stelle interessant, da die Portierung des Laufplaners auf den \amph{Akrobat} geschehen soll. Diese wird für den Laufalgorithmus allerdings nicht genutzt, da dort Roboterangaben direkt im Quelltext definiert sind.
+
+Weiterhin wird die aktuelle Fußkonfiguration sowie die Fußposition getrennt voneinander gespeichert. Die Fußkonfiguration ist in eine Bitlogik gespeichert. Dies ist sehr nützlich, um Speicherplatz zu sparen, macht auf der anderen Seite das Finden von Fehlern schwieriger.
 
 \section{Vorgehensweise und Aufbau des Pakets}
 
-Die zuvor analysierten Laufplaner müssen nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
+Der zuvor analysierte Laufplaner muss nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
 \begin{itemize}
   \item Code-technisch ist der Laufplaner \emph{fest verdrahtet mit dem Terrain der OpenInventor-Oberfläche}, während das neue Paket auf Gazebo laufen soll.
   \item Der Laufplaner nutzt für geometrische Berechnungen \emph{Klassen aus der OpenInventor-Bibliothek}, während \ac{ROS} auf die Klassen des TF-Frameworks zurückzugreifen soll.
@@ -239,9 +259,38 @@ Zunächst werden die Stati für jeden Fuß in einem Array in C++ gesetzt. Die F�
 
 \section{Aufsetzen des Random Samplings}
 
-Wie auch bei den Vorgängern ist die Implementierung mit C++ durchgeführt. Im folgenden werden einige Unterschiede bei der Implementierung dargestellt:
+Wie auch bei den Vorgängern ist die Implementierung mit C++ durchgeführt. Im folgenden Abschnitt werden einige wesentliche Unterschiede bei der Implementierung dargestellt.
 
-- Abstrahierung der Fußkonfiguration
-- Bitlogik der Füße (footPos und footConf zusammengefasst in eine FootConfiguration Klasse)
-- Vereinfachung von Code-Stellen
-- Anpassung aller Maße
+\subsection{Abstrahierung der Fußkonfiguration}
+
+Während bei dem vorherigen Laufplaner die aktuelle Fußkonfiguration und die Fußposition getrennt voneinander gespeichert wurden, speichert der neue Laufplaner diese in dem Klassenobjekt \emph{FootConfiguration}. Dies hat den Vorteil, dass diese gesamte Fußlogik in einer Klasse gekapselt und unabhängig vom Laufplaner getestet werden könnte.
+
+Außerdem macht dies das Debugging einfacher, da sich in einer gekapselten Klasse beispielsweise Methoden zur Ausgabe definieren lassen. Dadurch lassen sich auch einige redundante Code-Zeilen sparen, da wiederkehrende Funktionen abstrahiert werden.
+
+\subsection{Anpassung aller Maße}
+
+Da die OpenInventor-Simulation alle Angaben in Millimeter gespeichert hat und \ac{ROS} bzw. Gazebo diese als Meterangaben hinterlegt, muss der Algorithmus ebenfalls Meterangaben liefern.
+
+Des Weiteren müssen fest definierte Längenangaben wie die angepeilte Fußposition beim Absetzen eines Fußes verändert werden.
+
+\subsection{Nutzung des TF-Frameworks}
+
+Alle 2D und 3D-Berechnungen werden nun mit dem TF-Framework aus \ac{ROS} berechnet. Dieses nutzt die Klasse \emph{Vector3}, um Berechnungen durchzuführen. Diese Klasse bietet unter anderem folgende wichtige Methoden für Vektoren:
+\begin{itemize}
+  \item Grundlegende Rechenarten (+, -, *, /)
+  \item Länge der Vektors mittels \emph{length}
+  \item Normalisierung von Vektoren mittels \emph{normalise}
+  \item Distanz zweier Punkte mittels \emph{distance}
+\end{itemize}
+
+\subsection{Veränderung der Randomisierung}
+
+Für die Generierung von Zufallszahlen steigt das System auf den Pseudozufallszahlengenerator Mersenne-Twister \autocite{matsumoto1998mersenne} um. Außerdem wird beispielsweise die geometrische Verteilung nicht mehr selbst programmiert, sondern mit einer existierenden Funktion über den Pseudozufallszahlengenerator geregelt, die dies bereits implementiert. Der Aufruf erfolgt über die Standardbibliothek wie in \autoref{geometricDistribution}.
+
+\begin{lstlisting}[label={geometricDistribution}, language=C++, caption={Geometrische Verteilung mittels C++}]
+std::random_device rd;
+std::mt19937 generator(rd());
+std::geometric_distribution<int> geometricDistribution(0.5);
+
+int result = randomDistribution(generator);
+\end{lstlisting}

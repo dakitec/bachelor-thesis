@@ -3,7 +3,7 @@
 
 \section{Laufroboter}
 
-Dieses Grundlagenkapitel stellt die für diese Arbeit relevanten Laufroboter vor. Dies ist zum einen der \emph{Lauron III}, für den der vorliegende Laufplaner entwickelt wurde; zum anderen ist dies der \emph{Akrobat}, für den der existierende Laufplaner migriert werden soll. Beide sind sich ziemlich ähnlich, jedoch sind die Unterschiede wichtig, um den Laufplaner auf den Akrobat zu migrieren. 
+Dieser Abschnitt stellt die für diese Arbeit relevanten Laufroboter vor. Dies ist zum einen der \emph{Lauron III}, für den der vorliegende Laufplaner entwickelt wurde; zum anderen ist dies der \emph{Akrobat}, für den der existierende Laufplaner migriert werden soll. Beide sind sich ziemlich ähnlich, jedoch sind die Unterschiede wichtig, um den Laufplaner auf den Akrobat zu migrieren. 
 
 \subsection{Lauron}
 
@@ -98,6 +98,71 @@ statische Laufalgorithmen, reaktive, planende Laufalgorithmen like RandomSamplin
 
 \section{Frameworks}
 
+Dieses Kapitel stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird. Des Weiteren geht dieser Teil auch noch auf das Tool MeshLab ein, welches dabei hilft, wichtige Berechnungen für das Robotermodell durchzuführen. 
+
 \subsection{Robot Operating System}
+
+Für diese Arbeit ist der Aufbau und die Funktionsweise von \ac{ROS} von großer Bedeutung, da der Laufplaner auf diese Plattform migriert werden soll. Diese Themen werden in zahlreicher Literatur behandelt. \autocite{rosAnOpenSourceRobotOperatingSystem} \autocite{learningROSForRoboticsProgramming} \autocite{gentleIntroductionToROS}
+
+Das \ac{ROS} ist ein Meta-Betriebssystem, welches primär auf der Linux Distribution Ubuntu und Debian verfügbar sind. Ebenfalls läuft \ac{ROS} auch unter Windows Services für Linux. Es existieren auch experimentelle Versionen wie beispielsweise für Mac OS X. Ein ROS-Release ist immer an eine \ac{LTS}-Version von Ubuntu  geknüpft. Das \ac{ROS} besteht aus vielen wichtigen und nützlichen Komponenten. Diese werden nun Schritt- für Schritt erklärt.
+
+\subsubsection{Packages, Nodes und Stacks}
+
+Sogenannte Packages bilden die Grundlage einer jeden \ac{ROS}-Entwicklung. In einem Paket werden alle nötigen Dateien gespeichert, die für das zu lösende Problem benötigt werden. Dies sind neben einem Manifest (package.xml), verschiedene Nodes, welche für die Berechnungen zuständig sind, Definitionen für Nachrichten und Services, damit die Nodes untereinander kommunizieren können sowie benötigte CMake-Konfigurationen, damit das Projekt erfolgreich gebaut werden kann. Nodes können in C++ oder Python programmiert werden. Theoretisch sinda auch andere Sprachen denkbar, allerdings haben sich diese beiden Varianten bewährt.
+
+Eine Stufe über den Packages besteht die Möglichkeit der Organisation zusammengehöriger Packages in Stacks. Dies hat vor allem Vorteile hinsichtlich der Wiederverwendbarkeit und Erweiterbarkeit von Software. Möchte der Entwickler beispielsweise die Funktionalität einer Verbindung zu einem Bluetooth-Controller getrennt vom Ausführen der dazugehörigen Bewegung trennen, ist dies sinnvoll. Dann ließe sich leicht ein weiteres Package für einen anderen Controller entwickeln, ohne die bestehenden Packages zu beeinflussen.
+
+\subsubsection{Kommunikation zwischen Nodes}
+
+Die Kommunikation zwischen Nodes kann über Topics oder Services erfolgen.
+
+Topics folgen dem Publisher-Subscriber Prinzip. Das bedeutet, dass eine Node Nachrichten veröffentlicht, während eine andere diesen Nachrichtenkanal verfolgt. Es können auch mehrere diesen Nachrichtenkanal verfolgen. Das Nachrichtenformat ist das msg-Format. Solche Formate werden nach Konvention im msg-Ordner abgespeichert.
+
+Services folgen dem Client-Server-Prinzip. Hierbei handelt es sich um eine einmalige Abfrage einer Node. Der Client fragt eine Berechnung einmalig beim Server an.  Das Nachrichtenformat ist das srv-Format. Auch diese werden nach Konvention im msg-Ordner gespeichert.
+    
+Jede Nachricht beinhaltet einen sogenannten Header, der aus einer Identifikationsnummer, einem Zeitstempel sowie einr Frame-ID besteht.
+
+\subsubsection{ROS-Master}
+
+Vor jeder Ausführung einer Node in \ac{ROS} muss der sogenannte \ac{ROS}-Master gestartet werden. Dieser ist die zentrale Einheit im System, welche für jegliche Lookups sowie Namensregistrierungen der Nodes zuständig ist. Ohne den \ac{ROS}-Master ist keine Kommunikation zwischen Nodes möglich. Außerdem bietet dieser unter anderem noch die Möglichkeit \ac{ROS} auf verschiedenen Maschinen verteilen zu lassen. Die Konfiguration erfolg über Umgebungsvariablen im System, welche die IP-Adresse der Systeme beinhalten.
+
+\subsubsection{Launch-Files}
+
+Nodes können manuell über die Kommandozeile gestartet werden. Dies ist bei einer wachsenden Zahl an Nodes und Konfigurationen immer schwieriger, weshalb es sogenannte Launch-Files gibt. Diese bündeln gewisse Funktionalität, die ausführt werden sollen. \autoref{exampleLaunchFile} zeigt ein Beispiel dafür. Mit dem include-Befehl können weitere Launch-Files eingefügt werden. Auch dies trägt dazu bei, eine bessere Modularität zu erreichen. Mit dem node-Befehl wird eine Node aus einem Package gestartet. Launch-Files bieten viele weitere Möglichkeiten wie das Setzen von Parametern, welche innerhalb der Ausführung von Nodes genutzt werden können. Außerdem können Aufrufe von Nodes weiter konfiguriert werden. Beispielsweise kann mittels des output-Befehls gesteuert werden, wo die Konsolenausgaben ausgegeben werden. Der respawn-Befehl lässt eine Node neustarten, wenn sie abgestürzt ist. Der required-Befehl legt fest, dass nach Absturz diese Node die komplette Anwendung ebenfalls gestoppt werden soll.
+
+\begin{lstlisting}[label={exampleLaunchFile}, language=Xml, caption={Beispiel eines Launch-Files}]
+<launch>
+  <include file="$(find hexapod)/launch/model.launch"/>
+  
+  <node name="akrobat" pkg="hexapod" type="akrobat" output="screen" respawn="false" required="true"></node>
+</launch>
+\end{lstlisting}
+  
+\subsubsection{Bag-Files}
+
+Gerade in der Roboterentwicklung ist es oftmals nicht sinnvoll, Abläufe während der Entwicklung wiederholt auf dem Roboter ausführen zu müssen. Während in der Softwareentwicklung dies normalerweise kein Problem darstellt, kann der Roboter durch eine falsche Bewegung kaputt gehen oder auf lange Sicht abgenutzt werden. Daher bietet das \ac{ROS} die Möglichkeit alle Daten, die von Topics gesendet wurden mittels eines sogenannten Bags aufzunehmen und erneut abzuspielen. Dies lässt sich auch sinnvoll mit einer Simulation kombinieren. Bag-Aufnahmen oder Wiedergaben können sowohl über die Kommandozeile als auch in Launch-Files ausgeführt werden.
+
+\subsubsection{Kommandozeilen-Tool}
+
+Nahezu alle wichtigen \ac{ROS}-Dienste lassen sich über die Kommandozeile steuern. Jedes vorgestellte Konzept hat ein eigenes Interface, welches für eine unkomplizierte Interaktion sorgt:
+\begin{itemize}
+\item Nodes: rosrun
+\item Topics: rostopic
+\item Services: rosservice
+\item Launch-Files: roslaunch
+\item Bags: rosbag
+\end{itemize}
+
+Des Weiteren gibt es für einige Standardbefehle aus Linux Wrapper-Funktionen wie \glq ls\grq und \glq cd\grq, welche speziell für \ac{ROS} entwickelt wurden. Diese sind \glq rosls\grq und \glq roscd\grq, welche den \ac{ROS}-Ordner auflisten oder direkt in ein \ac{ROS}-Package wechseln.
+
+\subsubsection{Robotermodell und tf-Framework}
+
+Robotermodelle können in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, die Massenträgheit sowie ein Kollissionsmodell angegeben. Die Visualisierung und die Kollission erfolgt beispielsweise über das Format \ac{STL}, aber auch, falls möglich, über einfache geometrische Objekte. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich. Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacro} zielt vor allem darauf ab das Format lesbarer und kürzer zu gestalten. Über Tools wie den rviz, können Robotermodelle visualisiert werden.
+
 \subsection{Gazebo}
+
+todo
+
 \subsection{MeshLab}
+
+todo \autocite{LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136}

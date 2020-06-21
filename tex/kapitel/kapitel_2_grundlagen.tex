@@ -98,7 +98,7 @@ statische Laufalgorithmen, reaktive, planende Laufalgorithmen like RandomSamplin
 
 \section{Frameworks}
 
-Dieses Kapitel stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird. Des Weiteren geht dieser Teil auch noch auf das Tool MeshLab ein, welches dabei hilft, wichtige Berechnungen für das Robotermodell durchzuführen. 
+Dieses Kapitel stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird.
 
 \subsection{Robot Operating System}
 
@@ -155,14 +155,48 @@ Nahezu alle wichtigen \ac{ROS}-Dienste lassen sich über die Kommandozeile steue
 
 Des Weiteren gibt es für einige Standardbefehle aus Linux Wrapper-Funktionen wie \glq ls\grq und \glq cd\grq, welche speziell für \ac{ROS} entwickelt wurden. Diese sind \glq rosls\grq und \glq roscd\grq, welche den \ac{ROS}-Ordner auflisten oder direkt in ein \ac{ROS}-Package wechseln.
 
+\begin{figure}[t!]
+  \centering
+  \includegraphics[height=8cm]{kapitel2/urdtographizakrobat}
+  \caption{Darstellung des Transformationsbaums des Akrobat}
+  \label{Kap2:urdtographizakrobat}
+\end{figure}
+
 \subsubsection{Robotermodell und tf-Framework}
 
-Robotermodelle können in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, die Massenträgheit sowie ein Kollissionsmodell angegeben. Die Visualisierung und die Kollission erfolgt beispielsweise über das Format \ac{STL}, aber auch, falls möglich, über einfache geometrische Objekte. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich. Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacro} zielt vor allem darauf ab das Format lesbarer und kürzer zu gestalten. Über Tools wie den rviz, können Robotermodelle visualisiert werden.
+Robotermodelle können in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, die Massenträgheit sowie ein Kollissionsmodell angegeben. Die Visualisierung und die Kollission erfolgt beispielsweise über das Format \ac{STL}, aber auch, falls möglich, über einfache geometrische Objekte. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich. Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacro} zielt vor allem darauf ab das Format lesbarer und kürzer zu gestalten. Über Tools wie den rviz, können Robotermodelle visualisiert werden. Mittels des Kommandozeilen-Tools urdf\_to\_graphiz lässt sich der Transformationsbaum eines Robotermodell visualisieren. Dies wird in \autoref{Kap2:urdtographizakrobat} am Beispiel des Akrobat dargestellt.
 
 \subsection{Gazebo}
 
-todo
+Die Entwicklung des Frameworks Gazebo von Dr. Andrew Howard und seinem Studenten Nate Koenig beginnt im Jahr 2002 an der University of Southern California. Seit dem wird das Projekt ständig weiterentwickelt. Gazebo ist eine Robotersimulation mit einer Physik-Engine und hoher Kompatibilität zu \ac{ROS}. Der folgende Abschnitt soll basiernd auf \autoref{Kap2:gazeboarchitektur} einen Überblick über die Architektur des Frameworks geben, das für den Laufplaner eingesetzt wird. \autocite{gazebosim} \autocite{Koenig-2004-394}
 
-\subsection{MeshLab}
+\begin{figure}[b!]
+  \centering
+  \includegraphics[height=8cm]{kapitel2/gazebo}
+  \caption{Architektur des Gazebo-Frameworks \autocite{Koenig-2004-394}}
+  \label{Kap2:gazeboarchitektur}
+\end{figure}
 
-todo \autocite{LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136}
+\subsubsection{Physik-Engine}
+
+Als Physik-Engine wird standardmäßig die \ac{ODE} genutzt. Es sind auch weitere Physik-Engines möglich, da diese nicht fest in der Architektur verdrahtet ist. Alternativ zum Standard können demnach Bullet, Simbody oder DART genutzt werden.
+    
+\subsubsection{Visualisierung}
+
+Für die reine Visualisierung nutzt Gazebo standardmäßig OpenGL sowie GLUT (OpenGL Utility Toolkit). OpenGL ist plattformunabhängig, hochskalierbar, stabil und wird stetig weiterentwickelt. Außerdem sind viele Funktionalitäten in OpenGL auf Hardware-Ebene in der Grafikkarte entwickelt, so dass die CPU entlastet ist und andere Aufgaben schneller leisten kann.}
+
+\subsubsection{Welt}
+
+Die Gazebo-Welt ist eine Sammlung aus verschiedenen Komponenten:
+\begin{itemize}
+  \item \emph{Modelle}: Modelle sind Objekte mit einer physikalischen Definition.
+  \item \emph{Körper}: Körper sind die grundlegenden geometrischen Bauteile beispielsweise des Roboters.
+  \item \emph{Gelenke}: Gelenke verbinden die Körper miteinander und formen damit die möglichen kinematischen Bewegungen.
+  \item \emph{Sensoren}: Ein Sensor in Gazebo ist ein abstraktes Gerät ohne physikalische Definition. Gazebo bietet aktuell  Odometriesensor, einen Nähesensor sowie eine Kamera an.
+\end{itemize}
+  
+\subsubsection{Erstellung von Modellen}
+
+Aktuell müssen Modelle per Hand erstellt werden. Dies erfolgt in der Regel über das sdf-Format. Kommt \ac{ROS} zum Einsatz, kann mittels der Node urdf\_spawner auch das urdf-Format verwendet werden.}
+  
+Abschließend ist noch wichtig, dass Gazebo durch Plugins erweiterbar ist und eine umfangreiche Schnittstelle bietet, die in einer \ac{ROS}-Node mit C++ oder Python aufgerufen werden kann. Des Weiteren lässt Gazebo auch ein Rendering der Simulation auf einem Remote-Server zu, so dass verteilte Anwendungen möglich werden. Dies ist in vielen Fällen aufgrund begrenzter Rechenleistung sehr von Vorteil. 

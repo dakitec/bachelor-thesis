@@ -70,29 +70,114 @@ Außerdem besitzt der Roboter am Kopf eine Kamera, welche aus zwei Freiheitsgrad
 
 Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+) mit 521 MB Arbeitsspeicher und einem 700 MHz ARM 11 Prozessor. Der Raspberry Pi bietet vielfältige Anschlussmöglichkeiten: Wireless Local Area Network (WLAN), vier Universal Serial Bus (USB)-Anschlüsse ein Ethernet-Anschluss sowie einen High Definition Multimedia Interface (HDMI)-Anschluss. Über letzteren erfolgt die Visualisierung mittels eines externen Bildschirms. Es besteht die Möglichkeit das Gamepad F710 von Logitech per WLAN anzuschließen. Theoretisch sind auch andere Gamepads möglich, sofern diese im Quellcode konfiguriert wurden. \autocite{askerow2014}
 
-\section{Robotik}
+\section{Kinematik}
 
-\subsection{Koordinatensysteme}
+Um dem Roboter die richtigen Befehle zu senden, müssen als nächstes die Grundlagen für die Kinematik gesetzt werden. Ein Roboterbein entspricht jeweils einer kinematischen Kette, die aus mehreren starren Körpern besteht und die über Gelenke verbunden sind. Es handelt sich sowohl beim Lauron als auch beim Akrobat um Rotationsgelenke. Dieser Abschnitt beschreibt Methoden der Kinematik.
+
+Mit Hilfe der direkten Kinematik lässt sich auf Grund der Gelenkausrichtungen berechnen, an welcher Position sich der sogenannte Endeffektor befindet. Der Endeffektor entspricht dem Fuß des Roboters. Über die inverse Kinematik kann bei einer gegebenen Fußposition berechnet werden, wie die Fußgelenke gestellt werden sollen. Die beschriebenen Methoden wurden bereits in weiterer Literatur erläutert. (TODO: Zitat Fellmann und alle anderen) \autocite{fellmann2007}
+
+\subsection{Denavit-Hartenberg Verfahren}
+
+Denavit und Hartenberg entwickelten ein Verfahren zur Beschreibung von kinematischen Ketten. Durch dieses Verfahren können mit Hilfe von nur vier Parametern, den DH-Parametern, die gegenseitige Lage zweier Elemente beschrieben werden. Dies macht die Berechnung von kinematischen Ketten wesentlich einfacher.
+
+\begin{figure}[t!]
+  \centering
+  \includegraphics[height=8cm]{kapitel2/dhparameter}
+  \caption{Denavit-Hartenberg Verfahren}
+  \label{Kap2:dhverfahren}
+\end{figure}
+
+Die vier Parameter, welche in \autoref{Kap2:dhverfahren} visualisiert sind, können wie folgt berechnet werden:
+\begin{enumerate}
+  \item Entspricht der Länge der gemeinsamen Normale zwischen den Achsen $L_n$ und $L_{n+1}$. Dies ist im Schaubild die Variable $a_n$.
+  \item Entspricht dem Versatz zwischen dieser und der vorherigen Normalen. Im Schaubild ist das die Variable $d_n$.
+  \item Entspricht dem Drehwinkel zwischen $L_n$ und $L_{n+1}$. Im Schaubild ist das die Variable $\alpha_n$.
+  \item Entspricht der Drehung um die Achse $L_n$. Im Schaubild ist dies $\theta_n$.
+\end{enumerate} 
+
+Des Weiteren ist es eine Voraussetzung für das Verfahren, dass für jedes Gelenk ein eigenes Koordinatensystem definiert ist, damit die Transformationsgleichungen aufgestellt werden können. Dabei ist es wichtig, dass eine Achse des Koordinatensystems auf der Gelenkachse und eine zweite auf der Normalen liegt. Damit sind nun alle Anforderungen erfüllt, um die direkte und die inverse Kinematik effizient zu berechnen.
+
 \subsection{Direkte Kinematik}
 
-- Mit gegebener Stellung der Gelenke Position und Orientierung des Endeffektes zu berechnen
-- Transformationsmatrix, die dann aufgelöst wird und berechnet werden kann
+Mit Hilfe der direkten Kinematik lässt sich nun berechnen, an welcher Position sich der sogenannte Endeffektor befindet. Gegeben sind hierbei die Winkel der Gelenke. Der Vektor $ \vec{s} = (x,y,z,\alpha,\beta,\gamma)^T $  entspricht der Position und der Orientierung des Endeffektors. Der Vektor $ \vec{q} = (q_1, ...,q_n)^T $, bei dem $n$ die Anzahl der Gelenke ist, entspricht den Gelenkvariablen. Dann lässt sich die direkte Kinematik wie in \autoref{dk1} ausdrücken.
+\begin{equation}
+  \vec{s} = f(\vec{q})
+\label{dk1}
+\end{equation}
 
-fellmann zitieren
+Mittels der DH-Parameter aus dem vorherigen Kapitel lässt sich nun eine homogene Transformationsmatrix vom Ausgangskoordinatensystem in das Koordinatensystem des Endeffektors abhängig der Gelenkvariablen, siehe \autoref{dk2}, erstellen.
+\begin{equation}
+  ^{n-1}_{n}T = Rot(z_{n-1},\theta_n)Trans(0,0,d_{n})Trans(a_{n},0,0)Rot(x_{n},\alpha_{n})
+\label{dk2}
+\end{equation}
 
-\autocite{fellmann2007}
+Der erste Parameter der Rotationsfunktion $Rot$ bestimmt die Rotationsachse. Der zweite Parameter bestimmt den Winkel. Die Funktion $Trans$ entspricht einer Verschiebung im Raum. Die Gleichung setzt voraus, dass die Wahl der Koordinatensysteme wie im vorherigen Kapitel beschrieben, eingehalten wird.
+
+Als nächstes ersetzt man die Transformationen und Rotationen in \autoref{dk2} durch ihre homogenen Transformationenmatrizen und berechnet die gesamte Transformationsmatrix. Es ergibt sich das Ergebnis in \autoref{dk3}, welche den Übergang vom Gelenk $n - 1$ in das Gelenk $n$ mit Hilfe der DH-Paramter beschreibt.
+\begin{equation}
+  ^{n-1}_{n}T = \begin{pmatrix}
+    cos\: \theta_n & -sin\: \theta_n  & 0 & 0\\ 
+    sin\: \theta_n & cos\: \theta_n   & 0 & 0\\ 
+    0             & 0               & 1 & 0\\ 
+    0             & 0               & 0 & 1\\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+  1 & 0 & 0 & a_n\\ 
+  0 & 1 & 0 & 0\\ 
+  0 & 0 & 1 & d_n\\ 
+  0 & 0 & 0 & 1\\
+\end{pmatrix} \cdot \begin{pmatrix}
+  1 & 0 & 0 & 0\\ 
+  0 & cos\: \alpha_n & -sin\: \alpha_n & 0\\ 
+  0 & sin\: \alpha_n & cos\: \alpha_n & 0\\ 
+  0 & 0 & 0 & 1\\
+\end{pmatrix}
+
+^{n-1}_{n}T = \begin{pmatrix}
+  cos\: \theta_n  & -sin\: \theta_n\; cos\: \alpha_n    & sin\: \theta_n\; sin\: \alpha_n & a_n\: cos\: \theta_n\\ 
+  sin\: \theta_n  & cos\: \theta_n\; cos\: \alpha_n     & -cos\: \theta_n\; sin\: \alpha_n & a_n\: sin\: \theta_n\\ 
+  0               & sin\: \alpha_n                & cos\: \alpha_n & d_n\\ 
+  0               & 0                             & 0 & 1\\
+\end{pmatrix}
+\label{dk3}
+\end{equation}
+
+Da dies nur die Transformation zwischen einem und dem vorherigen Gelenk berechnet, muss nun die gesamte kinematische Kette in \autoref{dk4} hergestellt werden. Dies erfolgt durch die Multiplikation aller Einzeltransformationen.
+\begin{equation}
+  _{m}^{0}T = ^{0}_{1}T^{1}_{2}T...^{m-1}_{m}T
+\label{dk4}
+\end{equation}
+
+Mit dieser Matrix kann ein Punkt im Koordinatensystem des Endeffektors in das Anfangskoordinatensystem transformiert werden. Ebenfalls lässt sich durch eine Aufteilung in Teilmatrizen die Orientierung und Position des Endeffektors relativ zum Anfangskoordinatensystem berechnen. Dazu dient \autoref{dk5}
+\begin{equation}
+  _{m}^{0}T = \begin{pmatrix}
+    _{m}^{0}R & ^{0}\vec{r}\\
+    0 & 1\\
+  \end{pmatrix}
+\label{dk4}
+\end{equation}
+
+Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum Endeffektor. Mit Hilfe der 3x3 Rotationsmatrix $_{m}^{0}R$, welche die Orientierung dieser Transformationen angibt, können die Winkel des Endeffektors berechnet werden. Dazu wird die Matrix noch aufgelöst. Durch das Auflösen des Gleichungssystems ergeben sich schlussendlich die folgenden Winkel in \autoref{dk5}:
+
+\begin{equation}
+  \begin{aligned}
+    \alpha & = arctan(\alpha_{21} / \alpha_{11}) \\
+    \beta & = arctan(-\alpha_{31} / (\alpha_{11} cos \gamma + \alpha_{21} sin \gamma)) \\
+    \gamma & = arctan(\alpha_{32} / \alpha_{33})
+  \end{aligned}
+\label{dk5}
+\end{equation}
 
 \subsection{Inverse Kinematik}
 
-- Durch Position und Orientierung des Endeffektes mögliche Stellung der Gelenke zu berechnen (meist mehrere Lösungen)
-- analytische Berechnung
-- numerische Berechnung: lineare Annäherung durch Jacobi-Matrix
+Mit Hilfe der inversen Kinematik lässt sich nun berechnen, wie die Gelenkswinkel ausgerichtet werden müssen, damit der Endeffektor an eine bestimmte Position kommt. Dies ist gleichbedeutend mit der inversen Funktion der direkten Kinematik (\autoref{ik1}).
+\begin{equation}
+  \vec{q} = f^{}-1}(\vec{s})
+\label{ik1}
+\end{equation}
 
-fellmann zitieren
 
-\autocite{fellmann2007}
-
-\subsection{Laufplanung}
+\section{Laufplanung - check if we need this}
 
 statische Laufalgorithmen, reaktive, planende Laufalgorithmen like RandomSampling
 

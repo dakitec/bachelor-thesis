@@ -74,20 +74,30 @@ Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+)
 
 Um dem Roboter die richtigen Befehle zu senden, müssen als nächstes die Grundlagen für die Kinematik gesetzt werden. Ein Roboterbein entspricht jeweils einer kinematischen Kette, die aus mehreren starren Körpern besteht und die über Gelenke verbunden sind. Es handelt sich sowohl beim Lauron als auch beim Akrobat um Rotationsgelenke. Dieser Abschnitt beschreibt Methoden der Kinematik.
 
-Mit Hilfe der direkten Kinematik lässt sich auf Grund der Gelenkausrichtungen berechnen, an welcher Position sich der sogenannte Endeffektor befindet. Der Endeffektor entspricht dem Fuß des Roboters. Über die inverse Kinematik kann bei einer gegebenen Fußposition berechnet werden, wie die Fußgelenke gestellt werden sollen. Die beschriebenen Methoden wurden bereits in weiterer Literatur erläutert. (TODO: Zitat Fellmann und alle anderen) \autocite{fellmann2007}
+Mit Hilfe der direkten Kinematik lässt sich auf Grund der Gelenkausrichtungen berechnen, an welcher Position sich der sogenannte Endeffektor befindet. Der Endeffektor entspricht dem Fuß des Roboters. Über die inverse Kinematik kann bei einer gegebenen Fußposition berechnet werden, wie die Fußgelenke gestellt werden sollen. Die beschriebenen Methoden wurden bereits in weiterer Literatur erläutert. \autocite{den55} \autocite{wloka92} \autocite{ihme02} \autocite{fellmann2007}
 
 \subsection{Denavit-Hartenberg Verfahren}
 
 Denavit und Hartenberg entwickelten ein Verfahren zur Beschreibung von kinematischen Ketten. Durch dieses Verfahren können mit Hilfe von nur vier Parametern, den DH-Parametern, die gegenseitige Lage zweier Elemente beschrieben werden. Dies macht die Berechnung von kinematischen Ketten wesentlich einfacher.
 
-\begin{figure}[t!]
+\begin{figure}[b!]
   \centering
-  \includegraphics[height=8cm]{kapitel2/dhparameter}
+  \begin{subfigure}[b]{.4\linewidth}
+    \centering
+    \includegraphics[width=6cm]{kapitel2/dh-parameter}
+    \subcaption{Parameter}\label{kap2:dhparams}
+  \end{subfigure}%
+  \qquad
+  \begin{subfigure}[b]{.4\linewidth}
+    \centering
+    \includegraphics[width=6cm]{kapitel2/dh-koordinaten}
+    \subcaption{Koordinatensysteme}\label{kap2:dhcoords}
+  \end{subfigure}\\
   \caption{Denavit-Hartenberg Verfahren}
-  \label{Kap2:dhverfahren}
+  \label{kap2lauron}
 \end{figure}
 
-Die vier Parameter, welche in \autoref{Kap2:dhverfahren} visualisiert sind, können wie folgt berechnet werden:
+Die vier Parameter (\autoref{kap2:dhparams}) können wie folgt berechnet werden:
 \begin{enumerate}
   \item Entspricht der Länge der gemeinsamen Normale zwischen den Achsen $L_n$ und $L_{n+1}$. Dies ist im Schaubild die Variable $a_n$.
   \item Entspricht dem Versatz zwischen dieser und der vorherigen Normalen. Im Schaubild ist das die Variable $d_n$.
@@ -95,11 +105,18 @@ Die vier Parameter, welche in \autoref{Kap2:dhverfahren} visualisiert sind, kön
   \item Entspricht der Drehung um die Achse $L_n$. Im Schaubild ist dies $\theta_n$.
 \end{enumerate} 
 
-Des Weiteren ist es eine Voraussetzung für das Verfahren, dass für jedes Gelenk ein eigenes Koordinatensystem definiert ist, damit die Transformationsgleichungen aufgestellt werden können. Dabei ist es wichtig, dass eine Achse des Koordinatensystems auf der Gelenkachse und eine zweite auf der Normalen liegt. Damit sind nun alle Anforderungen erfüllt, um die direkte und die inverse Kinematik effizient zu berechnen.
+Des Weiteren ist es eine Voraussetzung für das Verfahren, dass für jedes Gelenk ein eigenes Koordinatensystem definiert ist (\autoref{kap2:dhcoords}), damit die Transformationsgleichungen aufgestellt werden können. Dabei ist es wichtig, dass eine Achse des Koordinatensystems auf der Gelenkachse und eine zweite auf der Normalen liegt. Damit sind nun alle Anforderungen erfüllt, um die direkte und die inverse Kinematik effizient zu berechnen.
 
 \subsection{Direkte Kinematik}
 
-Mit Hilfe der direkten Kinematik lässt sich nun berechnen, an welcher Position sich der sogenannte Endeffektor befindet. Gegeben sind hierbei die Winkel der Gelenke. Der Vektor $ \vec{s} = (x,y,z,\alpha,\beta,\gamma)^T $  entspricht der Position und der Orientierung des Endeffektors. Der Vektor $ \vec{q} = (q_1, ...,q_n)^T $, bei dem $n$ die Anzahl der Gelenke ist, entspricht den Gelenkvariablen. Dann lässt sich die direkte Kinematik wie in \autoref{dk1} ausdrücken.
+\begin{figure}[b!]
+  \centering
+  \includegraphics[height=5cm]{kapitel2/DirekteKinematik}
+  \caption{Direkte Kinematik}
+  \label{Kap2:direktekinematik}
+\end{figure}
+
+Mit Hilfe der direkten Kinematik lässt sich nun berechnen, an welcher Position sich der sogenannte Endeffektor befindet (\autoref{Kap2:direktekinematik}). Gegeben sind hierbei die Winkel der Gelenke. Der Vektor $ \vec{s} = (x,y,z,\alpha,\beta,\gamma)^T $  entspricht der Position und der Orientierung des Endeffektors. Der Vektor $ \vec{q} = (q_1, ...,q_n)^T $, bei dem $n$ die Anzahl der Gelenke ist, entspricht den Gelenkvariablen. Dann lässt sich die direkte Kinematik wie in \autoref{dk1} ausdrücken.
 \begin{equation}
   \vec{s} = f(\vec{q})
 \label{dk1}
@@ -170,16 +187,32 @@ Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum
 
 \subsection{Inverse Kinematik}
 
-Mit Hilfe der inversen Kinematik lässt sich nun berechnen, wie die Gelenkswinkel ausgerichtet werden müssen, damit der Endeffektor an eine bestimmte Position kommt. Dies ist gleichbedeutend mit der inversen Funktion der direkten Kinematik (\autoref{ik1}).
+\begin{figure}[b!]
+  \centering
+  \includegraphics[height=5cm]{kapitel2/InverseKinematik}
+  \caption{Inverse Kinematik}
+  \label{Kap2:inversekinematik}
+\end{figure}
+
+Mit Hilfe der inversen Kinematik lässt sich nun berechnen, wie die Gelenkswinkel ausgerichtet werden müssen, damit der Endeffektor an eine bestimmte Position kommt (\autoref{Kap2:inversekinematik}) . Dies ist gleichbedeutend mit der inversen Funktion der direkten Kinematik (\autoref{ik1}).
 \begin{equation}
-  \vec{q} = f^{}-1}(\vec{s})
+  \vec{q} = f^{-1}(\vec{s})
 \label{ik1}
 \end{equation}
 
+Dabei ist zu beachten, dass es in den meisten Fällen für eine Eingabe mehrere Lösungen geben kann. Eine berechnete Lösung kann aber auch ungültig sein, wenn beispielsweise der Arbeitsbereich eingeschränkt ist oder Hindernisse auf dem Weg zur gewünschten Position liegen. Ebenfalls gibt es für viele Positionen auch gar keine Lösung. Des Weiteren kann die kinematische Kette durch Singularitäten Freiheitsgrade verlieren. Dies geschieht, wenn die Drehung an unterschiedlichen Achsen dieselbe Bewegung ergibt, dadurch, dass diese aufeinander liegen oder parallel verlaufen.
 
-\section{Laufplanung - check if we need this}
+Da bereits die Funktion der direkten Kinematik eine nichtlineare Funktion ist, ist auch die inverse Funktion eine nichtlineare Funktion. Das Problem gehört damit in die Kategorie der Lösung eines nichtlinearen Gleichungssystems. Dies lässt sich über eine analytisches oder ein numerisches Verfahren annähernd lösen. 
 
-statische Laufalgorithmen, reaktive, planende Laufalgorithmen like RandomSampling
+Bei der analytischen Methode wird versucht auf Basis der geometrischen Eigenschaften eine Formel herzuleiten. Dies wird umso schwerer, je mehr Freiheitsgrade die kinematische Kette hat. Der Vorteil liegt darin, dass die analytische Lösung ersten alle möglichen Gelenkstellungen für eine Position liefert und zweitens, dass sie wesentlich performanter ist. Die Lösungen sind exakt und Singularitäten können bereits beim Aufstellen der Gleichung festgestellt werden.
+
+Die Software \emph{ikfast} \autocite{kanakia2012inverse} findet Lösungen und erstellt Gleichungen für die inverse Kinematik einer kinematischen Kette. Dabei nutzt die Software im Gegensatz zu anderer Software statt der numerischen die analytische Methode.
+
+Bei der numerischen Lösung wird mittels einer linearen Annäherung versucht die Lösung für $f^{-1}$ zu finden. Dies lässt sich mit der Jacobi-Matrix berechnen. Dazu werden Teilfunktionen für $x$, $y$, $z$, $\alpha$, $\beta$ und $\gamma$ benötigt, welche sich aus der Transformationsmatrix der direkten Kinematik ergeben. Die Teilfunktionen werden dann nach jeder Variablen partiell abgeleitet. Dies ergibt die $6\:x\:n$ Jacobi-Matrix. Sie beschreibt die Änderung der Position des Endeffektors bei Änderung der Gelenkstellungen.
+
+Durch weitere Umstellung der Funktion ergibt sich eine Gleichung für die lineare Annäherung an die gewünschte Funktion. Diese Lösung wird dann mittels direkter Kinematik überprüft. Ist die Abweichung zu groß, wird die Jacobi-Matrix mit den zuvor berechneten Gelenkstellungen erneut berechnet. Dies ergibt die lineare Annäherung an die Lösung. Wichtig ist dabei, dass eine maximale Zahl an Iterationen für den Algorithmus angegeben ist, da es manchmal auch gar keine Lösung geben kann.
+
+Im Gegensatz zur analytischen Methode liefert die numerische Lösung immer nur einen Wert. Ein weiteres Problem der numerischen Lösung sind Singularitäten, welche auftreten können, wenn die Jacobi-Matrix an Rang verliert und somit singulär wird. Die Folge ist, dass die Matrix nicht mehr invertierbar ist und damit keine Lösung mehr berechnet werden kann. 
 
 \section{Frameworks}
 

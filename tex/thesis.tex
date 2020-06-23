@@ -142,7 +142,17 @@
 \cleardoublepage
 \begin{flushleft}
 \let\clearpage\relax % Fix für leere Seiten (issue #25)
-\printbibliography
+
+\defbibfilter{literatur}{%
+    type=article or type=inproceedings or type=book or type=conference
+}
+
+\defbibfilter{web}{%
+    type=url or type=misc or type=book or type=conference
+}
+
+\printbibliography[filter=literatur,title={Literatur}]
+\printbibliography[filter=web,title={Web-Dokumente}]
 \end{flushleft}
 \endgroup
 

@@ -144,11 +144,11 @@
 \let\clearpage\relax % Fix für leere Seiten (issue #25)
 
 \defbibfilter{literatur}{%
-    type=article or type=inproceedings or type=book or type=conference
+    not type=url and not type=misc
 }
 
 \defbibfilter{web}{%
-    type=url or type=misc or type=book or type=conference
+    type=url or type=misc
 }
 
 \printbibliography[filter=literatur,title={Literatur}]

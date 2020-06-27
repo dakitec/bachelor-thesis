@@ -271,12 +271,13 @@ Außerdem macht dies das Debugging einfacher, da sich in einer gekapselten Klass
 
 Da die OpenInventor-Simulation alle Angaben in Millimeter gespeichert hat und \ac{ROS} bzw. Gazebo diese als Meterangaben hinterlegt, muss der Algorithmus ebenfalls Meterangaben liefern.
 
-Des Weiteren müssen fest definierte Längenangaben verändert werden. Dies sind die folgenden:
+Des Weiteren müssen weitere definierte Angaben verändert werden:
 \begin{itemize}
   \item Angepeilte Zielposition des Roboters
   \item Schrittgröße als potentielle Position für das Absetzen des Fußes 
-  \item Abschnittslänge für die spiralförmige Such beim Absetzen des Fußes
+  \item Abschnittslänge für die spiralförmige Suche beim Absetzen des Fußes
   \item Minimal gültiger Stability-Margin
+  \item Maximale Anzahl von Anhebungen oder Absetzungen von Füßen
 \end{itemize}
 
 \subsection{Nutzung des TF-Frameworks}
@@ -289,7 +290,7 @@ Alle 2D und 3D-Berechnungen werden nun mit dem TF-Framework aus \ac{ROS} berechn
   \item Distanz zweier Punkte mittels \emph{distance}
 \end{itemize}
 
-\subsection{Veränderung der Randomisierung}
+\subsection{Veränderung der Zufallszahlengenerierung}
 
 Für die Generierung von Zufallszahlen steigt das System auf den Pseudozufallszahlengenerator Mersenne-Twister \autocite{matsumoto1998mersenne} um. Außerdem wird beispielsweise die geometrische Verteilung nicht mehr selbst programmiert, sondern mit einer existierenden Funktion über den Pseudozufallszahlengenerator geregelt, die dies bereits implementiert. Der Aufruf erfolgt über die Standardbibliothek wie in \autoref{geometricDistribution}.
 

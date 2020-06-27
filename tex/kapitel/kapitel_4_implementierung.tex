@@ -1,11 +1,11 @@
 \chapter{Portierung des Laufplaners nach ROS und Gazebo}
 \label{kap4}
 
-Dieses Kapitel geht auf die Einzelheiten und die Abläufe der Portierung des Laufplaners nach \ac{ROS} und Gazebo ein. Zunächst werden die wesentlichen Aspekte des bestehenden Laufplaner analysiert und mögliche Herausforderungen dargestellt. Dann wird ein eigenes \ac{ROS}-Paket entworfen, welches die Basis für den neuen Laufplaner darstellt. Das Kapitel stellt alle nötigen Schritte dar, um die Simulation aufzusetzen und den Roboter dazu zu bringen, Fußbewegungen auszuführen.
+Dieses Kapitel geht auf die Einzelheiten und die Abläufe der Portierung des Laufplaners in das \acf{ROS} und Gazebo ein. Zunächst werden die wesentlichen Aspekte des bestehenden Laufplaners analysiert und mögliche Herausforderungen dargestellt. Dann wird ein eigenes \ac{ROS}-Paket entworfen, welches die Basis für den neuen Laufplaner darstellt. Das Kapitel stellt alle nötigen Schritte dar, um die Simulation aufzusetzen und den Laufplanungsalgorithmus zu mirgieren.
 
 \section{Analyse bestehender Laufplaner}
 
-Der von André Herms \autocite{herms2004} und von Uli Ruffler \autocite{ruffler2006} weiterentwickelte Laufplaner für den \emph{Lauron} basiert auf der 3D-Bibliothek OpenInventor \autocite{inventor}. Dieses ToolKit basiert wiederum auf OpenGL und ist in C++ implementiert. Des Weiteren ist es objektorientiert und daher orientiert sich auch der Laufplaner an diesem Programmierstil. Auf Grund dieser Tatsache existieren Klassen bzw. Objekte, die nun beschrieben werden:
+Der von André Herms \autocite{herms2004} und von Uli Ruffler \autocite{ruffler2006} weiterentwickelte Laufplaner für den \emph{Lauron} basiert auf der 3D-Bibliothek OpenInventor \autocite{inventor}. Dieses Toolkit basiert wiederum auf OpenGL und ist in C++ implementiert. Des Weiteren ist es objektorientiert und daher orientiert sich auch der Laufplaner an diesem Programmierstil. Auf Grund dieser Tatsache existieren Klassen bzw. Objekte, die nun beschrieben werden:
 \begin{itemize}
   \item \emph{World}: speichert die Objekte der Sicht auf die Landschaft und den Roboter. 
   \item \emph{Terrain}: enthält die Informationen über die Höhenkarte.
@@ -25,15 +25,15 @@ Des Weiteren stellt das Terrain-Objekt die Höhenkarte der Landschaft in OpenInv
 
 Eine Konfigurationsdatei existiert bereits in dieser Umgebung, die es ermöglichen soll, auch andere Robotermodelle zu testen. Genau dieser Fall ist an dieser Stelle interessant, da die Portierung des Laufplaners auf den \amph{Akrobat} geschehen soll. Diese wird für den Laufalgorithmus allerdings nicht genutzt, da dort Roboterangaben direkt im Quelltext definiert sind.
 
-Weiterhin wird die aktuelle Fußkonfiguration sowie die Fußposition getrennt voneinander gespeichert. Die Fußkonfiguration ist in eine Bitlogik gespeichert. Dies ist sehr nützlich, um Speicherplatz zu sparen, macht auf der anderen Seite das Finden von Fehlern schwieriger.
+Weiterhin wird die aktuelle Fußkonfiguration sowie die Fußposition getrennt voneinander gespeichert. Die Fußkonfiguration ist in einer Bitlogik gespeichert. Dies ist sehr nützlich um Speicherplatz zu sparen, macht auf der anderen Seite das Finden von Fehlern allerdings schwieriger.
 
 \section{Vorgehensweise und Aufbau des Pakets}
 
-Der zuvor analysierte Laufplaner muss nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
+Der zuvor analysierte Laufplaner muss nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit dem \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
 \begin{itemize}
   \item Code-technisch ist der Laufplaner \emph{fest verdrahtet mit dem Terrain der OpenInventor-Oberfläche}, während das neue Paket auf Gazebo laufen soll.
   \item Der Laufplaner nutzt für geometrische Berechnungen \emph{Klassen aus der OpenInventor-Bibliothek}, während \ac{ROS} auf die Klassen des TF-Frameworks zurückzugreifen soll.
-  \item Durch \emph{unterschiedliche Robotermodelle} können Maße innerhalb des Codes anders definiert sein und müssen angepasst werden.
+  \item Durch \emph{unterschiedliche Robotermodelle} können Maße innerhalb des Quelltexts anders definiert sein und müssen angepasst werden.
 \end{itemize}
 
 Da eine komplette Kopie des vorherigen Projekts auf Grund verschiedener Umgebungen nicht möglich ist, ist die Vorgehensweise schrittweise wichtige Codestellen zu übertragen und zu testen. Dies hat den Vorteil, dass Funktionen unabhängig voneinander getestet werden können. Damit ergibt sich der folgende Gesamtablauf für die Portierung:
@@ -233,7 +233,7 @@ f(y) = -0,5 * cos(y + 0,5) + 0,5 \\
 f(z) = -0,5 * cos(z + 0,5) + 0,5
 \end{eqnarray}
 
-Der in \autoref{kap4:cosinterpolation}, \autoref{kap4:cosinterpolation2} sowie \autoref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. In der Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
+Der in \autoref{kap4:cosinterpolation}, \autoref{kap4:cosinterpolation2} sowie \autoref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. Die Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
 
 Code-technisch ist das mit drei Variablen umgesetzt, die die aktuelle Zwischenposition bestimmen. Die erste Variable gibt die maximale Zahl der Zwischenpositionen an (\emph{maxTicks}). Die zweite Variable gibt die aktuelle Stelle (\emph{tick}) an, so dass der Algorithmus über die Funktion ausrechnen kann, was die nächste Position sein wird. Die Variable \emph{diff} ist der Vektor von der Start- zur Zielposition. \autoref{interpolationZwischenwerte} zeigt die vollständige Berechnung einer Zwischenposition.
 

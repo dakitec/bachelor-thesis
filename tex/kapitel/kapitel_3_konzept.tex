@@ -1,9 +1,9 @@
 \chapter{Random Sampling}
 \label{kap3}
 
-Dieses Kapitel geht auf die konzeptionellen Aspekte des Random Samplings ein. Zunächst betrachtet die Arbeit, weshalb der Algorithmus die beste Wahl für den Laufplaner ist. Darauf folgt die Darstellung der Funktionsweise des Random Samplings, welches große Mengen an zufälligen und gültigen Lösungen generiert.  Dabei sind zwei Fragen von großer Bedeutung. Zum einen ist das: Wie können zufällige gültige Lösungen generiert werden. Wenn diese Lösungen vorliegen ist die nächste wichtige Frage: Wie können diese Lösungen bewertet werden?
+Dieses Kapitel geht auf die konzeptionellen Aspekte des Random Samplings ein. Zunächst betrachtet die Arbeit, weshalb der Algorithmus die geeignete Wahl für den Laufplaner ist. Darauf folgt die Darstellung der Funktionsweise des Random Samplings, welches große Mengen an zufälligen und gültigen Lösungen generiert.  Dabei sind zwei Fragen von großer Bedeutung. Zum einen ist das: Wie können zufällige gültige Lösungen generiert werden. Wenn diese Lösungen vorliegen ist die nächste wichtige Frage: Wie können diese Lösungen bewertet werden?
 
-Das Kapitel basiert auf der Arbeit von André Herms \autocite{herms2004}, der verschiedene planende Verfahren vorstellt und mit geeigneten Kriterien bewertet. Da seine Arbeit zusammenfassend davon ausgeht, dass Random Sampling die nach seinen Kriterien beste Wahl darstellt, nutzt auch diese Arbeit den Algorithmus.
+Das Kapitel basiert auf der Arbeit von André Herms \autocite{herms2004}, der verschiedene planende Verfahren vorstellt und mit geeigneten Kriterien bewertet. Da seine Arbeit zusammenfassend davon ausgeht, dass Random Sampling die nach seinen Kriterien geeignete Wahl darstellt, nutzt auch diese Arbeit den Algorithmus.
 
 \section{Kriterien zur Auswahl des Algorithmus}
 
@@ -54,7 +54,7 @@ Zusammenfassend ist nun festzuhalten, dass das Random Sampling für den Laufplan
 
 Der Algorithmus zur Erzeugung gültiger Lösungen für die Gesamtstrecke wurde initial von André Herms \autocite{herms2004} entwickelt. Uli Ruffler \autocite{ruffler2006} hat diesen in seiner Arbeit unter anderem dahingehend weiterentwickelt, dass dieser auf einer inkrementellen Arbeitsweise läuft. Der folgende Abschnitt geht nun auf das grundlegende Konzept der Generierung von gültigen Lösungen ein.
 
-Wichtig ist, dass alle möglichen Lösungen generiert werden können und nur Lösungen ausgeschlossen werden, die außerhalb des gültigen Bereichs der Fußwinkel und Fußgeschwindigkeiten liegen, die auf instabilem Untergrund wie einem zu starkem Gefälle liegen und die den Roboter zum Umkippen bringen würden.
+Wichtig ist, dass alle möglichen Lösungen generiert werden können und nur Lösungen ausgeschlossen werden, die außerhalb des gültigen Bereichs der Fußwinkel und Fußgeschwindigkeiten liegen, die auf instabilem Untergrund wie einem zu starkem Gefälle liegen oder die den Roboter zum Umkippen bringen würden.
 
 Das Generieren von Lösungen erfolgt nun in mehreren Schritten. Zu Beginn müssen einige Berechnungen für die Festlegung des Pfades zum Ziel ablaufen, bevor der Hauptteil des Algorithmus abläuft, welcher sich schrittweise an das Ziel nähert, bis der Abstand zum Ziel annähernd null beträgt.
 
@@ -64,7 +64,29 @@ Eine erste Methode ist es, den Weg vom Start zum Ziel auf direktem Weg zu erreic
 
 \subsubsection{Festlegung der Anzahl der Pfadsegmente}
 
-Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische Verteilung}. Diese Verteilung wird genutzt, da geringe Streckenanzahlen häufig sein sollen, da davon ausgangen wird, dass der direkte Weg der schnellste Weg ist. Höhere Streckenanzahlen sollen weniger oft auftreten. Durch die Veränderung des Parameters $p$ lassen sich die Wahrscheinlichkeiten dahingehend variieren, dass entweder höhere oder niedrigere Streckenanzahlen bevorzugt werden. Standardmäßig geht man von $p = 0.5$ aus, was bedeutet, dass die Wahrscheinlichkeit genau einen Streckenabschnitt zu erhalten 50\% beträgt.
+Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische Verteilung}. Diese Verteilung wird genutzt, da geringe Streckenanzahlen häufig sein sollen, da davon ausgangen wird, dass der direkte Weg der schnellste Weg ist. Höhere Streckenanzahlen sollen weniger oft auftreten. Durch die Veränderung des Parameters $p$ lassen sich die Wahrscheinlichkeiten dahingehend variieren, dass entweder höhere oder niedrigere Streckenanzahlen bevorzugt werden. Standardmäßig geht man von $p = 0.5$ aus, welches die Wahrscheinlichkeitsverteilung in \autoref{Kap3:streckenabschnittWahrscheinlichkeit} ergibt.
+
+\begin{table}[t!]
+  \caption{Wahrscheinlichkeit der Anzahl der Pfadsegmente}
+  \label{Kap3:streckenabschnittWahrscheinlichkeit}
+  \renewcommand{\arraystretch}{1.2}
+  \centering
+  \sffamily
+  \begin{footnotesize}
+    \begin{tabularx}{0.9\textwidth}{l l}
+      \toprule
+      \textbf{Streckenabschnitt} & \textbf{Wahrscheinlichkeit}\\
+      \midrule
+      1 & 50\%\\
+      2 & 25\%\\
+      3 & 12,5\%\\
+      4 & 6,25\%\\
+      5 & 3,125\%\\
+      \bottomrule
+    \end{tabularx}
+  \end{footnotesize}
+  \rmfamily
+\end{table}
 
 \subsubsection{Festlegung der Wegpunkte}
 
@@ -80,7 +102,7 @@ Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Weg
 \label{RandomSamplingWegpunkteP2}
 \end{equation}
 
-\begin{figure}[t]
+\begin{figure}[t!]
   \centering
   \includegraphics[height=10cm]{kapitel3/rswegpunkte}
   \caption{Zufällig generierte Wegpunkte}
@@ -101,7 +123,7 @@ Neben den zwei Schritten nennt André Herms \autocite{herms2004} noch zwei weite
 
 \subsubsection{Berechnung des zulässigen Bereichs}
 
-Der zulässige Bereich des Mittelpunkts ist auf Grund von zwei Kriterien eingeschränkt. Zum einen durch der maximalen Reichweite der Fußpunkte vom Mittelpunkt aus. Zum anderen dadurch, dass der minimale \emph{Stability Margin} nicht unterschritten werden darf. Der Stability Margin ist der kleinste Abstand zum Mittelpunkt der konvexen Hülle der Fußpunkte vom Mittelpunkt aus. Dieser ist ein Maß dafür, wie stabil der Roboter steht. Ist der Stability Margin kleiner als null, so ist der Mittelpunkt außerhalb der konvexen Hülle, was ein Kippen des Roboters verursacht. Je größer der Stability Margin, desto stabiler steht der Roboter.
+Der zulässige Bereich des Mittelpunkts ist auf Grund von zwei Kriterien eingeschränkt. Zum einen durch die maximalen Reichweite der Fußpunkte vom Mittelpunkt aus. Zum anderen dadurch, dass der minimale \emph{Stability Margin} nicht unterschritten werden darf. Der Stability Margin ist der kleinste Abstand zum Mittelpunkt der konvexen Hülle der Fußpunkte vom Mittelpunkt aus. Dieser ist ein Maß dafür, wie stabil der Roboter steht. Ist der Stability Margin kleiner als null, so ist der Mittelpunkt außerhalb der konvexen Hülle, was ein Kippen des Roboters verursacht. Je größer der Stability Margin, desto stabiler steht der Roboter.
 
 Der zulässige Bereich kann nur an zwei Punkten verlassen werden. Damit wird ein Start- und ein Endpunkt der aktuellen Fußstellung gebildet. Diese sind analytisch schwer zu berechnen. Daher muss mit einem numerischen Verfahren, der \emph{binären Suche}, mit einem inneren zulässigen Punkt und einem äußerem unzulässigen Punkt der Schnittpunkt mit dem zulässigen Bereich gesucht werden. Dazu genügt eine Funktion welche angibt, ob der Mittelpunkt zulässig oder unzulässig ist.
 
@@ -109,7 +131,7 @@ Der zulässige Bereich kann nur an zwei Punkten verlassen werden. Damit wird ein
 
 Der Mittelpunkt des Roboterkörpers kann sich in diesem aktuellen Zustand nur noch vom zuletzt berechneten Start- und Endpunkt des zulässigen Bereichs bewegen. Dies geschieht durch das Verschieben der Körpermitte. Dazu müssen die Füße gehoben und umgesetzt werden. Auch hier müssen die zu Beginn genannten Kriterien beachtet werden. Diese sind unter anderem, dass sich mindestens drei Füße auf dem Boden befinden und dass mindestens ein Fuß auf jeder Seite den Körper stützt, damit der Stability Margin positiv ist. Mit diesen Regeln lassen sich 40 mögliche Fußkonfigurationen, auch Stützzustände genannt, darstellen, welche in \autoref{validconf} abgebildet sind.
 
-\begin{table}[ht!]
+\begin{table}[b!]
 \setlength{\unitlength}{.9cm}
 \begin{picture}(1.5,3.5)
 \put(0.25,0.25){\dashbox{0.05}(1,2){} }
@@ -586,7 +608,7 @@ Der Mittelpunkt des Roboterkörpers kann sich in diesem aktuellen Zustand nur no
 
 Mit jedem Übergang eines Stützzustands in einen anderen Stützzustands wird exakt ein Fuß entweder angehoben oder abgesetzt. Es können auch mehrere Füße gleichzeitig angehoben oder abgesetzt werden, indem in dem aktuellen Übergang eine Zeitdauer von $t=0s$ angenommen wird. Damit wird der nächste Stützzustand mit dem aktuellen Stützzustand ausgeführt. \autoref{trans_support} gibt alle möglichen Stützzustände an.
 
-\begin{table}[ht!]
+\begin{table}[b!]
 \begin{tabular}{|c|l|c|c|l|} 
 \cline{1-2}\cline{4-5}
 \emph{Stützzustand} & \emph{mögliche Nachfolger} & &\emph{Stützzustand} & \emph{mögliche Nachfolger} \\
@@ -635,7 +657,7 @@ Hat der Algorithmus nun schon die maximale Anzahl an Durchläufen erreicht, ist 
 
 \subsection{Berechnungen des Mittelpunkts und der Bewegungsdauer}
 
-Da nun jeder Übergang, eingeschlossen der Fußposition, der Fußkonfiguration und des zulässigen Bereiches des Mittelpunkts definiert ist, können nun konkrete Werte für den zulässigen Bereich des Mittelpunkts definiert werden, damit auch Bewegungen mit konkreten Werten möglich sind. Da die zulässigen Bereiche der Übergänge sich überlappen, kann ein Mittelwert für die Bereiche des vorherigen und des nächsten Übergangs definiert werden. Dies gilt sowohl für Übergänge, bei denen ein Fuß angehoben als auch abgesetzt wird. Da eine Gleichverteilung ungünstige Ergebnisse erzielt, wird hier eine Dreiecksverteilung genutzt, die den vorherigen Mittelpunkt als Erwartungswert annimmt. Dadurch haben kürzere Bewegungen eine höhere Wahrscheinlichkeit.  
+Da nun jeder Übergang, eingeschlossen der Fußposition, der Fußkonfiguration und der zulässigen Bereich des Mittelpunkts definiert ist, können nun konkrete Werte für den zulässigen Bereich des Mittelpunkts definiert werden, damit auch Bewegungen mit konkreten Werten möglich sind. Da die zulässigen Bereiche der Übergänge sich überlappen, kann ein Mittelwert für die Bereiche des vorherigen und des nächsten Übergangs definiert werden. Dies gilt sowohl für Übergänge, bei denen ein Fuß angehoben als auch abgesetzt wird. Da eine Gleichverteilung ungünstige Ergebnisse erzielt, wird hier eine Dreiecksverteilung genutzt, die den vorherigen Mittelpunkt als Erwartungswert annimmt. Dadurch haben kürzere Bewegungen eine höhere Wahrscheinlichkeit.  
 
 Zum Abschluss wird noch die Zeit zwischen den einzelnen Übergängen benötigt. Die minimal mögliche Zeit hängt davon ab, wie lange der Mittelpunkt zur neuen Position benötigt und wie lange ein Fuß zum Absetzen benötigt. Um beide Kriterien einzuhalten ist das Maximum beider Werte die Zeit zwischen dem Übergang.
 

@@ -271,7 +271,13 @@ Außerdem macht dies das Debugging einfacher, da sich in einer gekapselten Klass
 
 Da die OpenInventor-Simulation alle Angaben in Millimeter gespeichert hat und \ac{ROS} bzw. Gazebo diese als Meterangaben hinterlegt, muss der Algorithmus ebenfalls Meterangaben liefern.
 
-Des Weiteren müssen fest definierte Längenangaben wie die angepeilte Fußposition beim Absetzen eines Fußes verändert werden.
+Des Weiteren müssen fest definierte Längenangaben verändert werden. Dies sind die folgenden:
+\begin{itemize}
+  \item Angepeilte Zielposition des Roboters
+  \item Schrittgröße als potentielle Position für das Absetzen des Fußes 
+  \item Abschnittslänge für die spiralförmige Such beim Absetzen des Fußes
+  \item Minimal gültiger Stability-Margin
+\end{itemize}
 
 \subsection{Nutzung des TF-Frameworks}
 

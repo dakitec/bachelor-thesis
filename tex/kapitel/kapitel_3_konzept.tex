@@ -37,8 +37,11 @@ Die genannten Algorithmen vergleicht Herms nun unter Berücksichtigung der folge
       \textbf{Kriterium} & \textbf{Erfüllung}\\
       \midrule
       \emph{Parallelisierbarkeit} & Lösungen können ohne großen Aufwand unabhängig voneinander generiert werden. Am Ende müssen diese nur noch synchronisiert werden, so dass die Lösung mit der besten Bewertung übernommen wird.\\
+      \addlinespace
       \emph{Speicherbedarf} & Der Algorithmus benötigt kaum Speicher, da immer nur eine Lösung generiert wird und diese die vorherige beste Lösung überschreibt.\\
+      \addlinespace
       \emph{Anytime} & Das Kriterium ist erfüllt, sobald eine Lösung generiert ist. Allerdings kann es passieren, dass in einer bestimmten Zeit noch keine gute Lösung vorhanden ist.\\
+      \addlinespace
       \emph{Anwendbarkeit} & Der Algorithmus lässt sich auf jedes Problem der Laufplanung anwenden. Die Qualität hängt allerdings vom Anteil guter Lösungen, die im Lösungsraum vorhanden sind. Außerdem spielt die konkrete Implementierung des Algorithmus eine große Rolle. Insgesamt gilt, dass je länger der Algorithmus läuft, desto besser sind potentiell die Lösungen.\\
       \bottomrule
     \end{tabularx}
@@ -78,9 +81,13 @@ Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische
       \textbf{Streckenabschnitt} & \textbf{Wahrscheinlichkeit}\\
       \midrule
       1 & 50\%\\
+      \addlinespace
       2 & 25\%\\
+      \addlinespace
       3 & 12,5\%\\
+      \addlinespace
       4 & 6,25\%\\
+      \addlinespace
       5 & 3,125\%\\
       \bottomrule
     \end{tabularx}
@@ -104,7 +111,7 @@ Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Weg
 
 \begin{figure}[t!]
   \centering
-  \includegraphics[height=10cm]{kapitel3/rswegpunkte}
+  \includegraphics[width=1\textwidth]{kapitel3/rswegpunkte}
   \caption{Zufällig generierte Wegpunkte}
   \label{Kap3:RSWegpunkte}
 \end{figure}

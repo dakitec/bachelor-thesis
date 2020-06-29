@@ -226,11 +226,11 @@ Für das Einlesen der XML-Datei wird Pugixml \autocite{pugixml} verwendet, welch
 Das \ac{ROS} läuft in einer Schleife, bei der die Periode definiert werden kann. Als geeignet hat sich ein Wert von 20 Millisekunden herausgestellt. Auf Grund der Tatsache, dass die xml-Datei keine Bewegungsdauern speichert, muss eine Synchronisation zwischen dem \ac{ROS}-Loop und dem Abspielen der Bewegung aufgesetzt werden. Damit die Bewegungen nicht unrealistisch aussehen und linear von Position zu Position wechseln, wird eine Interpolation zwischen den einzelnen Punkten mittels einer trigonometrischen Funktion aufgesetzt.
 \begin{eqnarray}
 \label{kap4:cosinterpolation}
-f(x) = -0,5 * cos(x + 0,5) + 0,5 \\
+f(x) = -0,5 \cdot cos(x + 0,5) + 0,5 \\
 \label{kap4:cosinterpolation2}
-f(y) = -0,5 * cos(y + 0,5) + 0,5 \\
+f(y) = -0,5 \cdot cos(y + 0,5) + 0,5 \\
 \label{kap4:cosinterpolation3}
-f(z) = -0,5 * cos(z + 0,5) + 0,5
+f(z) = -0,5 \cdot cos(z + 0,5) + 0,5
 \end{eqnarray}
 
 Der in \autoref{kap4:cosinterpolation}, \autoref{kap4:cosinterpolation2} sowie \autoref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. Die Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
@@ -284,7 +284,7 @@ Des Weiteren müssen weitere definierte Angaben verändert werden:
 
 Alle 2D und 3D-Berechnungen werden nun mit dem TF-Framework aus \ac{ROS} berechnet. Dieses nutzt die Klasse \emph{Vector3}, um Berechnungen durchzuführen. Diese Klasse bietet unter anderem folgende wichtige Methoden für Vektoren:
 \begin{itemize}
-  \item Grundlegende Rechenarten (+, -, *, /)
+  \item Grundlegende Rechenarten: Addition, Subtraktion, Multiplikation, Division
   \item Länge der Vektors mittels \emph{length}
   \item Normalisierung von Vektoren mittels \emph{normalise}
   \item Distanz zweier Punkte mittels \emph{distance}

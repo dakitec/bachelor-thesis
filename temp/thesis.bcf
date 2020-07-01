@@ -2036,6 +2036,7 @@
     <bcf:citekey order="38">ruffler2006</bcf:citekey>
     <bcf:citekey order="39">pugixml</bcf:citekey>
     <bcf:citekey order="40">matsumoto1998mersenne</bcf:citekey>
+    <bcf:citekey order="41">barrett2005matplotlib</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

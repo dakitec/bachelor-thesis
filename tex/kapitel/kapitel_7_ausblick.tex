@@ -1,10 +1,10 @@
 \chapter{Ausblick}
 \label{kap7}
 
-todo
+Nachdem der Laufroboter in der Simulation getestet wurde, sollte dieser auch in einer realen Umgebung getestet werden, da sich dort in der Regeln weitere Herausforderungen deutlich machen, da die Simulation von idealen Bedingungen ausgeht. Dies ist zwar schon insofern gegeben, dass Gazebo eine Physik-Engine bereitstellt, trotzdem sollte der Laufplaner auf weitere Unterschiede zur realen Umgebung untersucht werden.
 
-- Test mit weiteren Welten (unebenes Gelände, Hügel, )
-- Test auf echtem Akrobat
-- Spline-Interpolation
-- Höheninformation
-- Sensorinformation
+Des Weiteren ist ein nächster Schritt den portierten Laufplaner auch auf weiteren Geländeformen wie beispielsweise auf unebenen Gelände zu testen.  Auch bietet es sich an zu untersuchen, wie der Algorithmus sich bei unüberwindbaren Hindernissen verhält. Durch die Streckenplanung kann der Roboter einen Weg um das Hindernis planen.
+
+Aktuell werden die Fußbewegungen mittels einer trigonometrischen Funktion interpoliert. Dies kann auch durch eine Spline-Interpolation wie bei Jörg Fellmann \autocite{fellmann2007} umgesetzt werden. Diese Form der Interpolation bietet einige Vorteile und lässt die Bewegungen realer aussehen.
+
+Außerdem könnte der Roboter in der Simulation noch durch einen Sensor am Kopf ausgestattet werden, welcher die Umgebung verarbeitet und Hindernisse an den Algorithmus weitergibt. Auch könnten über die Höheninformationen die Füße richtig auf dem Boden platziert werden, da der Algorithmus aktuell noch nicht weiß, wo sich dieser befindet.

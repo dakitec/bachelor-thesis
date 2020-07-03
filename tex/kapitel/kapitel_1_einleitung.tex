@@ -1,9 +1,11 @@
 \chapter{Einleitung}
 \label{kap1}
 
+Dieses Kapitel führt in das Thema der Portierung des Laufplaner in das \ac{ROS} und Gazebo ein. Neben der Motivation der Arbeit wird hier auch das Ziel der Arbeit definiert. Außerdem stellt dieses Kapitel den Aufbau der Arbeit dar. 
+
 \section{Motivation}
 
-Die einfachste Art einen Laufroboter zu steuern, ist die Anwendung eines \emph{statischen Laufmusters} wie dem Dreifußgang. Diese Laufmuster funktionieren auf ebenem Untergrund für beispielsweise sechsbeinige Laufroboter sehr gut und stabil. Anders sieht es allerdings aus, wenn das Gelände Hindernisse aufweist. Dann macht es in erster Linie Sinn, zusätzlich zu dem statischen Laufmuster mit einem \emph{reaktiven Laufmuster} auf die Umgebung zu reagieren. Ist ein Gelände allerdings stark uneben und besteht eventuell sogar aus unüberwindbaren Abschnitten, würde das reaktive Laufmuster dominieren. Der Laufroboter würde sich nur noch langsam mittels des reaktiven Laufmusters nach vorne tasten.
+Die einfachste Art einen Laufroboter zu steuern, ist die Anwendung eines \emph{statischen Laufmusters} wie dem Dreifußgang. Diese Laufmuster funktionieren auf ebenem Untergrund für beispielsweise sechsbeinige Laufroboter sehr gut und stabil. Anders sieht es allerdings aus, wenn das Gelände Hindernisse aufweist. Es ist in erster Linie sinnvoll zusätzlich zu dem statischen Laufmuster mit einem \emph{reaktiven Laufmuster} auf die Umgebung zu reagieren. Ist ein Gelände allerdings stark uneben und besteht eventuell sogar aus unüberwindbaren Abschnitten, würde das reaktive Laufmuster dominieren. Der Laufroboter würde sich nur noch langsam mittels des reaktiven Laufmusters nach vorne tasten.
 
 Planende Verfahren verbessern diesen Prozess, indem sie Lösungen für unebenes Gelände schon vor oder während des Laufens berechnen und daher nicht mehr darauf reagieren müssen, sondern aktiv einen gültigen Weg zu Ziel planen. Dies ist in Fällen wie der Bergung von Opfern in einem unebenen Gelände oder einem Kernkraftwerk-Unfall hilfreich, da in unterschiedlichsten Umgebungen gelaufen werden muss. Aber auch bei Service-Robotern könnte eine solche Planung sinnvoll sein.
 
@@ -20,6 +22,8 @@ Das Ziel dieser Arbeit ist nun diesen Laufplaner für den \emph{Akrobat} bereitz
 Als Simulationsumgebung bietet sich Gazebo an, da Gazebo neben einer Visualisierung auch eine Physik-Engine bereitstellt. Im weiteren Verlauf des Projekts soll es einfach möglich sein, zwischen der Simulationsumgebung und der realen Ausführung zu wechseln. Alle Ergebnisse sollen in einem \ac{ROS}-Paket gebündelt werden.
 
 \section{Aufbau der Arbeit}
+
+TODO change aufbau, weil sich struktur ändert
 
 Die Arbeit beginnt in \autoref{kap2} mit den Grundlagen, die für die Portierung des Laufplaners in das \ac{ROS} und Gazebo nötig sind. Dabei geht die Arbeit auf den Laufroboter, auf direkte und inverse Kinematik sowie die Grundlagen zur Laufplanung ein. Außerdem werden die benötigten Frameworks wie das \ac{ROS} und Gazebo vorgestellt.
 

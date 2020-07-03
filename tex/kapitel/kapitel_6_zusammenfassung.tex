@@ -3,18 +3,8 @@
 
 Das Ziel dieser Arbeit war es den Laufplaner für den Lauron III von André Herms, welcher über die OpenInventor-Simulation entwickelt wurde, für den Akrobat auf \ac{ROS} und Gazebo bereitzustellen.
 
-Um dieses Ziel zu erreichen, mussten in \autoref{kap2} die Grundlagen gelegt werden. Das Kapitel beschäftigt sich zunächst mit den beiden relevanten Laufrobotern Lauron und Akrobat, um die Unterschiede, welche für eine  Portierung wichtig sind, herauszuarbeiten. Danach wurden die Grundlagen für die direkte und inverse Kinematik gelegt, welche für die Fußsteuerung des Laufroboters benötigt werden. Zuletzt führt das Kapitel noch in die Zielsysteme \acf{ROS} und Gazebo ein.
+Um dieses Ziel zu erreichen, mussten in \autoref{kap2} die Grundlagen gelegt werden. Das Kapitel beschäftigt sich zunächst mit den beiden relevanten Laufrobotern Lauron und Akrobat, um die Unterschiede, welche für eine  Portierung wichtig sind, herauszuarbeiten. Danach wurden die Grundlagen für die direkte und inverse Kinematik gelegt, welche für die Fußsteuerung des Laufroboters benötigt werden. Danach geht das Kapitel auf verschiedene Arten der Laufplanung ein. Zuletzt führt das Kapitel noch in die Zielsysteme \acf{ROS} und Gazebo ein.
 
-Nachdem die Grundlagen gelegt sind, wird nun weiterführend in \autoref{kap3} das Konzept des Random Samplings beschrieben. Zunächst wird dazu herausgearbeitet, welche Algorithmen neben dem Random Sampling außerdem in Frage kämen und weshalb eben genau dieser Algorithmus ausgewählt wurde. Danach wird erklärt, wie gültige Lösungen für das Random Sampling generiert und auch bewertet werden können.
-
-Im nächsten Schritt wird in \autoref{kap4} der Laufplaner von André Herms untersucht und eine Implementierung für ein \ac{ROS}-Package vorgeschlagen. Die Implementierung erfolgt in mehreren Schritten:
-\begin{enumerate}
-\item Aufsetzen der Gazebo-Simulation
-\item Aufsetzen der Ausgangsposition des Roboters
-\item Generierung und Einlesung von Bewegungsdaten als xml-Datei
-\item Abspielen dieser Bewegungen
-\item Aufsetzen des Dreifußgangs als Test der bisherigen Implementierung
-\item Aufsetzen des Random Samplings.
-\end{enumerate}
+TODO Kapitel 3 - ende
 
 Zum Abschluss werden die generierten Bewegungen des Random Samplings, insbesondere die Fuß- und Körperbewegungen, in \autoref{kap5} grafisch mit Hilfe der Bibliothek matplotlib ausgewertet.

@@ -1,35 +1,14 @@
 \chapter{Portierung des Laufplaners nach ROS und Gazebo}
 \label{kap4}
 
-Dieses Kapitel geht auf die Einzelheiten und die Abläufe der Portierung des Laufplaners in das \acf{ROS} und Gazebo ein. Zunächst werden die wesentlichen Aspekte des bestehenden Laufplaners analysiert und mögliche Herausforderungen dargestellt. Dann wird ein eigenes \ac{ROS}-Paket entworfen, welches die Basis für den neuen Laufplaner darstellt. Das Kapitel stellt alle nötigen Schritte dar, um die Simulation aufzusetzen und den Laufplanungsalgorithmus zu mirgieren.
+todo beschreibung
 
-\section{Analyse bestehender Laufplaner}
-
-Der von André Herms \autocite{herms2004} und von Uli Ruffler \autocite{ruffler2006} weiterentwickelte Laufplaner für den \emph{Lauron} basiert auf der 3D-Bibliothek OpenInventor \autocite{inventor}. Dieses Toolkit basiert wiederum auf OpenGL und ist in C++ implementiert. Des Weiteren ist es objektorientiert und daher orientiert sich auch der Laufplaner an diesem Programmierstil. Auf Grund dieser Tatsache existieren Klassen bzw. Objekte, die nun beschrieben werden:
-\begin{itemize}
-  \item \emph{World}: speichert die Objekte der Sicht auf die Landschaft und den Roboter. 
-  \item \emph{Terrain}: enthält die Informationen über die Höhenkarte.
-  \item \emph{Eyes}: stellt die Sicht auf die Landschaft dar.
-  \item \emph{Robot}: ist verantwortlich für die Robotersteuerung und definiert außerdem die inneren Objekte \emph{Head} und \emph{Leg}.
-  
-\begin{figure}[t!]
-  \centering
-  \includegraphics[height=8cm]{kapitel4/openinventor-lauron}
-  \caption{Screenshot aus der OpenInventor-Umgebung}
-  \label{Kap4:OpenInventorLauron}
-\end{figure}
-
-Für jedes dieser Darstellungsobjekt in OpenInventor wird ein \emph{SoSeperator} benötigt. Da der Name dieses Objekts einzigartig sein muss, sind die Objekte auch nur einmalig nutzbar. Dies erschwert die Aufgabe, später einmal mehrere Roboter gleichzeitig in der Simulation zu testen. Code-technisch sollte das dem Design-Pattern \emph{Singleton} folgen. Der Laufplaner sichert diese allerdings nicht derart ab.
-
-Des Weiteren stellt das Terrain-Objekt die Höhenkarte der Landschaft in OpenInventor zur Verfügung. Dies entspricht nicht dem, was dem Roboter tatsächlich an Kartenmaterial zur Verfügung hat. Diese Tatsache erschwert die Portierung auf ein anderes System, da eine Möglichkeit geschaffen werden muss, dem Roboter beizubringen, was er sieht, um weiterhin mit Höhenangaben arbeiten zu können.
-
-Eine Konfigurationsdatei existiert bereits in dieser Umgebung, die es ermöglichen soll, auch andere Robotermodelle zu testen. Genau dieser Fall ist an dieser Stelle interessant, da die Portierung des Laufplaners auf den \amph{Akrobat} geschehen soll. Diese wird für den Laufalgorithmus allerdings nicht genutzt, da dort Roboterangaben direkt im Quelltext definiert sind.
-
-Weiterhin wird die aktuelle Fußkonfiguration sowie die Fußposition getrennt voneinander gespeichert. Die Fußkonfiguration ist in einer Bitlogik gespeichert. Dies ist sehr nützlich um Speicherplatz zu sparen, macht auf der anderen Seite das Finden von Fehlern allerdings schwieriger.
+TODO: IHME neues kapitel dazwischen
+In Kapitel 4 können Sie sich dann genau auf die in 3 vorgestellte Lösung beziehen und ein Konzept entwickeln. Dabei geht es zunächst um eine formale Lösung, also das Zerpflücken der bisherigen Lösung und das Entwickeln eines Konzeptes zur Integration in ROS/Gazebo. Dazu gehört zwar auch die Analyse, jedoch muss sich die Lösung auf eine formale Vorgehensweise beschränken.
 
 \section{Vorgehensweise und Aufbau des Pakets}
 
-Der zuvor analysierte Laufplaner muss nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit dem \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
+Der zuvor analysierte Laufplaner von André Herms muss nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit dem \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
 \begin{itemize}
   \item Code-technisch ist der Laufplaner \emph{fest verdrahtet mit dem Terrain der OpenInventor-Oberfläche}, während das neue Paket auf Gazebo laufen soll.
   \item Der Laufplaner nutzt für geometrische Berechnungen \emph{Klassen aus der OpenInventor-Bibliothek}, während \ac{ROS} auf die Klassen des TF-Frameworks zurückzugreifen soll.

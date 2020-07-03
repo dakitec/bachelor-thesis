@@ -1,6 +1,8 @@
 \chapter{Grundlagen}
 \label{kap2}
 
+Dieses Kapitel stellt die benötigten Grundlagen für die Portierung des Laufplaners in  \ac{ROS} und Gazebo dar. Zunächst geht das Kapitel auf die relevanten Laufroboter, dann auf Kinematik und verschiedene Laufmuster ein. Zuletzt werden die benötigten Frameworks beschrieben.
+
 \section{Laufroboter}
 
 Dieser Abschnitt stellt die für diese Arbeit relevanten Laufroboter vor. Dies ist zum einen der \emph{Lauron III}, für den der vorliegende Laufplaner entwickelt wurde; zum anderen ist dies der \emph{Akrobat}, für den der existierende Laufplaner migriert werden soll. Beide sind sich ziemlich ähnlich, jedoch sind die Unterschiede wichtig, um den Laufplaner auf den Akrobat zu migrieren. 
@@ -44,7 +46,7 @@ Die Segmente sind durch die Gelenke Subcoxal $\alpha$, Coxa-Trochanter $\beta$ u
 
 Unter anderem ist noch wichtig, dass der Kopf der indischen Stabheuschrecke zwei lange Fühler besitzt. Diese könnten in einem Roboter beispielsweise als Laserscanner oder Kamera modelliert werden, welche sich einen Überblick über die Gegend verschaffen können.
 
-Der Körper des \emph{Lauron III} trägt den Microcontroller, die Recheneinheit, die Akkumulatoren sowie den Kamerakopf. An beiden Seiten des Körpers sind jeweils drei Beine angebracht. Der Roboter wiegt 16 Kilogramm und hat eine maximale Zuladung von etwa 15kg. Die Maximalgeschwindigkeit beträgt \SI{0.5}{\metre\per\second}. \autocite{gassmann2000} \autocite{troilo2007}
+Der Körper des \emph{Lauron III} trägt die 7 Mikrocontroller (Infineon C167) und einen Hauptrechner, der auf Pentium basiert, die Akkumulatoren sowie den Kamerakopf. An beiden Seiten des Körpers sind jeweils drei Beine angebracht. Der Roboter wiegt 16 Kilogramm und hat eine maximale Zuladung von etwa 15kg. Die Maximalgeschwindigkeit beträgt \SI{0.5}{\metre\per\second}. \autocite{gassmann2000} \autocite{troilo2007}
 
 \subsection{Akrobat}
 
@@ -66,9 +68,9 @@ Jedes der Gelenke hat exakt einen Freiheitsgrad, sodass das gesamte Bein drei Fr
   \item $\gamma$: -135$^\circ$ bis 135$^\circ$
 \end{itemize}  
 
-Außerdem besitzt der Roboter am Kopf eine Kamera, welche aus zwei Freiheitsgraden besteht. Der Roboterkörper verfügt über genügend Freiraum für Batterien im mittleren Gehäuse. Im hinteren Gehäuse ist der Steuerrechner sowie die restliche Elektronik platziert.
+Außerdem besitzt der Roboter am Kopf eine fest verbaute Kamera. Der Roboterkörper verfügt über genügend Freiraum für Batterien im mittleren Gehäuse. Im hinteren Gehäuse ist der Steuerrechner sowie die restliche Elektronik platziert.
 
-Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+) mit 521 MB Arbeitsspeicher und einem 700 MHz ARM 11 Prozessor. Der Raspberry Pi bietet vielfältige Anschlussmöglichkeiten: Wireless Local Area Network (WLAN), vier Universal Serial Bus (USB)-Anschlüsse, einen Ethernet-Anschluss sowie einen High Definition Multimedia Interface (HDMI)-Anschluss. Über letzteren erfolgt die Visualisierung mittels eines externen Bildschirms. Es besteht die Möglichkeit das Gamepad F710 von Logitech per WLAN anzuschließen. Theoretisch sind auch andere Gamepads möglich, sofern diese im Quellcode konfiguriert wurden. \autocite{askerow2014}
+Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+) mit 512 MB Arbeitsspeicher und einem \SI{700}{MHz} ARM 11 Prozessor. Der Raspberry Pi bietet vielfältige Anschlussmöglichkeiten: Wireless Local Area Network (WLAN), vier Universal Serial Bus (USB)-Anschlüsse, einen Ethernet-Anschluss sowie einen High Definition Multimedia Interface (HDMI)-Anschluss. Über letzteren erfolgt die Visualisierung mittels eines externen Bildschirms. Es besteht die Möglichkeit, das Gamepad F710 von Logitech per WLAN anzuschließen. Theoretisch sind auch andere Gamepads möglich, sofern diese im Quellcode konfiguriert wurden. \autocite{askerow2014}
 
 \section{Kinematik}
 
@@ -76,7 +78,7 @@ Um dem Roboter die richtigen Befehle zu senden, müssen als nächstes die Grundl
 
 Mit Hilfe der direkten Kinematik lässt sich auf Grund der Gelenkausrichtungen berechnen, an welcher Position sich der sogenannte Endeffektor befindet. Der Endeffektor entspricht dem Fuß des Roboters. Über die inverse Kinematik kann bei einer gegebenen Fußposition berechnet werden, wie die Fußgelenke gestellt werden sollen. Die beschriebenen Methoden wurden bereits in weiterer Literatur erläutert. \autocite{den55} \autocite{wloka92} \autocite{ihme02} \autocite{fellmann2007}
 
-\subsection{Denavit-Hartenberg Verfahren}
+\subsection{Denavit-Hartenberg-Verfahren}
 
 Denavit und Hartenberg entwickelten ein Verfahren zur Beschreibung von kinematischen Ketten. Durch dieses Verfahren können mit Hilfe von nur vier Parametern, den DH-Parametern, die gegenseitige Lage zweier Elemente beschrieben werden. Dies macht die Berechnung von kinematischen Ketten wesentlich einfacher.
 
@@ -124,17 +126,17 @@ Mit Hilfe der direkten Kinematik lässt sich nun berechnen, an welcher Position 
 
 Mittels der DH-Parameter aus dem vorherigen Kapitel lässt sich nun eine homogene Transformationsmatrix vom Ausgangskoordinatensystem in das Koordinatensystem des Endeffektors abhängig der Gelenkvariablen, siehe \autoref{dk2}, erstellen.
 \begin{equation}
-  ^{n-1}_{n}T = Rot(z_{n-1},\theta_n)Trans(0,0,d_{n})Trans(a_{n},0,0)Rot(x_{n},\alpha_{n})
+  ^{n-1}_{n}T = \textrm{rot}(z_{n-1},\theta_n) \cdot \textrm{trans}(0,0,d_{n}) \cdot \textrm{trans}(a_{n},0,0) \cdot \textrm{rot}(x_{n},\alpha_{n})
 \label{dk2}
 \end{equation}
 
-Der erste Parameter der Rotationsfunktion $Rot$ bestimmt die Rotationsachse. Der zweite Parameter bestimmt den Winkel. Die Funktion $Trans$ entspricht einer Verschiebung im Raum. Die Gleichung setzt voraus, dass die Wahl der Koordinatensysteme wie im vorherigen Kapitel beschrieben, eingehalten wird.
+Der erste Parameter der Rotationsfunktion \textsc{rot} bestimmt die Rotationsachse. Der zweite Parameter bestimmt den Winkel. Die Funktion \textsc{trans} entspricht einer Verschiebung im Raum. Die Gleichung setzt voraus, dass die Wahl der Koordinatensysteme wie im vorherigen Kapitel beschrieben, eingehalten wird.
 
-Als nächstes ersetzt man die Transformationen und Rotationen in \autoref{dk2} durch ihre homogenen Transformationenmatrizen und berechnet die gesamte Transformationsmatrix. Es ergibt sich das Ergebnis in \autoref{dk3}, welche den Übergang vom Gelenk $n - 1$ in das Gelenk $n$ mit Hilfe der DH-Paramter beschreibt.
+Als nächstes ersetzt man die Transformationen und Rotationen in \autoref{dk2} durch ihre homogenen Transformationenmatrizen und berechnet die gesamte Transformationsmatrix. Es ergibt sich das Ergebnis in \autoref{dk3} und \ref{dk3-2}, welche den Übergang vom Gelenk $n - 1$ in das Gelenk $n$ mit Hilfe der DH-Paramter beschreibt.
 \begin{equation}
   ^{n-1}_{n}T = \begin{pmatrix}
-    cos\: \theta_n & -sin\: \theta_n  & 0 & 0\\ 
-    sin\: \theta_n & cos\: \theta_n   & 0 & 0\\ 
+    \textrm{cos}\: \theta_n & -\textrm{sin}\: \theta_n  & 0 & 0\\ 
+    \textrm{sin}\: \theta_n & \textrm{cos}\: \theta_n   & 0 & 0\\ 
     0             & 0               & 1 & 0\\ 
     0             & 0               & 0 & 1\\
 \end{pmatrix} \cdot
@@ -145,18 +147,21 @@ Als nächstes ersetzt man die Transformationen und Rotationen in \autoref{dk2} d
   0 & 0 & 0 & 1\\
 \end{pmatrix} \cdot \begin{pmatrix}
   1 & 0 & 0 & 0\\ 
-  0 & cos\: \alpha_n & -sin\: \alpha_n & 0\\ 
-  0 & sin\: \alpha_n & cos\: \alpha_n & 0\\ 
+  0 & \textrm{cos}\: \alpha_n & -\textrm{sin}\: \alpha_n & 0\\ 
+  0 & \textrm{sin}\: \alpha_n & \textrm{cos}\: \alpha_n & 0\\ 
   0 & 0 & 0 & 1\\
 \end{pmatrix}
+\label{dk3}
+\end{equation}
 
+\begin{equation}
 ^{n-1}_{n}T = \begin{pmatrix}
-  cos\: \theta_n  & -sin\: \theta_n\; cos\: \alpha_n    & sin\: \theta_n\; sin\: \alpha_n & a_n\: cos\: \theta_n\\ 
-  sin\: \theta_n  & cos\: \theta_n\; cos\: \alpha_n     & -cos\: \theta_n\; sin\: \alpha_n & a_n\: sin\: \theta_n\\ 
-  0               & sin\: \alpha_n                & cos\: \alpha_n & d_n\\ 
+  \textrm{cos}\: \theta_n  & -\textrm{sin}\: \theta_n\; \textrm{cos}\: \alpha_n    & \textrm{sin}\: \theta_n\; \textrm{sin}\: \alpha_n & a_n\: \textrm{cos}\: \theta_n\\ 
+  \textrm{sin}\: \theta_n  & \textrm{cos}\: \theta_n\; \textrm{cos}\: \alpha_n     & -\textrm{cos}\: \theta_n\; \textrm{sin}\: \alpha_n & a_n\: \textrm{sin}\: \theta_n\\ 
+  0               & \textrm{sin}\: \alpha_n                & \textrm{cos}\: \alpha_n & d_n\\ 
   0               & 0                             & 0 & 1\\
 \end{pmatrix}
-\label{dk3}
+\label{dk3-2}
 \end{equation}
 
 Da dies nur die Transformation zwischen einem und dem vorherigen Gelenk berechnet, muss nun die gesamte kinematische Kette in \autoref{dk4} hergestellt werden. Dies erfolgt durch die Multiplikation aller Einzeltransformationen.
@@ -165,24 +170,24 @@ Da dies nur die Transformation zwischen einem und dem vorherigen Gelenk berechne
 \label{dk4}
 \end{equation}
 
-Mit dieser Matrix kann ein Punkt im Koordinatensystem des Endeffektors in das Anfangskoordinatensystem transformiert werden. Ebenfalls lässt sich durch eine Aufteilung in Teilmatrizen die Orientierung und Position des Endeffektors relativ zum Anfangskoordinatensystem berechnen. Dazu dient \autoref{dk4}.
+Mit dieser Matrix kann ein Punkt im Koordinatensystem des Endeffektors in das Anfangskoordinatensystem transformiert werden. Ebenfalls lässt sich durch eine Aufteilung in Teilmatrizen die Orientierung und Position des Endeffektors relativ zum Anfangskoordinatensystem berechnen. Dazu dient \autoref{dk5}.
 \begin{equation}
   _{m}^{0}T = \begin{pmatrix}
     _{m}^{0}R & ^{0}\vec{r}\\
     0 & 1\\
   \end{pmatrix}
-\label{dk4}
+\label{dk5}
 \end{equation}
 
-Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum Endeffektor. Mit Hilfe der 3x3 Rotationsmatrix $_{m}^{0}R$, welche die Orientierung dieser Transformationen angibt, können die Winkel des Endeffektors berechnet werden. Dazu wird die Matrix noch aufgelöst. Durch das Auflösen des Gleichungssystems ergeben sich schlussendlich die folgenden Winkel in \autoref{dk5}:
+Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum Endeffektor. Mit Hilfe der 3x3 Rotationsmatrix $_{m}^{0}R$, welche die Orientierung dieser Transformationen angibt, können die Winkel des Endeffektors berechnet werden. Dazu wird die Matrix noch aufgelöst. Durch das Auflösen des Gleichungssystems ergeben sich schlussendlich die folgenden Winkel in \autoref{dk6}:
 
 \begin{equation}
   \begin{aligned}
-    \alpha & = arctan(\alpha_{21} / \alpha_{11}) \\
-    \beta & = arctan(-\alpha_{31} / (\alpha_{11} cos \gamma + \alpha_{21} sin \gamma)) \\
-    \gamma & = arctan(\alpha_{32} / \alpha_{33})
+    \alpha & = \textrm{arctan}(\alpha_{21} / \alpha_{11}) \\
+    \beta & = \textrm{arctan}(-\alpha_{31} / (\alpha_{11} cos \gamma + \alpha_{21} sin \gamma)) \\
+    \gamma & = \textrm{arctan}(\alpha_{32} / \alpha_{33})
   \end{aligned}
-\label{dk5}
+\label{dk6}
 \end{equation}
 
 \subsection{Inverse Kinematik}
@@ -216,65 +221,17 @@ Im Gegensatz zur analytischen Methode liefert die numerische Lösung immer nur e
 
 \section{Laufplanung}
 
-todo change beschreibung und inhalte
+Nun werden die Grundlagen für die Laufplanung dargestellt dazu werden verschiedene reguläre und freie Laufmuster dargestellt.
 
-Dieses Kapitel geht auf die konzeptionellen Aspekte des Random Samplings ein. Zunächst betrachtet die Arbeit, weshalb der Algorithmus die geeignete Wahl für den Laufplaner ist. Darauf folgt die Darstellung der Funktionsweise des Random Samplings, welches große Mengen an zufälligen und gültigen Lösungen generiert.  Dabei sind zwei Fragen von großer Bedeutung. Zum einen ist das: Wie können zufällige gültige Lösungen generiert werden. Wenn diese Lösungen vorliegen ist die nächste wichtige Frage: Wie können diese Lösungen bewertet werden?
+\subsection{Wave Gait}
 
-Das Kapitel basiert auf der Arbeit von André Herms \autocite{herms2004}, der verschiedene planende Verfahren vorstellt und mit geeigneten Kriterien bewertet. Da seine Arbeit zusammenfassend davon ausgeht, dass Random Sampling die nach seinen Kriterien geeignete Wahl darstellt, nutzt auch diese Arbeit den Algorithmus.
+\subsection{Ripple Gait}
 
-\subsection{Kriterien zur Auswahl des Algorithmus}
+\subsection{Tripod Gait}
 
-Herms stellt in seiner Arbeit neben dem Random Sampling die folgenden Algorithmen vor:
-\begin{itemize}
-  \item \emph{Greedy Verfahren:} Es werden nacheinander Teillösungen durch ein lokales Kriterium generiert. Teillösungen werden nicht mehr verworfen. Daher kommt auch der Begriff "`greedy"', da der Algorithmus gierig ist und somit Lösungen nicht wieder verwirft.
-  \item \emph{Branch and Bound:} Das Verfahren liefert durch einen modifzierten Backtracking-Ansatz immer die exakte Lösung. Anders als beim Backtracking werden die Suchbäume gestutzt, so dass die Laufzeit dadurch verkürzt wird.
-  \item \emph{Lokale Suche:} Das Verfahren ist eine modifzierte Variante des Random Samplings. Neben der zufälligen Generierung von Lösungen wird auch iterativ in der Nachbarschaft nach einem besseren Punkt geschaut.
-  \item \emph{Tabu-Suche:} Das Verfahren ist eine Erweiterung der lokalen Suche. Der Nachbar muss nicht zwingend besser bewertet sein, um als Nachfolgepunkt akzeptiert zu werden. Damit bleibt der Algorithmus nicht in lokalen Maxima hängen.
-  \item \emph{Simulated Annealing:} Das Verfahren ist eine erneute Verbesserung der lokalen Suche und der Tabu-Suche, das sich hinsichtlich des Optimierungsproblems an dem physikalischen Prozess des langsamen Abkühlen fester Stoffe orientiert.
-  \item \emph{Genetische Algorithmen:} Das Verfahren nutzt die Mechanismen der natürlichen Evolution und wendet diese auf das Problem der Laufplanung an.
-\end{itemize}
+\subsection{Random Sampling}
 
-Die genannten Algorithmen vergleicht Herms nun unter Berücksichtigung der folgenden Kriterien:
-\begin{itemize}
-  \item Parallelisierbarkeit
-  \item Speicherbedarf
-  \item Anytime-Fähigkeit
-  \item Allgemeine Anwendbarkeit
-\end{itemize}
-
-\begin{table}[!t]
-  \caption{Bewertung des Random Samplings}
-  \label{Kap3:BewertungRandomSampling}
-  \renewcommand{\arraystretch}{1.2}
-  \centering
-  \sffamily
-  \begin{footnotesize}
-    \begin{tabularx}{0.9\textwidth}{l X}
-      \toprule
-      \textbf{Kriterium} & \textbf{Erfüllung}\\
-      \midrule
-      \emph{Parallelisierbarkeit} & Lösungen können ohne großen Aufwand unabhängig voneinander generiert werden. Am Ende müssen diese nur noch synchronisiert werden, so dass die Lösung mit der besten Bewertung übernommen wird.\\
-      \addlinespace
-      \emph{Speicherbedarf} & Der Algorithmus benötigt kaum Speicher, da immer nur eine Lösung generiert wird und diese die vorherige beste Lösung überschreibt.\\
-      \addlinespace
-      \emph{Anytime} & Das Kriterium ist erfüllt, sobald eine Lösung generiert ist. Allerdings kann es passieren, dass in einer bestimmten Zeit noch keine gute Lösung vorhanden ist.\\
-      \addlinespace
-      \emph{Anwendbarkeit} & Der Algorithmus lässt sich auf jedes Problem der Laufplanung anwenden. Die Qualität hängt allerdings vom Anteil guter Lösungen, die im Lösungsraum vorhanden sind. Außerdem spielt die konkrete Implementierung des Algorithmus eine große Rolle. Insgesamt gilt, dass je länger der Algorithmus läuft, desto besser sind potentiell die Lösungen.\\
-      \bottomrule
-    \end{tabularx}
-  \end{footnotesize}
-  \rmfamily
-\end{table}
-
-Dabei stellt sich heraus, dass nur die Algorithmen \emph{Random Sampling}, \emph{Lokale Suche} und \emph{Simulated Annealing} alle Kriterien mindestens erfüllen. Nach der Implementierung und erster Tests stellt sich heraus, dass das Random Sampling die Kriterien am besten erfüllt, da die Lokale Suche sowie das Simulated Annealing die Lösungen zu langsam erstellen. \autoref{Kap3:BewertungRandomSampling} zeigt die weiteren Kriterien, die für die Bewertung des Algorithmus wichtig sind. Auch hier schneidet das Random Sampling positiv ab.
-
-Zusammenfassend ist nun festzuhalten, dass das Random Sampling für den Laufplaner genutzt werden soll, da es zwischen allen Algorithmen am besten abschneidet.
-
-\subsection{Erzeugen gültiger Lösungen}
-
-Der Algorithmus zur Erzeugung gültiger Lösungen für die Gesamtstrecke wurde initial von André Herms \autocite{herms2004} entwickelt. Uli Ruffler \autocite{ruffler2006} hat diesen in seiner Arbeit unter anderem dahingehend weiterentwickelt, dass dieser auf einer inkrementellen Arbeitsweise läuft. Der folgende Abschnitt geht nun auf das grundlegende Konzept der Generierung von gültigen Lösungen ein.
-
-Wichtig ist, dass alle möglichen Lösungen generiert werden können und nur Lösungen ausgeschlossen werden, die außerhalb des gültigen Bereichs der Fußwinkel und Fußgeschwindigkeiten liegen, die auf instabilem Untergrund wie einem zu starkem Gefälle liegen oder die den Roboter zum Umkippen bringen würden.
+Beim Random Sampling werden zufällige gültige Lösungen generiert. Wichtig ist, dass alle möglichen Lösungen generiert werden können und nur Lösungen ausgeschlossen werden, die außerhalb des gültigen Bereichs der Fußwinkel und Fußgeschwindigkeiten liegen, die auf instabilem Untergrund wie einem zu starkem Gefälle liegen oder die den Roboter zum Umkippen bringen würden.
 
 Das Generieren von Lösungen erfolgt nun in mehreren Schritten. Zu Beginn müssen einige Berechnungen für die Festlegung des Pfades zum Ziel ablaufen, bevor der Hauptteil des Algorithmus abläuft, welcher sich schrittweise an das Ziel nähert, bis der Abstand zum Ziel annähernd null beträgt.
 
@@ -284,37 +241,32 @@ Eine erste Methode ist es, den Weg vom Start zum Ziel auf direktem Weg zu erreic
 
 \subsubsection{Festlegung der Anzahl der Pfadsegmente}
 
-Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische Verteilung}. Diese Verteilung wird genutzt, da geringe Streckenanzahlen häufig sein sollen, da davon ausgangen wird, dass der direkte Weg der schnellste Weg ist. Höhere Streckenanzahlen sollen weniger oft auftreten. Durch die Veränderung des Parameters $p$ lassen sich die Wahrscheinlichkeiten dahingehend variieren, dass entweder höhere oder niedrigere Streckenanzahlen bevorzugt werden. Standardmäßig geht man von $p = 0.5$ aus, welches die Wahrscheinlichkeitsverteilung in \autoref{Kap3:streckenabschnittWahrscheinlichkeit} ergibt.
+Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische Verteilung}. Diese Verteilung wird genutzt, da geringe Streckenanzahlen häufig sein sollen, da davon ausgangen wird, dass der direkte Weg der schnellste Weg ist. Höhere Streckenanzahlen sollen weniger oft auftreten. Durch die Veränderung des Parameters $p$ lassen sich die Wahrscheinlichkeiten dahingehend variieren, dass entweder höhere oder niedrigere Streckenanzahlen bevorzugt werden. Standardmäßig geht man von p=\SI{0.5}{} aus, welches die Wahrscheinlichkeitsverteilung in \autoref{Kap3:streckenabschnittWahrscheinlichkeit} ergibt.
 
-\begin{table}[t!]
-  \caption{Wahrscheinlichkeit der Anzahl der Pfadsegmente}
+\begin{table}[t]
+  \caption{Wahrscheinlichkeit der Anzahl der Pfadsegmente für die geplante Strecke}
   \label{Kap3:streckenabschnittWahrscheinlichkeit}
-  \renewcommand{\arraystretch}{1.2}
   \centering
   \sffamily
   \begin{footnotesize}
-    \begin{tabularx}{0.9\textwidth}{l l}
-      \toprule
-      \textbf{Streckenabschnitt} & \textbf{Wahrscheinlichkeit}\\
-      \midrule
-      1 & 50\%\\
-      \addlinespace
-      2 & 25\%\\
-      \addlinespace
-      3 & 12,5\%\\
-      \addlinespace
-      4 & 6,25\%\\
-      \addlinespace
-      5 & 3,125\%\\
-      \bottomrule
-    \end{tabularx}
+    \begin{tabular}{l S[table-format=1.3,table-comparator=true,table-space-text-post={***}]}
+    \toprule
+    \textbf{Anzahl Streckenabschnitte} & \textbf{Wahrscheinlichkeit in \%}\\
+    \midrule
+    1 & 50,0\\
+    2 & 25,0\\
+    3 & 12,5\\
+    4 & 6,25\\
+    5 & 3,125\\
+    \bottomrule
+    \end{tabular}
   \end{footnotesize}
   \rmfamily
 \end{table}
 
 \subsubsection{Festlegung der Wegpunkte}
 
-Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Wegpunkte auf dem Pfad zufällig generiert werden. Für jeden Pfadpunkt $P$ wird einzeln eine Lösung generiert. Zunächst wird der Mittelpunkt $m(x, y)$ sowie die Länge $l$ zwischen Start und Ende berechnet. Auf den Mittelpunkt wird nun ein zufälliger Vektor $r(x, y)$ addiert, dessen generierter Wert vom negativen bis zum positiven Betrag der Länge $l$ reicht. \autoref{RandomSamplingWegpunkteP1} und \autoref{RandomSamplingWegpunkteP2} zeigen mögliche Ergebnisse für drei Pfadsegmente $P_1$, $P_2$ und $P_3$ für den Startpunkt $S(0,0)$ und dem Zielpunkt $Z(10,0)$. Der letzte Pfadpunkt $P_3$ entspricht immer genau der Zielposition, damit der Roboter dieses Ziel in jedem Fall erreicht. \autoref{Kap3:RSWegpunkte} zeigt die generierten Punkte und damit den Pfad des Roboters grafisch dargestellt.
+Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Wegpunkte auf dem Pfad zufällig generiert werden. Für jeden Pfadpunkt $P$ wird einzeln eine Lösung generiert. Zunächst wird der Mittelpunkt $m(x, y)$ sowie die Länge $l$ zwischen Start und Ende berechnet. Auf den Mittelpunkt wird nun ein zufälliger Vektor $r(x, y)$ addiert, dessen generierter Wert vom negativen bis zum positiven Betrag der Länge $l$ reicht. \autoref{RandomSamplingWegpunkteP1} und \ref{RandomSamplingWegpunkteP2} zeigen mögliche Ergebnisse für drei Pfadsegmente $P_1$, $P_2$ und $P_3$ für den Startpunkt $S(0,0)$ und dem Zielpunkt $Z(10,0)$. Der letzte Pfadpunkt $P_3$ entspricht immer genau der Zielposition, damit der Roboter dieses Ziel in jedem Fall erreicht. \autoref{Kap3:RSWegpunkte} zeigt die generierten Punkte und damit den Pfad des Roboters grafisch dargestellt.
 
 \begin{equation}
   P_1=\left(\begin{array}{c} x_m + x_r \\ y_m + y_r \end{array}\right)=\left(\begin{array}{c} 5 - 2.31 \\ 0 - 4.1 \end{array}\right)=\left(\begin{array}{c} 3.31 \\ -4.1 \end{array}\right) \qquad
@@ -326,7 +278,7 @@ Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Weg
 \label{RandomSamplingWegpunkteP2}
 \end{equation}
 
-\begin{figure}[t!]
+\begin{figure}[b!]
   \centering
   \includegraphics[width=1\textwidth]{kapitel3/rswegpunkte}
   \caption{Zufällig generierte Wegpunkte}
@@ -335,7 +287,7 @@ Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Weg
 
 Mit dieser Berechnung sind nun für den Mittelpunkt des Körpers des Laufroboters ausschließlich Bewegungen auf diesem Pfad möglich. Bewusst wird hier noch nicht mit der z-Koordinate gearbeitet, da diese je nach Fußstellung und Terrain variiert.
 
-\subsection{Schrittweise Näherung an das Ziel}
+\subsubsection{Schrittweise Näherung an das Ziel}
 
 Die schrittweise Näherung an das Ziel erfolgt solange, bis der Abstand zum Ziel minimal ist. Ein exakter Vergleich mit dem Abstand null ist nicht effektiv, da der Roboter sonst fortwährend versuchen würde auf seine Zielposition zu gelangen, aber ununterbrochen minimale Abweichungen zum Ziel hätte, was den Prozess erneut anstoßen würde. Der Ablauf, um die Füße anzuheben oder abzusetzen sowie den Körper zu bewegen, läuft folgendermaßen ab:
 \begin{enumerate}
@@ -343,19 +295,17 @@ Die schrittweise Näherung an das Ziel erfolgt solange, bis der Abstand zum Ziel
   \item Auswahl der nächsten Fuß-Konfiguration
 \end{enumerate}
 
-Neben den zwei Schritten nennt André Herms \autocite{herms2004} noch zwei weitere Schritt zur Berechnung der Mittelpunktpositionen und der Festlegung der Dauer der Bewegungen. Dieser werden erst nach der schrittweisen Näherung an das Ziel durchgeführt.
-
-\subsubsection{Berechnung des zulässigen Bereichs}
+\paragraph{Berechnung des zulässigen Bereichs}
 
 Der zulässige Bereich des Mittelpunkts ist auf Grund von zwei Kriterien eingeschränkt. Zum einen durch die maximalen Reichweite der Fußpunkte vom Mittelpunkt aus. Zum anderen dadurch, dass der minimale \emph{Stability Margin} nicht unterschritten werden darf. Der Stability Margin ist der kleinste Abstand zum Mittelpunkt der konvexen Hülle der Fußpunkte vom Mittelpunkt aus. Dieser ist ein Maß dafür, wie stabil der Roboter steht. Ist der Stability Margin kleiner als null, so ist der Mittelpunkt außerhalb der konvexen Hülle, was ein Kippen des Roboters verursacht. Je größer der Stability Margin, desto stabiler steht der Roboter.
 
 Der zulässige Bereich kann nur an zwei Punkten verlassen werden. Damit wird ein Start- und ein Endpunkt der aktuellen Fußstellung gebildet. Diese sind analytisch schwer zu berechnen. Daher muss mit einem numerischen Verfahren, der \emph{binären Suche}, mit einem inneren zulässigen Punkt und einem äußerem unzulässigen Punkt der Schnittpunkt mit dem zulässigen Bereich gesucht werden. Dazu genügt eine Funktion welche angibt, ob der Mittelpunkt zulässig oder unzulässig ist.
 
-\subsubsection{Auswahl der nächsten Fuß-Konfiguration}
+\paragraph{Auswahl der nächsten Fuß-Konfiguration}
 
 Der Mittelpunkt des Roboterkörpers kann sich in diesem aktuellen Zustand nur noch vom zuletzt berechneten Start- und Endpunkt des zulässigen Bereichs bewegen. Dies geschieht durch das Verschieben der Körpermitte. Dazu müssen die Füße gehoben und umgesetzt werden. Auch hier müssen die zu Beginn genannten Kriterien beachtet werden. Diese sind unter anderem, dass sich mindestens drei Füße auf dem Boden befinden und dass mindestens ein Fuß auf jeder Seite den Körper stützt, damit der Stability Margin positiv ist. Mit diesen Regeln lassen sich 40 mögliche Fußkonfigurationen, auch Stützzustände genannt, darstellen, welche in \autoref{validconf} abgebildet sind.
 
-\begin{table}[b!]
+\begin{figure}[t!]
 \setlength{\unitlength}{.9cm}
 \begin{picture}(1.5,3.5)
 \put(0.25,0.25){\dashbox{0.05}(1,2){} }
@@ -828,38 +778,63 @@ Der Mittelpunkt des Roboterkörpers kann sich in diesem aktuellen Zustand nur no
 \put(0.75,2.5){\makebox(0,0)[b]{40}}
 \end{picture}
 \caption{\label{validconf}40 zulässige Stützzustände \autocite{herms2004}}
-\end{table}
+\end{figure}
 
-Mit jedem Übergang eines Stützzustands in einen anderen Stützzustands wird exakt ein Fuß entweder angehoben oder abgesetzt. Es können auch mehrere Füße gleichzeitig angehoben oder abgesetzt werden, indem in dem aktuellen Übergang eine Zeitdauer von $t=0s$ angenommen wird. Damit wird der nächste Stützzustand mit dem aktuellen Stützzustand ausgeführt. \autoref{trans_support} gibt alle möglichen Stützzustände an.
+Mit jedem Übergang eines Stützzustands in einen anderen Stützzustands wird exakt ein Fuß entweder angehoben oder abgesetzt. Es können auch mehrere Füße gleichzeitig angehoben oder abgesetzt werden, indem in dem aktuellen Übergang eine Zeitdauer von \SI{0}{s} angenommen wird. Damit wird der nächste Stützzustand mit dem aktuellen Stützzustand ausgeführt. \autoref{trans_support} gibt alle möglichen Stützzustände an.
 
-\begin{table}[b!]
-\begin{tabular}{|c|l|c|c|l|} 
-\cline{1-2}\cline{4-5}
-\emph{Stützzustand} & \emph{mögliche Nachfolger} & &\emph{Stützzustand} & \emph{mögliche Nachfolger} \\
-\cline{1-2}\cline{4-5}
-1 & 28 20 26  & & 21&9 14 5 38 34 \\
-2 & 19 27 26  & & 22&12 16 6 39 35 \\
-3 & 25 19 28  & & 23&7 13 11 36 38 \\
-4 & 25 27 20  & & 24&8 15 10 37 39 \\
-5 & 30 21 26  & & 25&8 7 3 4 37 36 \\
-6 & 22 29 26  & & 26&2 1 6 5 35 34 \\
-7 & 25 32 23  & & 27&4 10 9 2 37 34 \\
-8 & 25 24 31  & & 28&3 12 11 1 36 35 \\
-9 & 32 27 21  & & 29&10 17 14 6 39 34 \\
-10 & 24 27 29  & & 30&18 11 16 5 38 35 \\
-11 & 23 28 30  & & 31&8 13 12 17 36 39 \\
-12 & 31 28 22  & & 32&7 15 18 9 37 38 \\
-13 & 31 23 33  & & 33&15 13 16 14 39 38 \\
-14 & 33 29 21  & & 34&27 20 29 21 26 40 \\
-15 & 24 32 33  & & 35&19 28 22 30 26 40 \\
-16 & 33 22 30  & & 36&25 31 23 28 20 40 \\
-17 & 31 20 29  & & 37&25 24 32 19 27 40 \\
-18 & 32 19 30  & & 38&32 23 33 30 21 40 \\
-19 & 3 18 2 37 35  & & 39&24 31 33 22 29 40 \\
-20 & 4 17 1 36 34  & & 40&37 36 39 38 35 34 \\
-\cline{1-2}\cline{4-5}
-\end{tabular}
-\caption{\label{trans_support} Transitionstabelle der Stützzustände \autocite{herms2004}}
+\begin{table}[t!]
+  \caption{\label{trans_support} Transitionstabelle der Stützzustände \autocite{herms2004}}
+  \centering
+  \sffamily
+  \begin{footnotesize}
+    \begin{tabular}{l l}
+    \toprule
+    \textbf{Stützzustand} & \textbf{mögliche Nachfolger}\\
+    \midrule
+    1 & 28 20 26\\
+    2 & 19 27 26\\
+    3 & 25 19 28\\
+    4 & 25 27 20\\
+    5 & 30 21 26\\
+    6 & 22 29 26\\
+    7 & 25 32 23\\
+    8 & 25 24 31\\
+    9 & 32 27 21\\
+    10 & 24 27 29\\
+    11 & 23 28 30\\
+    12 & 31 28 22\\
+    13 & 31 23 33\\
+    14 & 33 29 21\\
+    15 & 24 32 33\\
+    16 & 33 22 30\\
+    17 & 31 20 29\\
+    18 & 32 19 30\\
+    19 & 3 18 2 37 35\\
+    20 & 4 17 1 36 34\\
+    21&9 14 5 38 34 \\
+    22&12 16 6 39 35 \\
+    23&7 13 11 36 38 \\
+    24&8 15 10 37 39 \\
+    25&8 7 3 4 37 36 \\
+    26&2 1 6 5 35 34 \\
+    27&4 10 9 2 37 34 \\
+    28&3 12 11 1 36 35 \\  
+    29&10 17 14 6 39 34 \\
+    30&18 11 16 5 38 35 \\
+    31&8 13 12 17 36 39 \\ 
+    32&7 15 18 9 37 38 \\
+    33&15 13 16 14 39 38 \\
+    34&27 20 29 21 26 40 \\
+    35&19 28 22 30 26 40 \\  
+    36&25 31 23 28 20 40 \\
+    37&25 24 32 19 27 40 \\
+    38&32 23 33 30 21 40 \\
+    39&24 31 33 22 29 40 \\
+    40&37 36 39 38 35 34 \\
+    \bottomrule
+    \end{tabular}
+  \end{footnotesize}
+  \rmfamily
 \end{table}
 
 Von dem aktuellen Stützzustand wird per Zufall bestimmt, wie der Nachfolgezustand sein soll. Dazu werden alle möglichen nächsten Zustände bewertet. Wird ein Fuß angehoben und verletzt dabei die Stabilitätskriterien, wird dieser Übergang verworfen. Aus den verbleibenden zulässigen Übergängen wird nun zufällig ein Übergang ausgewählt.
@@ -885,7 +860,7 @@ Da nun jeder Übergang, eingeschlossen der Fußposition, der Fußkonfiguration u
 
 Zum Abschluss wird noch die Zeit zwischen den einzelnen Übergängen benötigt. Die minimal mögliche Zeit hängt davon ab, wie lange der Mittelpunkt zur neuen Position benötigt und wie lange ein Fuß zum Absetzen benötigt. Um beide Kriterien einzuhalten ist das Maximum beider Werte die Zeit zwischen dem Übergang.
 
-\subsection{Bewertung gültiger Lösungen}
+\subsubsection{Bewertung gültiger Lösungen}
 
 Da das Random Sampling nach jedem Durchlauf nur die beste Lösung übernimmt, benötigt der Algorithmus Kriterien für die Bewertung. André Herms erstellt daraus eine Bewertungsfunktion, welche für jede Lösung ausgeführt werden kann. Dabei nutzt er die folgenden Bewertungskriterien:
 \begin{itemize}
@@ -905,21 +880,19 @@ Dieses Kapitel stellt die benötigten Frameworks für diese Arbeit dar. Das ist 
 
 Für diese Arbeit ist der Aufbau und die Funktionsweise von \ac{ROS} von großer Bedeutung, da der Laufplaner auf diese Plattform migriert werden soll. Diese Themen werden in zahlreicher Literatur behandelt. \autocite{rosAnOpenSourceRobotOperatingSystem} \autocite{learningROSForRoboticsProgramming} \autocite{gentleIntroductionToROS}
 
-Das \ac{ROS} ist ein Meta-Betriebssystem, welches primär auf der Linux Distribution Ubuntu und Debian verfügbar sind. Ebenfalls läuft \ac{ROS} auch unter Windows Services für Linux. Es existieren auch experimentelle Versionen wie beispielsweise für Mac OS X. Ein ROS-Release ist immer an eine \ac{LTS}-Version von Ubuntu  geknüpft. Das \ac{ROS} besteht aus vielen wichtigen und nützlichen Komponenten. Diese werden nun Schritt für Schritt erklärt.
+Das \ac{ROS} ist ein Meta-Betriebssystem, welches primär auf der Linux Distribution Ubuntu und Debian verfügbar ist. Ebenfalls läuft \ac{ROS} auch unter Windows Services für Linux. Es existieren auch experimentelle Versionen wie beispielsweise für Mac OS X. Das \ac{ROS} besteht aus vielen wichtigen und nützlichen Komponenten. Diese werden nun Schritt für Schritt erklärt.
 
-\subsubsection{Packages, Nodes und Stacks}
+\subsubsection{Packages und Nodes}
 
-Sogenannte Packages bilden die Grundlage einer jeden \ac{ROS}-Entwicklung. In einem Paket werden alle nötigen Dateien gespeichert, die für das zu lösende Problem benötigt werden. Dies sind neben einem Manifest (package.xml), verschiedene Nodes, welche für die Berechnungen zuständig sind, Definitionen für Nachrichten und Services, damit die Nodes untereinander kommunizieren können sowie benötigte CMake-Konfigurationen, damit das Projekt erfolgreich kompiliert werden kann. Nodes können in C++ oder Python programmiert werden. Theoretisch sinda auch andere Sprachen denkbar, allerdings haben sich bisher nur diese beiden Varianten bewährt.
-
-Eine Stufe über den Packages besteht die Möglichkeit der Organisation zusammengehöriger Packages in Stacks. Dies hat vor allem Vorteile hinsichtlich der Wiederverwendbarkeit und Erweiterbarkeit von Software. Möchte der Entwickler beispielsweise die Funktionalität einer Verbindung zu einem Bluetooth-Controller getrennt vom Ausführen der dazugehörigen Bewegung trennen, ist dies sinnvoll. Dann ließe sich ein weiteres Package für einen anderen Controller entwickeln, ohne die bestehenden Packages zu beeinflussen.
+Sogenannte Packages bilden die Grundlage einer jeden \ac{ROS}-Entwicklung. In einem Paket werden alle nötigen Dateien gespeichert, die für das zu lösende Problem benötigt werden. Dies sind neben einem Manifest (package.xml), verschiedene Nodes, welche für die Berechnungen zuständig sind, Definitionen für Nachrichten und Services, damit die Nodes untereinander kommunizieren können sowie benötigte CMake-Konfigurationen, damit das Projekt erfolgreich kompiliert werden kann. Nodes können in C++ oder Python programmiert werden. Theoretisch sind auch andere Sprachen denkbar, allerdings haben sich bisher nur diese beiden Varianten bewährt.
 
 \subsubsection{Kommunikation zwischen Nodes}
 
 Die Kommunikation zwischen Nodes kann über Topics oder Services erfolgen.
 
-Topics folgen dem Publisher-Subscriber Prinzip. Das bedeutet, dass eine Node Nachrichten veröffentlicht, während eine andere diesen Nachrichtenkanal verfolgt. Es können auch mehrere diesen Nachrichtenkanal verfolgen. Das Nachrichtenformat ist das msg-Format. Solche Formate werden nach Konvention im msg-Ordner abgespeichert.
+Topics folgen dem Publisher-Subscriber-Prinzip. Das bedeutet, dass ein Node Nachrichten veröffentlicht, während ein anderer diesen Nachrichtenkanal verfolgt. Es können auch mehrere diesen Nachrichtenkanal verfolgen. Das Nachrichtenformat ist das msg-Format. Solche Formate werden nach Konvention im msg-Ordner abgespeichert.
 
-Services folgen dem Client-Server-Prinzip. Hierbei handelt es sich um eine einmalige Abfrage einer Node. Der Client fragt eine Berechnung einmalig beim Server an.  Das Nachrichtenformat ist das srv-Format. Auch diese werden nach Konvention im msg-Ordner gespeichert.
+Services folgen dem Client-Server-Prinzip. Hierbei handelt es sich um eine einmalige Abfrage einer Node. Der Client fragt eine Berechnung einmalig beim Server an. Das Nachrichtenformat ist das srv-Format. Auch diese werden nach Konvention im msg-Ordner gespeichert.
     
 Jede Nachricht beinhaltet einen sogenannten Header, der aus einer Identifikationsnummer, einem Zeitstempel sowie einer Frame-ID besteht.
 
@@ -1000,4 +973,4 @@ Die Gazebo-Welt ist eine Sammlung aus verschiedenen Komponenten:
 
 Aktuell müssen Modelle per Hand erstellt werden. Dies erfolgt in der Regel über das sdf-Format. Kommt \ac{ROS} zum Einsatz, kann mittels der Node urdf\_spawner auch das urdf-Format verwendet werden.}
   
-Abschließend ist noch wichtig, dass Gazebo durch Plugins erweiterbar ist und eine umfangreiche Schnittstelle bietet, die in einer \ac{ROS}-Node mit C++ oder Python aufgerufen werden kann. Des Weiteren lässt Gazebo auch ein Rendering der Simulation auf einem Remote-Server zu, so dass verteilte Anwendungen möglich werden. Dies ist in vielen Fällen aufgrund begrenzter Rechenleistung von Vorteil. 
+Abschließend ist noch wichtig, dass Gazebo durch Plugins erweiterbar ist und eine umfangreiche Schnittstelle bietet, die in einem \ac{ROS}-Node mit C++ oder Python aufgerufen werden kann. Des Weiteren lässt Gazebo auch ein Rendering der Simulation auf einem Remote-Server zu, so dass verteilte Anwendungen möglich werden. Dies ist in vielen Fällen aufgrund begrenzter Rechenleistung von Vorteil. 

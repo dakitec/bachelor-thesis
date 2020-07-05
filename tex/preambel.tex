@@ -245,7 +245,17 @@
     stringstyle=\color{red} % string color
 }
 
-\usepackage{siunitx}
+\usepackage[
+       detect-all,
+      	locale=DE,
+      	decimalsymbol=comma,
+      	binary-units=true,
+      	range-phrase={\,\dots\,},
+      %	output-decimal-marker={,},
+      %	loctolang={DE:ngerman,UK:english}
+]{siunitx}
+
+
 \sisetup{per-mode=reciprocal}
 
 \usepackage{stix}

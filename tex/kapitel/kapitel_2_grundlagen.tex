@@ -9,7 +9,7 @@ Dieser Abschnitt stellt die für diese Arbeit relevanten Laufroboter vor. Dies i
 
 \subsection{Lauron}
 
-Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Zunächst war es das Ziel Laufmuster durch neuronale Netze zu entwickeln und zu testen. Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische MCA-Architektur \autocite{scholl2001modular} ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der indischen Stabheuschrecke eingegangen. Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Die neuste Version des Laufroboters ist der \emph{Lauron V}.
+Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Zunächst war es das Ziel Laufmuster durch neuronale Netze zu entwickeln und zu testen. Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische MCA-Architektur \autocite{scholl2001modular} ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der Carausius morosus (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen. \autocite{cruse1976function} Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. \autocite{ziegenmeyer2009sechsbeinige} Die neuste Version des Laufroboters ist der \emph{Lauron V}.
 
 Der Lauron basiert auf dem Vorbild der indischen Stabheuschrecke (Carausius morosus), die sehr gut erforscht ist. Dies gilt sowohl für den mechanischen Aufbau als auch für die Abläufe der Bewegungen des Roboters. Der Körper ist in drei Teile geteilt.
 \begin{itemize}
@@ -70,7 +70,18 @@ Jedes der Gelenke hat exakt einen Freiheitsgrad, sodass das gesamte Bein drei Fr
 
 Außerdem besitzt der Roboter am Kopf eine fest verbaute Kamera. Der Roboterkörper verfügt über genügend Freiraum für Batterien im mittleren Gehäuse. Im hinteren Gehäuse ist der Steuerrechner sowie die restliche Elektronik platziert.
 
-Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+) mit 512 MB Arbeitsspeicher und einem \SI{700}{MHz} ARM 11 Prozessor. Der Raspberry Pi bietet vielfältige Anschlussmöglichkeiten: Wireless Local Area Network (WLAN), vier Universal Serial Bus (USB)-Anschlüsse, einen Ethernet-Anschluss sowie einen High Definition Multimedia Interface (HDMI)-Anschluss. Über letzteren erfolgt die Visualisierung mittels eines externen Bildschirms. Es besteht die Möglichkeit, das Gamepad F710 von Logitech per WLAN anzuschließen. Theoretisch sind auch andere Gamepads möglich, sofern diese im Quellcode konfiguriert wurden. \autocite{askerow2014}
+Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+) mit 512 MB Arbeitsspeicher und einem \SI{700}{MHz} ARM 11 Prozessor. Der Raspberry Pi bietet vielfältige Anschlussmöglichkeiten:
+\begin{itemize}
+\item Wireless Local Area Network (WLAN)
+\item 4 Universal Serial Bus (USB)-Anschlüsse
+\item 1 Ethernet-Anschluss
+\item 1 High Definition Multimedia Interface (HDMI)-Anschluss, über den die Visualisierung mittels eines externen Bildschirms stattfindet
+\item Camera Serial Interface (CSI)-Schnittstelle für die Kamera
+\item Low Voltage Differential Signaling (LVDS)-Anschluss für die Ansteuerung von LCD-Displays
+\item GPIO (General Purpose Input Output)-Anschlüsse
+\end{itemize}
+
+Es besteht die Möglichkeit, das Gamepad F710 von Logitech per WLAN anzuschließen. Theoretisch sind auch andere Gamepads möglich, sofern diese im Quellcode konfiguriert wurden. \autocite{askerow2014}
 
 \section{Kinematik}
 
@@ -166,7 +177,7 @@ Als nächstes ersetzt man die Transformationen und Rotationen in \autoref{dk2} d
 
 Da dies nur die Transformation zwischen einem und dem vorherigen Gelenk berechnet, muss nun die gesamte kinematische Kette in \autoref{dk4} hergestellt werden. Dies erfolgt durch die Multiplikation aller Einzeltransformationen.
 \begin{equation}
-  _{m}^{0}T = ^{0}_{1}T^{1}_{2}T...^{m-1}_{m}T
+  ^{0}_{m}T =\: ^{0}_{1}T \cdot \: ^{1}_{2}T \cdot \: ... ^{m-1}_{m}T
 \label{dk4}
 \end{equation}
 
@@ -219,15 +230,25 @@ Durch weitere Umstellung der Funktion ergibt sich eine Gleichung für die linear
 
 Im Gegensatz zur analytischen Methode liefert die numerische Lösung immer nur einen Wert. Ein weiteres Problem der numerischen Lösung sind Singularitäten, welche auftreten können, wenn die Jacobi-Matrix an Rang verliert und somit singulär wird. Die Folge ist, dass die Matrix nicht mehr invertierbar ist und damit keine Lösung mehr berechnet werden kann. 
 
+TODO: Formeln für analytische inverse Kinematik einbauen
+
 \section{Laufplanung}
 
-Nun werden die Grundlagen für die Laufplanung dargestellt dazu werden verschiedene reguläre und freie Laufmuster dargestellt.
+Nun werden die Grundlagen für die Laufplanung dargestellt. Dazu werden verschiedene reguläre und freie Laufmuster dargestellt.
 
-\subsection{Wave Gait}
+\subsection{Reguläre Laufmuster}
 
-\subsection{Ripple Gait}
+\subsubsection{Wave Gait}
 
-\subsection{Tripod Gait}
+TODO
+
+\subsubsection{Ripple Gait}
+
+TODO
+
+\subsubsection{Tripod Gait}
+
+TODO
 
 \subsection{Random Sampling}
 
@@ -946,7 +967,7 @@ Die Entwicklung des Frameworks Gazebo von Dr. Andrew Howard und seinem Studenten
 
 \begin{figure}[b!]
   \centering
-  \includegraphics[height=8cm]{kapitel2/gazebo}
+  \includegraphics[height=10cm]{kapitel2/gazebo}
   \caption{Architektur des Gazebo-Frameworks \autocite{Koenig-2004-394}}
   \label{Kap2:gazeboarchitektur}
 \end{figure}

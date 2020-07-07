@@ -148,11 +148,20 @@
     not type=url and not type=misc
 }
 
+\printbibliography[filter=literatur,title={Literatur}]
+\end{flushleft}
+\endgroup
+
+% Literaturverzeichnis erzeugen
+\begingroup
+\cleardoublepage
+\begin{flushleft}
+\let\clearpage\relax % Fix für leere Seiten (issue #25)
+
 \defbibfilter{web}{%
     type=url or type=misc
 }
 
-\printbibliography[filter=literatur,title={Literatur}]
 \printbibliography[filter=web,title={Web-Dokumente}]
 \end{flushleft}
 \endgroup

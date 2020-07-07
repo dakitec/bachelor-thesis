@@ -9,7 +9,7 @@ Dieser Abschnitt stellt die für diese Arbeit relevanten Laufroboter vor. Dies i
 
 \subsection{Lauron}
 
-Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Zunächst war es das Ziel Laufmuster durch neuronale Netze zu entwickeln und zu testen. Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische MCA-Architektur \autocite{scholl2001modular} ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der Carausius morosus (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen. \autocite{cruse1976function} Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. \autocite{ziegenmeyer2009sechsbeinige} Die neuste Version des Laufroboters ist der \emph{Lauron V}.
+Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Dabei wurden Teile des Roboters mit traditionellen Techniken, andere Teile wie die Steuerung der Gelenke, die Navigation oder die Interpretation von Sensorinformation mit neuronalen Netzwerken entwickelt. \autocite{berns1994adaptive} Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische MCA-Architektur \autocite{scholl2001modular} ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der Carausius morosus (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen. \autocite{cruse1976function} Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. \autocite{ziegenmeyer2009sechsbeinige} Die neuste Version des Laufroboters ist der \emph{Lauron V}.
 
 Der Lauron basiert auf dem Vorbild der indischen Stabheuschrecke (Carausius morosus), die sehr gut erforscht ist. Dies gilt sowohl für den mechanischen Aufbau als auch für die Abläufe der Bewegungen des Roboters. Der Körper ist in drei Teile geteilt.
 \begin{itemize}
@@ -234,33 +234,56 @@ TODO: Formeln für analytische inverse Kinematik einbauen
 
 \section{Laufplanung}
 
-Nun werden die Grundlagen für die Laufplanung dargestellt. Dazu werden verschiedene reguläre und freie Laufmuster dargestellt.
+Nun werden die Grundlagen für die Laufplanung dargestellt. Dazu werden verschiedene reguläre Laufmuster und das freie Laufmuster Random Sampling dargestellt. Die regulären Laufmuster wurden in zahlreicher Literatur bei vielen Insekten beobachtet und auf das Thema Robotik übertragen. \autocite{ferrell1995comparison} \autocite{wilson1966insect} In der Robotik eignen sich diese, um auf ebenem Grund voranzuschreiten. Allerdings gibt es auch Untergründe, die stark uneben sind oder unüberwindbare Hindernisse aufweisen. Dann können freie Laufmuster wie Random Sampling zum Einsatz kommen.
 
 \subsection{Reguläre Laufmuster}
 
-\subsubsection{Wave Gait}
+Bei den regulären Laufmustern unterscheidet man zwischen drei häufig bei Insekten beobachteten Laufmustern, die aber alle der Gruppe \emph{wave gait} angehören:
+\begin{itemize}
+\item slow wave gait
+\item ripple gait
+\item tripod gait
+\end{itemize}
 
-TODO
+Zunächst einmal müssen zwei Begriffe definiert werden, welche für die Betrachtung der Laufmuster wichtig sind. Diese entsprechen den beiden Phasen, welche die freien Laufmuster benötigen, um nach vorne zu laufen.
+\begin{itemize}
+\item \emph{power stroke}: In dieser Phase steht das Bein auf dem Boden und unterstützt die Körpermitte, sich nach vorne zu bewegen. Damit die Körpermitte sich nach vorne bewegen kann, wird das Bein in die entgegengesetzte Richtung gezogen, während es auf dem Boden bleibt.
+\item \emph{return stroke}: Das Bein wird angehoben und nach vorne auf die nächste Position für die Ausführung der \emph{power stroke} gesetzt.
+\end{itemize}
 
-\subsubsection{Ripple Gait}
+\begin{figure}[b!]
+  \centering
+  \includegraphics[height=8cm]{kapitel2/freie-gangarten}
+  \caption{Reguläre Laufmuster von Insekten \autocite{ferrell1995comparison} \autocite{wilson1966insect}}
+  \label{Kap2:laufmuster}
+\end{figure}
 
-TODO
+\autoref{Kap2:laufmuster} zeigt nun für die drei Laufmuster zeitlich dargestellt, wann die \emph{power stroke} und wann die \emph{return stroke} ausgeführt wird.
 
-\subsubsection{Tripod Gait}
+Beim \emph{slow wave gait} befindet sich immer ein Bein in der \emph{return stroke}, während alle anderen sich in der \emph{power stroke} befinden und den Roboterkörper stützen und nach vorne bewegen. Auch die Reihenfolge spielt eine Rolle. Zuerst werden alle Beine einer Seite umgesetzt, dann erst alle der anderen Seite.
 
-TODO
+Beim \emph{ripple gait} werden um eine drittel Phase verschoben die Beine nacheinander umgesetzt. Daraus ergibt sich eine schnellere Bewegung als beim \emph{slow wave gait}. Auch hier spielt die Reihenfolge eine Rolle. Es wird immer abwechselnd ein Bein von links und dann ein Bein von rechts umgesetzt, während die anderen Beine in der \emph{power stroke} den Roboterkörper stützen und nach vorne bewegen.
 
-\subsection{Random Sampling}
+Beim \emph{tripod gait} sind gleichzeitig drei Beine in der Phase \emph{power stroke}, während drei Beine in der Phase \emph{return stroke} sind. Bei der Auswahl müssen zwei Beine der einen Seite und ein Bein der anderen Seite ausgewählt werden, damit der Roboter nicht umfällt.
 
-Beim Random Sampling werden zufällige gültige Lösungen generiert. Wichtig ist, dass alle möglichen Lösungen generiert werden können und nur Lösungen ausgeschlossen werden, die außerhalb des gültigen Bereichs der Fußwinkel und Fußgeschwindigkeiten liegen, die auf instabilem Untergrund wie einem zu starkem Gefälle liegen oder die den Roboter zum Umkippen bringen würden.
+Da der \emph{tripod gait} die Phasen am schnellsten durchläuft, weil er immer die maximale Anzahl an möglichen Beinen gleichzeitig umsetzt oder stützen lässt, ist er in diesem Umfeld auch das schnellste der drei Laufmuster. Etwas langsamer ist der \emph{ripple gait}, während der \emph{slow wave gait} am langsamsten ist, da die Beine immer nur nacheinander umgesetzt werden.
+
+\subsection{Freie Laufmuster}
+
+Nun wird das freie Laufmuster \emph{Random Sampling} sowie einige weitere relevante Algorithmen vorgestellt. \autocite{herms2004}
+
+
+\subsubsection{Random Sampling}
+
+Beim Random Sampling werden zufällige gültige Lösungen generiert.  Wichtig ist, dass alle möglichen Lösungen generiert werden können und nur Lösungen ausgeschlossen werden, die außerhalb des gültigen Bereichs der Fußwinkel und Fußgeschwindigkeiten liegen, die auf instabilem Untergrund wie einem zu starkem Gefälle liegen oder die den Roboter zum Umkippen bringen würden.
 
 Das Generieren von Lösungen erfolgt nun in mehreren Schritten. Zu Beginn müssen einige Berechnungen für die Festlegung des Pfades zum Ziel ablaufen, bevor der Hauptteil des Algorithmus abläuft, welcher sich schrittweise an das Ziel nähert, bis der Abstand zum Ziel annähernd null beträgt.
 
-\subsubsection{Festlegung des Pfades zum Ziel}
+\paragraph{Festlegung des Pfades zum Ziel}
 
 Eine erste Methode ist es, den Weg vom Start zum Ziel auf direktem Weg zu erreichen. Da allerdings nicht immer Lösungen auf direktem Weg möglich sind, müssen auch andere Pfade generiert werden. Beispielsweise könnte ein unüberwindbarer Graben oder eine hohe Mauer dafür sorgen, dass kein direkter Weg möglich ist. In diesem Fall müsste der Laufroboter den Weg um das Hindernis planen, um eine gültige Lösung zu finden. Um nun alle Fälle abzudecken, benötigt man eine zufällige Streckenplanung. Diese erfolgt, indem zuerst die Anzahl der Pfadsegmente festgelegt wird und dann genau so viele Wegpunkte gesetzt werden.
 
-\subsubsection{Festlegung der Anzahl der Pfadsegmente}
+\paragraph{Festlegung der Anzahl der Pfadsegmente}
 
 Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische Verteilung}. Diese Verteilung wird genutzt, da geringe Streckenanzahlen häufig sein sollen, da davon ausgangen wird, dass der direkte Weg der schnellste Weg ist. Höhere Streckenanzahlen sollen weniger oft auftreten. Durch die Veränderung des Parameters $p$ lassen sich die Wahrscheinlichkeiten dahingehend variieren, dass entweder höhere oder niedrigere Streckenanzahlen bevorzugt werden. Standardmäßig geht man von p=\SI{0.5}{} aus, welches die Wahrscheinlichkeitsverteilung in \autoref{Kap3:streckenabschnittWahrscheinlichkeit} ergibt.
 
@@ -285,7 +308,7 @@ Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische
   \rmfamily
 \end{table}
 
-\subsubsection{Festlegung der Wegpunkte}
+\paragraph{Festlegung der Wegpunkte}
 
 Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Wegpunkte auf dem Pfad zufällig generiert werden. Für jeden Pfadpunkt $P$ wird einzeln eine Lösung generiert. Zunächst wird der Mittelpunkt $m(x, y)$ sowie die Länge $l$ zwischen Start und Ende berechnet. Auf den Mittelpunkt wird nun ein zufälliger Vektor $r(x, y)$ addiert, dessen generierter Wert vom negativen bis zum positiven Betrag der Länge $l$ reicht. \autoref{RandomSamplingWegpunkteP1} und \ref{RandomSamplingWegpunkteP2} zeigen mögliche Ergebnisse für drei Pfadsegmente $P_1$, $P_2$ und $P_3$ für den Startpunkt $S(0,0)$ und dem Zielpunkt $Z(10,0)$. Der letzte Pfadpunkt $P_3$ entspricht immer genau der Zielposition, damit der Roboter dieses Ziel in jedem Fall erreicht. \autoref{Kap3:RSWegpunkte} zeigt die generierten Punkte und damit den Pfad des Roboters grafisch dargestellt.
 
@@ -299,7 +322,7 @@ Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Weg
 \label{RandomSamplingWegpunkteP2}
 \end{equation}
 
-\begin{figure}[b!]
+\begin{figure}[t!]
   \centering
   \includegraphics[width=1\textwidth]{kapitel3/rswegpunkte}
   \caption{Zufällig generierte Wegpunkte}
@@ -308,7 +331,7 @@ Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Weg
 
 Mit dieser Berechnung sind nun für den Mittelpunkt des Körpers des Laufroboters ausschließlich Bewegungen auf diesem Pfad möglich. Bewusst wird hier noch nicht mit der z-Koordinate gearbeitet, da diese je nach Fußstellung und Terrain variiert.
 
-\subsubsection{Schrittweise Näherung an das Ziel}
+\paragraph{Schrittweise Näherung an das Ziel}
 
 Die schrittweise Näherung an das Ziel erfolgt solange, bis der Abstand zum Ziel minimal ist. Ein exakter Vergleich mit dem Abstand null ist nicht effektiv, da der Roboter sonst fortwährend versuchen würde auf seine Zielposition zu gelangen, aber ununterbrochen minimale Abweichungen zum Ziel hätte, was den Prozess erneut anstoßen würde. Der Ablauf, um die Füße anzuheben oder abzusetzen sowie den Körper zu bewegen, läuft folgendermaßen ab:
 \begin{enumerate}
@@ -875,13 +898,13 @@ Das Absetzen eines Fußes ist in der Regel immer möglich, da die konvexe Hülle
 
 Hat der Algorithmus nun schon die maximale Anzahl an Durchläufen erreicht, ist die Lösung ungültig. Ansonsten beginnt der Algorithmus nun wieder bei der Berechnung des zulässigen Bereichs für die neue Roboterposition, bis der Mittelpunkt des Roboters das Ziel erreicht hat.
 
-\subsubsection{Berechnungen des Mittelpunkts und der Bewegungsdauer}
+\paragraph{Berechnungen des Mittelpunkts und der Bewegungsdauer}
 
 Da nun jeder Übergang, eingeschlossen der Fußposition, der Fußkonfiguration und der zulässigen Bereich des Mittelpunkts definiert ist, können nun konkrete Werte für den zulässigen Bereich des Mittelpunkts definiert werden, damit auch Bewegungen mit konkreten Werten möglich sind. Da die zulässigen Bereiche der Übergänge sich überlappen, kann ein Mittelwert für die Bereiche des vorherigen und des nächsten Übergangs definiert werden. Dies gilt sowohl für Übergänge, bei denen ein Fuß angehoben als auch abgesetzt wird. Da eine Gleichverteilung ungünstige Ergebnisse erzielt, wird hier eine Dreiecksverteilung genutzt, die den vorherigen Mittelpunkt als Erwartungswert annimmt. Dadurch haben kürzere Bewegungen eine höhere Wahrscheinlichkeit.  
 
 Zum Abschluss wird noch die Zeit zwischen den einzelnen Übergängen benötigt. Die minimal mögliche Zeit hängt davon ab, wie lange der Mittelpunkt zur neuen Position benötigt und wie lange ein Fuß zum Absetzen benötigt. Um beide Kriterien einzuhalten ist das Maximum beider Werte die Zeit zwischen dem Übergang.
 
-\subsubsection{Bewertung gültiger Lösungen}
+\paragraph{Bewertung gültiger Lösungen}
 
 Da das Random Sampling nach jedem Durchlauf nur die beste Lösung übernimmt, benötigt der Algorithmus Kriterien für die Bewertung. André Herms erstellt daraus eine Bewertungsfunktion, welche für jede Lösung ausgeführt werden kann. Dabei nutzt er die folgenden Bewertungskriterien:
 \begin{itemize}
@@ -892,6 +915,18 @@ Da das Random Sampling nach jedem Durchlauf nur die beste Lösung übernimmt, be
 \end{itemize}
 
 Es sind noch weitere Kriterien denkbar wie der Energieverbrauch oder die Fehlertoleranz beim Ausfall eines Beins, welche allerdings nicht für die Umsetzung dieses Laufplaners eingesetzt wurden.
+
+\subsubsection{Weitere Laufmuster}
+
+Neben dem Random Sampling existieren noch weitere freie Laufmuster, welche im folgenden dargestellt werden:
+\begin{itemize}
+  \item \emph{Greedy Verfahren:} Es werden nacheinander Teillösungen durch ein lokales Kriterium generiert. Teillösungen werden nicht mehr verworfen. Daher kommt auch der Begriff "`greedy"', da der Algorithmus gierig ist und somit Lösungen nicht wieder verwirft.
+  \item \emph{Branch and Bound:} Das Verfahren liefert durch einen modifzierten Backtracking-Ansatz immer die exakte Lösung. Anders als beim Backtracking werden die Suchbäume gestutzt, so dass die Laufzeit dadurch verkürzt wird.
+  \item \emph{Lokale Suche:} Das Verfahren ist eine modifzierte Variante des Random Samplings. Neben der zufälligen Generierung von Lösungen wird auch iterativ in der Nachbarschaft nach einem besseren Punkt geschaut.
+  \item \emph{Tabu-Suche:} Das Verfahren ist eine Erweiterung der lokalen Suche. Der Nachbar muss nicht zwingend besser bewertet sein, um als Nachfolgepunkt akzeptiert zu werden. Damit bleibt der Algorithmus nicht in lokalen Maxima hängen.
+  \item \emph{Simulated Annealing:} Das Verfahren ist eine erneute Verbesserung der lokalen Suche und der Tabu-Suche, das sich hinsichtlich des Optimierungsproblems an dem physikalischen Prozess des langsamen Abkühlen fester Stoffe orientiert.
+  \item \emph{Genetische Algorithmen:} Das Verfahren nutzt die Mechanismen der natürlichen Evolution und wendet diese auf das Problem der Laufplanung an.
+\end{itemize}
 
 \section{Frameworks}
 

@@ -1,26 +1,66 @@
 \chapter{Verwandte Arbeiten}
 \label{kap3}
 
-todo beschreibung
+Dieses Kapitel stellt weitere Arbeiten da, die sich mit dem Thema der Laufplanung von sechsbeinigen Laufrobotern mittels Random Sampling auseinandergesetzt haben.
 
-TODO IHME: Dierbei sollte sinnvollerweise auch beschrieben werden, was in der Lösung eigentlich alles enthalten ist. Dabei ging es durchaus auch um Physik, es ging um Visualisierung von Sensorwerten (dazu benötigen Sie noch Informationen von mir) und letztlich auch Planung. Ich denke, dass die Visualisierungaspekte auch für die neue Lösung ein wichtiges Kriterium sind.
+Andrè Herms \autocite{herms2004} vergleicht zunächst die folgenden Algorithmen zur Laufplanung:
+\begin{itemize}
+  \item Random Sampling
+  \item Greedy Verfahren
+  \item Branch and Bound
+  \item Lokale Suche
+  \item Tabu-Suche
+  \item Simulated Annealing
+  \item Genetische Algorithmen
+\end{itemize}
 
-todo beschreibung
+Dabei nutzt Herms die folgenden Kriterien:
+\begin{itemize}
+  \item Parallelisierbarkeit
+  \item Speicherbedarf
+  \item Anytime-Fähigkeit
+  \item Allgemeine Anwendbarkeit
+\end{itemize}
 
-Dieses Kapitel geht auf die Einzelheiten und die Abläufe der Portierung des Laufplaners in das \acf{ROS} und Gazebo ein. Zunächst werden die wesentlichen Aspekte des bestehenden Laufplaners analysiert und mögliche Herausforderungen dargestellt. Dann wird ein eigenes \ac{ROS}-Paket entworfen, welches die Basis für den neuen Laufplaner darstellt. Das Kapitel stellt alle nötigen Schritte dar, um die Simulation aufzusetzen und den Laufplanungsalgorithmus zu migrieren.
+Es stellt sich heraus, dass nur die Algorithmen \emph{Random Sampling}, \emph{Lokale Suche} und \emph{Simulated Annealing} alle Kriterien mindestens erfüllen. Nach der Implementierung und erster Tests stellt sich heraus, dass das Random Sampling die Kriterien am besten erfüllt, da die Lokale Suche sowie das Simulated Annealing die Lösungen zu langsam erstellen. \autoref{Kap3:BewertungRandomSampling} bewertet das Random Sampling anhand der genannten Kriterien. Auch hier wird nochmals deutlich, dass das Random Sampling positiv abschneidet.
 
-\section{Analyse bestehender Laufplaner}
+\begin{table}[!t]
+  \caption{Bewertung des Random Samplings}
+  \label{Kap3:BewertungRandomSampling}
+  \renewcommand{\arraystretch}{1.2}
+  \centering
+  \sffamily
+  \begin{footnotesize}
+    \begin{tabularx}{0.9\textwidth}{l X}
+      \toprule
+      \textbf{Kriterium} & \textbf{Erfüllung}\\
+      \midrule
+      \emph{Parallelisierbarkeit} & Lösungen können ohne großen Aufwand unabhängig voneinander generiert werden. Am Ende müssen diese nur noch synchronisiert werden, so dass die Lösung mit der besten Bewertung übernommen wird.\\
+      \addlinespace
+      \emph{Speicherbedarf} & Der Algorithmus benötigt kaum Speicher, da immer nur eine Lösung generiert wird und diese die vorherige beste Lösung überschreibt.\\
+      \addlinespace
+      \emph{Anytime} & Das Kriterium ist erfüllt, sobald eine Lösung generiert ist. Allerdings kann es passieren, dass in einer bestimmten Zeit noch keine gute Lösung vorhanden ist.\\
+      \addlinespace
+      \emph{Anwendbarkeit} & Der Algorithmus lässt sich auf jedes Problem der Laufplanung anwenden. Die Qualität hängt allerdings vom Anteil guter Lösungen, die im Lösungsraum vorhanden sind. Außerdem spielt die konkrete Implementierung des Algorithmus eine große Rolle. Insgesamt gilt, dass je länger der Algorithmus läuft, desto besser sind potentiell die Lösungen.\\
+      \bottomrule
+    \end{tabularx}
+  \end{footnotesize}
+  \rmfamily
+\end{table}
 
-Der von André Herms \autocite{herms2004} und von Uli Ruffler \autocite{ruffler2006} weiterentwickelte Laufplaner für den \emph{Lauron} basiert auf der 3D-Bibliothek OpenInventor \autocite{inventor}. Dieses Toolkit basiert wiederum auf OpenGL und ist in C++ implementiert. Des Weiteren ist es objektorientiert und daher orientiert sich auch der Laufplaner an diesem Programmierstil. Auf Grund dieser Tatsache existieren Klassen bzw. Objekte, die nun beschrieben werden:
+Daher entscheidet die Arbeit von André Herms, dass das Random Sampling für den Laufplaner genutzt werden soll, da es zwischen allen Algorithmen am besten abschneidet.
+
+Der von André Herms daraufhin entwickelte Laufplaner für den \emph{Lauron III} basiert auf der 3D-Bibliothek OpenInventor \autocite{inventor}. Dieses Toolkit basiert wiederum auf OpenGL und ist in C++ implementiert. Des Weiteren ist es objektorientiert implementiert. Auf Grund dieser Tatsache existieren Klassen bzw. Objekte, die nun beschrieben werden:
 \begin{itemize}
   \item \emph{World}: speichert die Objekte der Sicht auf die Landschaft und den Roboter. 
   \item \emph{Terrain}: enthält die Informationen über die Höhenkarte.
   \item \emph{Eyes}: stellt die Sicht auf die Landschaft dar.
   \item \emph{Robot}: ist verantwortlich für die Robotersteuerung und definiert außerdem die inneren Objekte \emph{Head} und \emph{Leg}.
+\end{itemize}  
   
 \begin{figure}[t!]
   \centering
-  \includegraphics[height=8cm]{kapitel4/openinventor-lauron}
+  \includegraphics[height=8cm]{kapitel3/openinventor-lauron}
   \caption{Screenshot aus der OpenInventor-Umgebung}
   \label{Kap4:OpenInventorLauron}
 \end{figure}
@@ -29,6 +69,8 @@ Für jedes dieser Darstellungsobjekt in OpenInventor wird ein \emph{SoSeperator}
 
 Des Weiteren stellt das Terrain-Objekt die Höhenkarte der Landschaft in OpenInventor zur Verfügung. Dies entspricht nicht dem, was dem Roboter tatsächlich an Kartenmaterial zur Verfügung hat. Diese Tatsache erschwert die Portierung auf ein anderes System, da eine Möglichkeit geschaffen werden muss, dem Roboter beizubringen, was er sieht, um weiterhin mit Höhenangaben arbeiten zu können.
 
-Eine Konfigurationsdatei existiert bereits in dieser Umgebung, die es ermöglichen soll, auch andere Robotermodelle zu testen. Genau dieser Fall ist an dieser Stelle interessant, da die Portierung des Laufplaners auf den \amph{Akrobat} geschehen soll. Diese wird für den Laufalgorithmus allerdings nicht genutzt, da dort Roboterangaben direkt im Quelltext definiert sind.
+Eine Konfigurationsdatei existiert bereits in dieser Umgebung, die es ermöglichen soll, auch andere Robotermodelle zu testen. Diese wird für den Laufalgorithmus allerdings nicht genutzt, da dort Roboterangaben direkt im Quelltext definiert sind.
 
 Weiterhin wird die aktuelle Fußkonfiguration sowie die Fußposition getrennt voneinander gespeichert. Die Fußkonfiguration ist in einer Bitlogik gespeichert. Dies ist sehr nützlich um Speicherplatz zu sparen, macht auf der anderen Seite das Finden von Fehlern allerdings schwieriger.
+
+Uli Ruffler \autocite{ruffler2006} hat den Laufplaner auf eine inkrementelle Arbeitsweise angepasst. Des Weiteren hat er die Basis für die Stereobildverarbeitung gelegt. Der Laufplaner kann nun während des Laufens neue Lösungen generieren, allerdings werden diese Lösungen noch nicht verwendet.

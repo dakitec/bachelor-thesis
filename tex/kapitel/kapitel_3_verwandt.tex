@@ -67,7 +67,7 @@ Der von André Herms daraufhin entwickelte Laufplaner für den \emph{Lauron III}
 
 Für jedes dieser Darstellungsobjekt in OpenInventor wird ein \emph{SoSeperator} benötigt. Da der Name dieses Objekts einzigartig sein muss, sind die Objekte auch nur einmalig nutzbar. Dies erschwert die Aufgabe, später einmal mehrere Roboter gleichzeitig in der Simulation zu testen. Code-technisch sollte das dem Design-Pattern \emph{Singleton} folgen. Der Laufplaner sichert diese allerdings nicht derart ab.
 
-Des Weiteren stellt das Terrain-Objekt die Höhenkarte der Landschaft in OpenInventor zur Verfügung. Dies entspricht nicht dem, was dem Roboter tatsächlich an Kartenmaterial zur Verfügung hat. Diese Tatsache erschwert die Portierung auf ein anderes System, da eine Möglichkeit geschaffen werden muss, dem Roboter beizubringen, was er sieht, um weiterhin mit Höhenangaben arbeiten zu können.
+Des Weiteren stellt das Terrain-Objekt die Höhenkarte der Landschaft in OpenInventor zur Verfügung. Dies entspricht nicht dem, was dem Roboter tatsächlich an Kartenmaterial zur Verfügung hat.
 
 Eine Konfigurationsdatei existiert bereits in dieser Umgebung, die es ermöglichen soll, auch andere Robotermodelle zu testen. Diese wird für den Laufalgorithmus allerdings nicht genutzt, da dort Roboterangaben direkt im Quelltext definiert sind.
 

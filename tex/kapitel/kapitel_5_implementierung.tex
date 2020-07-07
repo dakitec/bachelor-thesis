@@ -1,21 +1,11 @@
-\chapter{Portierung des Laufplaners nach ROS und Gazebo}
+\chapter{Implementierung in ROS und Gazebo}
 \label{kap5}
 
-todo beschreibung
-
-TODO: IHME neues kapitel dazwischen
-In Kapitel 4 können Sie sich dann genau auf die in 3 vorgestellte Lösung beziehen und ein Konzept entwickeln. Dabei geht es zunächst um eine formale Lösung, also das Zerpflücken der bisherigen Lösung und das Entwickeln eines Konzeptes zur Integration in ROS/Gazebo. Dazu gehört zwar auch die Analyse, jedoch muss sich die Lösung auf eine formale Vorgehensweise beschränken.
+Dieses Kapitel stellt eine Implementierung für das in \autoref{kap4} dargestellte Konzept der Entwicklung einer Simulationsumgebung und der Portierung des Algorithmus Random Sampling zur Laufplanung für den Akrobat dar.
 
 \section{Vorgehensweise und Aufbau des Pakets}
 
-Der zuvor analysierte Laufplaner von André Herms muss nun in das \ac{ROS} portiert werden. Ferner muss der Algorithmus zur Laufplanung extrahiert und mit dem \ac{ROS} kompatibel gemacht werden. Dabei gibt es einige Herausforderungen, die gelöst werden müssen:
-\begin{itemize}
-  \item Code-technisch ist der Laufplaner \emph{fest verdrahtet mit dem Terrain der OpenInventor-Oberfläche}, während das neue Paket auf Gazebo laufen soll.
-  \item Der Laufplaner nutzt für geometrische Berechnungen \emph{Klassen aus der OpenInventor-Bibliothek}, während \ac{ROS} auf die Klassen des TF-Frameworks zurückzugreifen soll.
-  \item Durch \emph{unterschiedliche Robotermodelle} können Maße innerhalb des Quelltexts anders definiert sein und müssen angepasst werden.
-\end{itemize}
-
-Da eine komplette Kopie des vorherigen Projekts auf Grund verschiedener Umgebungen nicht möglich ist, ist die Vorgehensweise schrittweise wichtige Codestellen zu übertragen und zu testen. Dies hat den Vorteil, dass Funktionen unabhängig voneinander getestet werden können. Damit ergibt sich der folgende Gesamtablauf für die Portierung:
+Da eine komplette Kopie des vorherigen Algorithmus zur Laufplanung auf Grund verschiedener Umgebungen nicht möglich ist, ist die Vorgehensweise schrittweise wichtige Codestellen zu übertragen und zu testen. Dies hat den Vorteil, dass Funktionen unabhängig voneinander getestet werden können. Damit ergibt sich der folgende Gesamtablauf für die Portierung:
 \begin{enumerate}
   \item Aufsetzen des \ac{ROS}-Pakets
   \item Aufsetzen des Pakets
@@ -28,7 +18,7 @@ Da eine komplette Kopie des vorherigen Projekts auf Grund verschiedener Umgebung
   \item Portierung des Laufalgorithmus
 \end{enumerate}
 
-Während der Arbeit hat es sich als sinnvoll herausgestellt, die Portierung erst zum Schluss zu beginnen. Der Grund dafür ist, dass es damit während der Portierung möglich ist schon Artefakte in der Simulation zu testen. Damit lässt sich wesentlich besser einschätzen, ob das Übertragene auch funktioniert. Außerdem basiert der Laufplaner auf Funktionalitäten wie dem Roboter-Modell und der Definition der Gelenkmotoren. Mit dieser Vorgehensweise kann das Paket nun schrittweise implementiert werden.
+Während der Arbeit hat es sich als sinnvoll herausgestellt, die Portierung des Laufplaners erst zum Schluss zu beginnen und mit dem Aufsetzen der Simulation zu beginnen. Der Grund dafür ist, dass es damit während der Portierung möglich ist schon Artefakte in der Simulation zu testen. Damit lässt sich wesentlich besser einschätzen, ob das Übertragene auch funktioniert. Außerdem basiert der Laufplaner auf Funktionalitäten wie dem Roboter-Modell und der Definition der Gelenkmotoren. Mit dieser Vorgehensweise kann das Paket nun schrittweise implementiert werden.
 
 \autoref{Kap4:ROSPackageFolderStructure} definiert die Ordnerstruktur des \ac{ROS}-Pakets. Die Ordnerstruktur ist typisch für \ac{ROS}-Pakete und findet sich ähnlich in vielen weiteren Paketen der \ac{ROS}-Community. Der Aufbau des Pakets ist an das Akrobat-Paket \autocite{akrobat} sowie das Hopper-Paket \autocite{hopper} angelehnt. Beide Pakete nutzen wichtige Konzepte für das Robotermodelle und die Gelenksteuerung, die auch für dieses Projekt wichtig sind.
 
@@ -187,10 +177,6 @@ Da \ac{ROS}-Nodes allgemein in einer Schleife laufen, wird der folgende Ablauf k
 \end{enumerate}
 
 \section{Generieren und Einlesen von Bewegungen als xml-Datei}
-
-Da der Laufplaner und die Simulation voneinander getrennt sein sollen, damit das System flexibel für den Austausch von Komponenten bleibt, benötigt der Laufplaner ebenso wie bei André Herms \autocite{herms2004} und Uli Ruffler \autocite{ruffler2006} eine xml-Schnittstelle, welche Bewegungen repräsentiert.
-
-Die hier entwickelte Schnittstelle ist eine Abwandlung der vorherigen Schnittstellen, da diese nicht die Dauer von Bewegungen speichert, sondern lediglich für jeden Schritt die Fußpositionen relativ zur definierten Ausgangsposition.
 
 Die Generierung erfolgt durch die Iteration über die von einem Algorithmus generierten Schritte für die Fußpositionen. Statt für die Generierung eine xml-Bibliothek zu nutzen, reicht hier eine einfache Ausgabe in einer Datei mittels \emph{ofstream}.
 

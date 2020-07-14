@@ -9,23 +9,11 @@ Dieser Abschnitt stellt die für diese Arbeit relevanten Laufroboter vor. Dies i
 
 \subsection{Lauron}
 
-Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Dabei wurden Teile des Roboters mit traditionellen Techniken, andere Teile wie die Steuerung der Gelenke, die Navigation oder die Interpretation von Sensorinformation mit neuronalen Netzwerken entwickelt. \autocite{berns1994adaptive} Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische MCA-Architektur \autocite{scholl2001modular} ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der Carausius morosus (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen. \autocite{cruse1976function} Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. \autocite{ziegenmeyer2009sechsbeinige} Die neuste Version des Laufroboters ist der \emph{Lauron V}.
+Dieser Unterabschnitt stellt den Lauron vor. Dieser wurde in verschiedener Literatur schon ausführlich dargestellt, welcher für diesen Abschnitt genutzt wird. \autocite{gassmann2000, troilo2007, berns1994adaptive, scholl2001modular, ziegenmeyer2009sechsbeinige}
 
-Der Lauron basiert auf dem Vorbild der indischen Stabheuschrecke (Carausius morosus), die sehr gut erforscht ist. Dies gilt sowohl für den mechanischen Aufbau als auch für die Abläufe der Bewegungen des Roboters. Der Körper ist in drei Teile geteilt.
-\begin{itemize}
-  \item Kopf (Caput)
-  \item Brust (Thorax)
-  \item Hinterleib (Abdomen)
-\end{itemize}
+Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Dabei wurden Teile des Roboters mit traditionellen Techniken, andere Teile wie die Steuerung der Gelenke, die Navigation oder die Interpretation von Sensorinformation mit neuronalen Netzwerken entwickelt. Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische \ac{MCA}-Architektur ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der \emph{Carausius morosus} (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen. \autocite{cruse1976function} Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. Die neuste Version des Laufroboters ist der \emph{Lauron V}.
 
-Die Brust ist wiederum in weitere drei Teile für jeweils ein Beinpaar unterteilt. Damit ergeben sich sechs Beine. Ein Bein besteht aus drei Segmenten:
-\begin{itemize}
-  \item Hüfte (Coxa)
-  \item Oberschenkel (Femur)
-  \item Unterschenkel (Tibia)
-\end{itemize}
-
-\begin{figure}[b!]
+\begin{figure}[t!]
   \centering
   \begin{subfigure}[b]{.4\linewidth}
     \centering
@@ -42,13 +30,40 @@ Die Brust ist wiederum in weitere drei Teile für jeweils ein Beinpaar unterteil
   \label{kap2lauron}
 \end{figure}
 
+Der Lauron basiert auf dem Vorbild der indischen Stabheuschrecke (Carausius morosus), die sehr gut erforscht ist. Dies gilt sowohl für den mechanischen Aufbau als auch für die Abläufe der Bewegungen des Roboters. Der Körper ist in drei Teile geteilt.
+\begin{itemize}
+  \item Kopf (Caput)
+  \item Brust (Thorax)
+  \item Hinterleib (Abdomen)
+\end{itemize}
+
+Die Brust ist wiederum in weitere drei Teile für jeweils ein Beinpaar unterteilt. Damit ergeben sich sechs Beine. Ein Bein besteht aus drei Segmenten:
+\begin{itemize}
+  \item Hüfte (Coxa)
+  \item Oberschenkel (Femur)
+  \item Unterschenkel (Tibia)
+\end{itemize}
+
 Die Segmente sind durch die Gelenke Subcoxal $\alpha$, Coxa-Trochanter $\beta$ und Femur-Tibia $\gamma$ verbunden. Der Fuß jedes Beines wird Tarsus genannt. Das erste Gelenk Subcoxal besitzt zwei Freiheitsgrade, die weiteren Gelenke besitzen einen Freiheitsgrad. Damit ist für die indische Stabheuschrecke die minimale erforderliche Zahl an Freiheitsgraden erreicht, damit der Fuß beliebig im dreidimensionalen Raum gesetzt werden kann.
 
 Unter anderem ist noch wichtig, dass der Kopf der indischen Stabheuschrecke zwei lange Fühler besitzt. Diese könnten in einem Roboter beispielsweise als Laserscanner oder Kamera modelliert werden, welche sich einen Überblick über die Gegend verschaffen können.
 
-Der Körper des \emph{Lauron III} trägt die 7 Mikrocontroller (Infineon C167) und einen Hauptrechner, der auf Pentium basiert, die Akkumulatoren sowie den Kamerakopf. An beiden Seiten des Körpers sind jeweils drei Beine angebracht. Der Roboter wiegt 16 Kilogramm und hat eine maximale Zuladung von etwa 15kg. Die Maximalgeschwindigkeit beträgt \SI{0.5}{\metre\per\second}. \autocite{gassmann2000} \autocite{troilo2007}
+Der Körper des \emph{Lauron III} trägt die 7 Mikrocontroller (Infineon C167) und einen Hauptrechner, der auf Pentium basiert, die Akkumulatoren sowie den Kamerakopf. An beiden Seiten des Körpers sind jeweils drei Beine angebracht. Der Roboter wiegt 16 Kilogramm und hat eine maximale Zuladung von etwa \SI{15}{\kilo\gram}. Die Maximalgeschwindigkeit beträgt \SI{0.5}{\metre\per\second}.
 
 \subsection{Akrobat}
+
+Der folgende Unterabschnitt stellt den Laufroboter \emph{Akrobat} vor und nutzt dazu die Arbeit von Wilen Askerow. \autocite{askerow2014}
+
+Auch der \emph{Akrobat} (\autoref{Kap2:akrobat}) ist der Form einer Stabheuschrecke nachempfunden und ähnelt in vielerlei Hinsicht dem Lauron. Der Roboterkörper ist ungefähr 56 Millimeter hoch, 102 Millimeter breit und hat eine Seitenlänge von 62 Millimeter. Ebenfalls besitzt dieser sechs Beine mit je drei Segmenten. Diese haben die Längen 72 Millimeter, 97 Millimeter und 163 Millimeter, welche für kinematische Berechnungen von großer Bedeutung sind. Jedes Bein wiegt ungefähr 0,8 Kilogramm.
+
+Jedes der Gelenke hat exakt einen Freiheitsgrad, sodass das gesamte Bein drei Freiheitsgrade hat. Wie auch beim Lauron ermöglicht dies die beliebige Positionierung im dreidimensionalen Raum. Die Gelenke sind mit dem Servomotor Dynamixel RX64 ausgestattet. Außerdem hat jedes Gelenk einen definierten Arbeitsbereich, welcher nicht unter- oder überschritten werden darf.
+\begin{itemize}
+  \item $\alpha=\SIrange{-50}{50}{^\circ}$
+  \item $\beta=\SIrange{-106}{106}{^\circ}$
+  \item $\gamma=\SIrange{-135}{135}{^\circ}$
+\end{itemize}  
+
+Außerdem besitzt der Roboter am Kopf eine fest verbaute Kamera. Der Roboterkörper verfügt über genügend Freiraum für Batterien im mittleren Gehäuse. Im hinteren Gehäuse ist der Steuerrechner sowie die restliche Elektronik platziert.
 
 \begin{figure}[b!]
   \centering
@@ -57,20 +72,7 @@ Der Körper des \emph{Lauron III} trägt die 7 Mikrocontroller (Infineon C167) u
   \label{Kap2:akrobat}
 \end{figure}
 
-Auch der \emph{Akrobat} (\autoref{Kap2:akrobat}) ist der Form einer Stabheuschrecke nachempfunden und ähnelt in vielerlei Hinsicht dem Lauron.
-
-Der Roboterkörper ist ungefähr 56 Millimeter hoch, 102 Millimeter breit und hat eine Seitenlänge von 62 Millimeter. Ebenfalls besitzt dieser sechs Beine mit je drei Segmenten. Diese haben die Längen 72 Millimeter, 97 Millimeter und 163 Millimeter, welche für kinematische Berechnungen von großer Bedeutung sind. Jedes Bein wiegt ungefähr 0,8 Kilogramm.
-
-Jedes der Gelenke hat exakt einen Freiheitsgrad, sodass das gesamte Bein drei Freiheitsgrade hat. Wie auch beim Lauron ermöglicht dies die beliebige Positionierung im dreidimensionalen Raum. Die Gelenke sind mit dem Servomotor Dynamixel RX64 ausgestattet. Außerdem hat jedes Gelenk einen definierten Arbeitsbereich, welcher nicht unter- oder überschritten werden darf.
-\begin{itemize}
-  \item $\alpha$: -50$^\circ$ bis 50$^\circ$
-  \item $\beta$: -106$^\circ$ bis 106$^\circ$
-  \item $\gamma$: -135$^\circ$ bis 135$^\circ$
-\end{itemize}  
-
-Außerdem besitzt der Roboter am Kopf eine fest verbaute Kamera. Der Roboterkörper verfügt über genügend Freiraum für Batterien im mittleren Gehäuse. Im hinteren Gehäuse ist der Steuerrechner sowie die restliche Elektronik platziert.
-
-Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+) mit 512 MB Arbeitsspeicher und einem \SI{700}{MHz} ARM 11 Prozessor. Der Raspberry Pi bietet vielfältige Anschlussmöglichkeiten:
+Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+) mit \SI{512}{MB} Arbeitsspeicher und einem \SI{700}{MHz} ARM 11 Prozessor. Der Raspberry Pi bietet vielfältige Anschlussmöglichkeiten:
 \begin{itemize}
 \item Wireless Local Area Network (WLAN)
 \item 4 Universal Serial Bus (USB)-Anschlüsse
@@ -81,13 +83,13 @@ Es handelt sich beim Rechner um den Einplatinencomputer Raspberry Pi (Modell B+)
 \item GPIO (General Purpose Input Output)-Anschlüsse
 \end{itemize}
 
-Es besteht die Möglichkeit, das Gamepad F710 von Logitech per WLAN anzuschließen. Theoretisch sind auch andere Gamepads möglich, sofern diese im Quellcode konfiguriert wurden. \autocite{askerow2014}
+Es besteht die Möglichkeit, das Gamepad F710 von Logitech per WLAN anzuschließen. Theoretisch sind auch andere Gamepads möglich, sofern diese im Quellcode konfiguriert wurden.
 
 \section{Kinematik}
 
 Um dem Roboter die richtigen Befehle zu senden, müssen als nächstes die Grundlagen für die Kinematik gesetzt werden. Ein Roboterbein entspricht jeweils einer kinematischen Kette, die aus mehreren starren Körpern besteht und die über Gelenke verbunden sind. Es handelt sich sowohl beim Lauron als auch beim Akrobat um Rotationsgelenke. Dieser Abschnitt beschreibt Methoden der Kinematik.
 
-Mit Hilfe der direkten Kinematik lässt sich auf Grund der Gelenkausrichtungen berechnen, an welcher Position sich der sogenannte Endeffektor befindet. Der Endeffektor entspricht dem Fuß des Roboters. Über die inverse Kinematik kann bei einer gegebenen Fußposition berechnet werden, wie die Fußgelenke gestellt werden sollen. Die beschriebenen Methoden wurden bereits in weiterer Literatur erläutert. \autocite{den55} \autocite{wloka92} \autocite{ihme02} \autocite{fellmann2007}
+Mit Hilfe der direkten Kinematik lässt sich auf Grund der Gelenkausrichtungen berechnen, an welcher Position sich der sogenannte Endeffektor befindet. Der Endeffektor entspricht dem Fuß des Roboters. Über die inverse Kinematik kann bei einer gegebenen Fußposition berechnet werden, wie die Fußgelenke gestellt werden sollen. Die beschriebenen Methoden wurden bereits in weiterer Literatur erläutert. \autocite{den55, wloka92, ihme02, fellmann2007}
 
 \subsection{Denavit-Hartenberg-Verfahren}
 
@@ -177,7 +179,7 @@ Als nächstes ersetzt man die Transformationen und Rotationen in \autoref{dk2} d
 
 Da dies nur die Transformation zwischen einem und dem vorherigen Gelenk berechnet, muss nun die gesamte kinematische Kette in \autoref{dk4} hergestellt werden. Dies erfolgt durch die Multiplikation aller Einzeltransformationen.
 \begin{equation}
-  ^{0}_{m}T =\: ^{0}_{1}T \cdot \: ^{1}_{2}T \cdot \: ... ^{m-1}_{m}T
+  ^{0}_{m}T =\: ^{0}_{1}T \cdot \: ^{1}_{2}T \cdot \: ...\: ^{m-1}_{m}T
 \label{dk4}
 \end{equation}
 
@@ -190,7 +192,7 @@ Mit dieser Matrix kann ein Punkt im Koordinatensystem des Endeffektors in das An
 \label{dk5}
 \end{equation}
 
-Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum Endeffektor. Mit Hilfe der 3x3 Rotationsmatrix $_{m}^{0}R$, welche die Orientierung dieser Transformationen angibt, können die Winkel des Endeffektors berechnet werden. Dazu wird die Matrix noch aufgelöst. Durch das Auflösen des Gleichungssystems ergeben sich schlussendlich die folgenden Winkel in \autoref{dk6}:
+Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum Endeffektor. Mit Hilfe der 3x3 Rotationsmatrix $\,_{m}^{0}R$, welche die Orientierung dieser Transformationen angibt, können die Winkel des Endeffektors berechnet werden. Dazu wird die Matrix noch aufgelöst. Durch das Auflösen des Gleichungssystems ergeben sich schlussendlich die folgenden Winkel in \autoref{dk6}:
 
 \begin{equation}
   \begin{aligned}
@@ -220,11 +222,11 @@ Dabei ist zu beachten, dass es in den meisten Fällen für eine Eingabe mehrere 
 
 Da bereits die Funktion der direkten Kinematik eine nichtlineare Funktion ist, ist auch die inverse Funktion eine nichtlineare Funktion. Das Problem gehört damit in die Kategorie der Lösung eines nichtlinearen Gleichungssystems. Dies lässt sich über eine analytisches Verfahren oder annähernd über ein numerisches Verfahren lösen.
 
-Bei der analytischen Methode wird versucht auf Basis der geometrischen Eigenschaften eine Formel herzuleiten. Dies wird umso schwerer, je mehr Freiheitsgrade die kinematische Kette hat. Der Vorteil liegt darin, dass die analytische Lösung ersten alle möglichen Gelenkstellungen für eine Position liefert und zweitens, dass sie wesentlich performanter ist. Die Lösungen sind exakt und Singularitäten können bereits beim Aufstellen der Gleichung festgestellt werden.
+Bei der analytischen Methode wird versucht, auf Basis der geometrischen Eigenschaften eine Formel herzuleiten. Dies wird umso schwerer, je mehr Freiheitsgrade die kinematische Kette hat. Der Vorteil liegt darin, dass die analytische Lösung ersten alle möglichen Gelenkstellungen für eine Position liefert und zweitens, dass sie wesentlich performanter ist. Die Lösungen sind exakt und Singularitäten können bereits beim Aufstellen der Gleichung festgestellt werden.
 
 Die Software \emph{ikfast} \autocite{kanakia2012inverse} findet Lösungen und erstellt Gleichungen für die inverse Kinematik einer kinematischen Kette. Dabei nutzt die Software im Gegensatz zu anderer Software statt der numerischen die analytische Methode.
 
-Bei der numerischen Lösung wird mittels einer linearen Annäherung versucht die Lösung für $f^{-1}$ zu finden. Dies lässt sich mit der Jacobi-Matrix berechnen. Dazu werden Teilfunktionen für $x$, $y$, $z$, $\alpha$, $\beta$ und $\gamma$ benötigt, welche sich aus der Transformationsmatrix der direkten Kinematik ergeben. Die Teilfunktionen werden dann nach jeder Variablen partiell abgeleitet. Dies ergibt die $6\:x\:n$ Jacobi-Matrix. Sie beschreibt die Änderung der Position des Endeffektors bei Änderung der Gelenkstellungen.
+Bei der numerischen Lösung wird mittels einer linearen Annäherung versucht die Lösung für $f^{-1}$ zu finden. Dies lässt sich mit der Jacobi-Matrix berechnen. Dazu werden Teilfunktionen für $x$, $y$, $z$, $\alpha$, $\beta$ und $\gamma$ benötigt, welche sich aus der Transformationsmatrix der direkten Kinematik ergeben. Die Teilfunktionen werden dann nach jeder Variablen partiell abgeleitet. Dies ergibt die $6\,x\,n$ Jacobi-Matrix. Sie beschreibt die Änderung der Position des Endeffektors bei Änderung der Gelenkstellungen.
 
 Durch weitere Umstellung der Funktion ergibt sich eine Gleichung für die lineare Annäherung an die gewünschte Funktion. Diese Lösung wird dann mittels direkter Kinematik überprüft. Ist die Abweichung zu groß, wird die Jacobi-Matrix mit den zuvor berechneten Gelenkstellungen erneut berechnet. Dies ergibt die lineare Annäherung an die Lösung. Wichtig ist dabei, dass eine maximale Zahl an Iterationen für den Algorithmus angegeben ist, da es manchmal auch gar keine Lösung geben kann.
 
@@ -232,7 +234,9 @@ Im Gegensatz zur analytischen Methode liefert die numerische Lösung immer nur e
 
 \section{Laufplanung}
 
-Nun werden die Grundlagen für die Laufplanung dargestellt. Dazu werden verschiedene reguläre Laufmuster und das freie Laufmuster Random Sampling dargestellt. Die regulären Laufmuster wurden in zahlreicher Literatur bei vielen Insekten beobachtet und auf das Thema Robotik übertragen. \autocite{ferrell1995comparison} \autocite{wilson1966insect} In der Robotik eignen sich diese, um auf ebenem Grund voranzuschreiten. Allerdings gibt es auch Untergründe, die stark uneben sind oder unüberwindbare Hindernisse aufweisen. Dann können freie Laufmuster wie Random Sampling zum Einsatz kommen.
+Nun werden die Grundlagen für die Laufplanung dargestellt. Dazu werden verschiedene reguläre Laufmuster und das freie Laufmuster Random Sampling dargestellt. Die regulären Laufmuster wurden in zahlreicher Literatur bei vielen Insekten beobachtet und auf das Thema Robotik übertragen. \autocite{ferrell1995comparison, wilson1966insect}
+
+In der Robotik eignen sich diese, um auf ebenem Grund voranzuschreiten. Allerdings gibt es auch Untergründe, die stark uneben sind oder unüberwindbare Hindernisse aufweisen. Dann können freie Laufmuster wie Random Sampling zum Einsatz kommen.
 
 \subsection{Reguläre Laufmuster}
 
@@ -283,7 +287,7 @@ Eine erste Methode ist es, den Weg vom Start zum Ziel auf direktem Weg zu erreic
 
 \paragraph{Festlegung der Anzahl der Pfadsegmente}
 
-Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische Verteilung}. Diese Verteilung wird genutzt, da geringe Streckenanzahlen häufig sein sollen, da davon ausgangen wird, dass der direkte Weg der schnellste Weg ist. Höhere Streckenanzahlen sollen weniger oft auftreten. Durch die Veränderung des Parameters $p$ lassen sich die Wahrscheinlichkeiten dahingehend variieren, dass entweder höhere oder niedrigere Streckenanzahlen bevorzugt werden. Standardmäßig geht man von p=\SI{0.5}{} aus, welches die Wahrscheinlichkeitsverteilung in \autoref{Kap3:streckenabschnittWahrscheinlichkeit} ergibt.
+Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische Verteilung}. Diese Verteilung wird genutzt, da eine geringe Anzahl an Pfadsegmenten häufig sein sollen, da davon ausgangen wird, dass der direkte Weg der schnellste Weg ist. Höhere Anzahlen an Pfadsegmenten sollen weniger oft auftreten. Durch die Veränderung des Parameters $p$ lassen sich die Wahrscheinlichkeiten dahingehend variieren, dass entweder eine höhere oder eine niedrigere Anzahl an Pfadsegmenten bevorzugt werden. Standardmäßig geht man von p=\SI{0.5}{} aus, welches die Wahrscheinlichkeitsverteilung in \autoref{Kap3:streckenabschnittWahrscheinlichkeit} ergibt.
 
 \begin{table}[t]
   \caption{Wahrscheinlichkeit der Anzahl der Pfadsegmente für die geplante Strecke}
@@ -291,9 +295,9 @@ Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische
   \centering
   \sffamily
   \begin{footnotesize}
-    \begin{tabular}{l S[table-format=1.3,table-comparator=true,table-space-text-post={***}]}
+    \begin{tabular}{c S[table-format=1.3,table-comparator=true,table-space-text-post={***}]}
     \toprule
-    \textbf{Anzahl Streckenabschnitte} & \textbf{Wahrscheinlichkeit in \%}\\
+    \textbf{Pfadsegmente} & \textbf{Wahrscheinlichkeit $[\%]$}\\
     \midrule
     1 & 50,0\\
     2 & 25,0\\
@@ -308,17 +312,12 @@ Die Festlegung der Anzahl der Pfadsegmente erfolgt über eine \emph{geometrische
 
 \paragraph{Festlegung der Wegpunkte}
 
-Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Wegpunkte auf dem Pfad zufällig generiert werden. Für jeden Pfadpunkt $P$ wird einzeln eine Lösung generiert. Zunächst wird der Mittelpunkt $m(x, y)$ sowie die Länge $l$ zwischen Start und Ende berechnet. Auf den Mittelpunkt wird nun ein zufälliger Vektor $r(x, y)$ addiert, dessen generierter Wert vom negativen bis zum positiven Betrag der Länge $l$ reicht. \autoref{RandomSamplingWegpunkteP1} und \ref{RandomSamplingWegpunkteP2} zeigen mögliche Ergebnisse für drei Pfadsegmente $P_1$, $P_2$ und $P_3$ für den Startpunkt $S(0,0)$ und dem Zielpunkt $Z(10,0)$. Der letzte Pfadpunkt $P_3$ entspricht immer genau der Zielposition, damit der Roboter dieses Ziel in jedem Fall erreicht. \autoref{Kap2:RSWegpunkte} zeigt die generierten Punkte und damit den Pfad des Roboters grafisch dargestellt.
+Nachdem die Anzahl der Pfadsegmente definiert ist, müssen nun die Koordinaten der Wegpunkte zufällig generiert werden. Für jeden Pfadpunkt $P$ wird einzeln eine Lösung generiert. Zunächst wird der Mittelpunkt $m(x, y)$ sowie die Länge $l$ zwischen Start und Ende berechnet. Auf den Mittelpunkt wird nun ein zufälliger Vektor $r(x, y)$ addiert, dessen generierter Wert vom negativen bis zum positiven Betrag der Länge $l$ reicht. \autoref{RandomSamplingWegpunkteP1} und \autoref{RandomSamplingWegpunkteP2} zeigen mögliche Ergebnisse für drei Pfadsegmente $P_1$, $P_2$ und $P_3$ für den Startpunkt $S(0,0)$ und dem Zielpunkt $Z(10,0)$. Der letzte Pfadpunkt $P_3$ entspricht immer genau der Zielposition, damit der Roboter dieses Ziel in jedem Fall erreicht. \autoref{Kap2:RSWegpunkte} zeigt die generierten Punkte und damit den Pfad des Roboters grafisch dargestellt.
 
-\begin{equation}
-  P_1=\left(\begin{array}{c} x_m + x_r \\ y_m + y_r \end{array}\right)=\left(\begin{array}{c} 5 - 2.31 \\ 0 - 4.1 \end{array}\right)=\left(\begin{array}{c} 3.31 \\ -4.1 \end{array}\right) \qquad
-\label{RandomSamplingWegpunkteP1}
-\end{equation}
-
-\begin{equation}
-  P_2=\left(\begin{array}{c} x_m + x_r \\ y_m + y_r \end{array}\right)=\left(\begin{array}{c} 5 + 3.1 \\ 0 + 0.5 \end{array}\right)=\left(\begin{array}{c} 8.1 \\ 0.5 \end{array}\right) \qquad
-\label{RandomSamplingWegpunkteP2}
-\end{equation}
+\begin{align}
+\label{RandomSamplingWegpunkteP1} P_1&=\left(\begin{array}{c} x_m + x_r \\ y_m + y_r \end{array}\right)=\left(\begin{array}{c} 5 - 2.31 \\ 0 - 4.1 \end{array}\right)=\left(\begin{array}{c} 3.31 \\ -4.1 \end{array}\right) \\[1em]
+\label{RandomSamplingWegpunkteP2} P_2&=\left(\begin{array}{c} x_m + x_r \\ y_m + y_r \end{array}\right)=\left(\begin{array}{c} 5 + 3.1 \\ 0 + 0.5 \end{array}\right)=\left(\begin{array}{c} 8.1 \\ 0.5 \end{array}\right)
+\end{align}
 
 \begin{figure}[t!]
   \centering
@@ -327,7 +326,7 @@ Nun ist definiert, wie viele Segmente der Pfad haben soll. Jetzt müssen die Weg
   \label{Kap2:RSWegpunkte}
 \end{figure}
 
-Mit dieser Berechnung sind nun für den Mittelpunkt des Körpers des Laufroboters ausschließlich Bewegungen auf diesem Pfad möglich. Bewusst wird hier noch nicht mit der z-Koordinate gearbeitet, da diese je nach Fußstellung und Terrain variiert.
+Mit dieser Berechnung sind nun für den Mittelpunkt des Körpers des Laufroboters ausschließlich Bewegungen auf diesem Pfad möglich. Bewusst wird hier noch nicht mit der $z$-Koordinate gearbeitet, da diese je nach Fußstellung und Terrain variiert.
 
 \paragraph{Schrittweise Näherung an das Ziel}
 
@@ -829,9 +828,9 @@ Mit jedem Übergang eines Stützzustands in einen anderen Stützzustands wird ex
   \centering
   \sffamily
   \begin{footnotesize}
-    \begin{tabular}{l l}
+    \begin{tabular}{S[table-format=1.3,table-comparator=true,table-space-text-post={***}] c}
     \toprule
-    \textbf{Stützzustand} & \textbf{mögliche Nachfolger}\\
+    \textbf{Stützzustand} & \textbf{Nachfolger}\\
     \midrule
     1 & 28 20 26\\
     2 & 19 27 26\\
@@ -853,6 +852,12 @@ Mit jedem Übergang eines Stützzustands in einen anderen Stützzustands wird ex
     18 & 32 19 30\\
     19 & 3 18 2 37 35\\
     20 & 4 17 1 36 34\\
+    \bottomrule
+    \end{tabular}
+    \begin{tabular}{S[table-format=1.3,table-comparator=true,table-space-text-post={***}] c}
+    \toprule
+    \textbf{Stützzustand} & \textbf{Nachfolger}\\
+    \midrule
     21&9 14 5 38 34 \\
     22&12 16 6 39 35 \\
     23&7 13 11 36 38 \\
@@ -932,7 +937,7 @@ Dieses Kapitel stellt die benötigten Frameworks für diese Arbeit dar. Das ist 
 
 \subsection{Robot Operating System}
 
-Für diese Arbeit ist der Aufbau und die Funktionsweise von \ac{ROS} von großer Bedeutung, da der Laufplaner auf diese Plattform migriert werden soll. Diese Themen werden in zahlreicher Literatur behandelt. \autocite{rosAnOpenSourceRobotOperatingSystem} \autocite{learningROSForRoboticsProgramming} \autocite{gentleIntroductionToROS}
+Für diese Arbeit ist der Aufbau und die Funktionsweise von \ac{ROS} von großer Bedeutung, da der Laufplaner auf diese Plattform migriert werden soll. Diese Themen werden in zahlreicher Literatur behandelt. \autocite{rosAnOpenSourceRobotOperatingSystem, learningROSForRoboticsProgramming, gentleIntroductionToROS}
 
 Das \ac{ROS} ist ein Meta-Betriebssystem, welches primär auf der Linux Distribution Ubuntu und Debian verfügbar ist. Ebenfalls läuft \ac{ROS} auch unter Windows Services für Linux. Es existieren auch experimentelle Versionen wie beispielsweise für Mac OS X. Das \ac{ROS} besteht aus vielen wichtigen und nützlichen Komponenten. Diese werden nun Schritt für Schritt erklärt.
 
@@ -952,13 +957,13 @@ Jede Nachricht beinhaltet einen sogenannten Header, der aus einer Identifikation
 
 \subsubsection{ROS-Master}
 
-Vor jeder Ausführung einer Node in \ac{ROS} muss der sogenannte \ac{ROS}-Master gestartet werden. Dieser ist die zentrale Einheit im System, welche für jegliche Lookups sowie Namensregistrierungen der Nodes zuständig ist. Ohne den \ac{ROS}-Master ist keine Kommunikation zwischen Nodes möglich. Außerdem bietet dieser unter anderem noch die Möglichkeit das \ac{ROS} auf verschiedenen Maschinen zu verteilen. Die Konfiguration erfolgt über Umgebungsvariablen im System, welche die IP-Adresse der Systeme beinhalten.
+Vor jeder Ausführung einer Node in \ac{ROS} muss der sogenannte \ac{ROS}-Master gestartet werden. Dieser ist die zentrale Einheit im System, welche für jegliche Lookups sowie Namensregistrierungen der Nodes zuständig ist. Ohne den \ac{ROS}-Master ist keine Kommunikation zwischen Nodes möglich. Da \ac{ROS} ein verteiltes System ist, erfolgt die Kommunikation netzwerktransparent. Dem entsprechend werden die Nachrichten automatisch auch über das Netzwerk geleitet. Die Konfiguration erfolgt über Umgebungsvariablen im System, welche die IP-Adresse der Systeme beinhalten.
 
 \subsubsection{Launch-Files}
 
 Nodes können manuell über die Kommandozeile gestartet werden. Dies wird bei einer wachsenden Zahl an Nodes und Konfigurationen immer unübersichtlicher, weshalb es sogenannte Launch-Files gibt. Diese bündeln gewisse Funktionalität, die ausführt werden sollen. \autoref{exampleLaunchFile} zeigt ein Beispiel dafür. Mit dem include-Befehl können weitere Launch-Files eingefügt werden. Auch dies trägt dazu bei, eine bessere Modularität zu erreichen. Mit dem node-Befehl wird eine Node aus einem Package gestartet. Launch-Files bieten viele weitere Möglichkeiten wie das Setzen von Parametern, welche innerhalb der Ausführung von Nodes genutzt werden können. Außerdem können Aufrufe von Nodes weiter konfiguriert werden. Beispielsweise kann mittels des output-Befehls gesteuert werden, wo die Konsolenausgaben ausgegeben werden. Der respawn-Befehl lässt eine Node neustarten, wenn sie abgestürzt ist. Der required-Befehl legt fest, dass nach Absturz diese Node die komplette Anwendung ebenfalls gestoppt werden soll.
 
-\begin{lstlisting}[label={exampleLaunchFile}, language=Xml, caption={Beispiel eines Launch-Files}]
+\begin{lstlisting}[float=b!,label={exampleLaunchFile}, language=Xml, caption={Beispiel eines Launch-Files}]
 <launch>
   <include file="$(find hexapod)/launch/model.launch"/>
   
@@ -990,7 +995,7 @@ Des Weiteren gibt es für einige Standardbefehle aus Linux Wrapper-Funktionen wi
   \label{Kap2:urdtographizakrobat}
 \end{figure}
 
-\subsubsection{Robotermodell und tf-Framework}
+\subsubsection{Robotermodell und \textsc{tf}-Framework}
 
 Robotermodelle können in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, die Massenträgheit sowie ein Kollissionsmodell angegeben. Die Visualisierung und die Kollission erfolgt beispielsweise über das Format \ac{STL}, aber auch, falls möglich, über einfache geometrische Objekte. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich. Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacro} zielt vor allem darauf ab das Format lesbarer und kürzer zu gestalten. Über Tools wie den rviz, können Robotermodelle visualisiert werden. Mittels des Kommandozeilen-Tools urdf\_to\_graphiz lässt sich der Transformationsbaum eines Robotermodell visualisieren. Dies wird in \autoref{Kap2:urdtographizakrobat} am Beispiel des Akrobat dargestellt.
 
@@ -1007,7 +1012,7 @@ Die Entwicklung des Frameworks Gazebo von Dr. Andrew Howard und seinem Studenten
 
 \subsubsection{Physik-Engine}
 
-Als Physik-Engine wird standardmäßig die \ac{ODE} genutzt. Es sind auch weitere Physik-Engines möglich, da diese nicht fest in der Architektur verdrahtet ist. Alternativ zum Standard können demnach Bullet, Simbody oder DART genutzt werden.
+Als Physik-Engine wird standardmäßig die \ac{ODE} genutzt. Es sind auch weitere Physik-Engines möglich, da diese austauschbar sind. Dies liegt daran, dass sie nicht fest in der Softwarearchitektur verdrahtet sind. Alternativ zum Standard können demnach Bullet, Simbody oder DART genutzt werden.
     
 \subsubsection{Visualisierung}
 

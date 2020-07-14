@@ -171,7 +171,7 @@ Der Roboter wird nun zwar im Gazebo angezeigt, allerdings liegt dieser nun flach
 
 Da \ac{ROS}-Nodes allgemein in einer Schleife laufen, wird der folgende Ablauf kontinuierlich ausgeführt. Der Ablauf sorgt wie in \autoref{kap4:gazebooben} zu sehen, dafür, dass der Roboter in den nächsten Durchläufen in der Ausgangsposition steht. Dies erfolgt in mehreren Schritten: 
 \begin{enumerate}
-  \item Zunächst wird über das \emph{TF-Framework} mit Hilfe von Transformationen und Rotationen die Ausgangsposition vom obersten Gelenk zum Endeffektor berechnet. Dies wird im weiteren Verlauf als Ausgangsposition definiert und eingelesene Bewegungen sind relativ zu dieser Position.
+  \item Zunächst wird über das \textsc{tf}-Framework} mit Hilfe von Transformationen und Rotationen die Ausgangsposition vom obersten Gelenk zum Endeffektor berechnet. Dies wird im weiteren Verlauf als Ausgangsposition definiert und eingelesene Bewegungen sind relativ zu dieser Position.
   \item Die dazugehörigen Winkel, die benötigt werden, um in die Ausgangsposition zu kommen, werden nun mittels \emph{inverser Kinematik} berechnet.
   \item Die drei Winkel werden nun in das Topic \emph{goal\_joint\_states} geschrieben, was ein tatsächliches Verändern der Winkel in der Simulation oder am echten Roboter verursacht. Dabei wird vorher geprüft, ob die Winkel gültig sind, d.h. dass sie sich über dem minimal und unter dem maximal erlaubten Winkel befinden. Ist das nicht der Fall, wird eine Warnung ausgegeben.
 \end{enumerate}
@@ -180,7 +180,7 @@ Da \ac{ROS}-Nodes allgemein in einer Schleife laufen, wird der folgende Ablauf k
 
 Die Generierung erfolgt durch die Iteration über die von einem Algorithmus generierten Schritte für die Fußpositionen. Statt für die Generierung eine xml-Bibliothek zu nutzen, reicht hier eine einfache Ausgabe in einer Datei mittels \emph{ofstream}.
 
-\autoref{lst:MovementExample} zeigt eine abgespeckte XML-Bewegung der ersten beiden Füße, welche den Fuß an der 1. Stelle ein wenig in y-Richtung verschieben würde, was einer Verschiebung der Robotermitte verursacht, sofern die anderen Füße, welche auf dem Boden sind, das auch tun. Des Weiteren wird der Fuß an der 2. Stelle ein Stück angehoben.
+\autoref{lst:MovementExample} zeigt eine abgespeckte XML-Bewegung der ersten beiden Füße, welche den Fuß an der 1. Stelle ein wenig in $y$-Richtung verschieben würde, was einer Verschiebung der Robotermitte verursacht, sofern die anderen Füße, welche auf dem Boden sind, das auch tun. Des Weiteren wird der Fuß an der 2. Stelle ein Stück angehoben.
 
 Für das Einlesen der XML-Datei wird Pugixml \autocite{pugixml} verwendet, welches unkompliziert und schnell xml-Dateien generieren oder einlesen kann. Die eingelesene Bewegung wird als Vektor in C++ gespeichert und an den Akrobat weitergegeben. Dieser ist dann für das Abspielen der Bewegung zuständig.
 
@@ -191,14 +191,14 @@ Für das Einlesen der XML-Datei wird Pugixml \autocite{pugixml} verwendet, welch
 Das \ac{ROS} läuft in einer Schleife, bei der die Periode definiert werden kann. Als geeignet hat sich ein Wert von 20 Millisekunden herausgestellt. Auf Grund der Tatsache, dass die xml-Datei keine Bewegungsdauern speichert, muss eine Synchronisation zwischen dem \ac{ROS}-Loop und dem Abspielen der Bewegung aufgesetzt werden. Damit die Bewegungen nicht unrealistisch aussehen und linear von Position zu Position wechseln, wird eine Interpolation zwischen den einzelnen Punkten mittels einer trigonometrischen Funktion aufgesetzt.
 \begin{eqnarray}
 \label{kap4:cosinterpolation}
-f(x) = -0,5 \cdot cos(x + 0,5) + 0,5 \\
+f(x) = -0,5 \cdot \cos{(x + 0,5)} + 0{,}5 \\
 \label{kap4:cosinterpolation2}
-f(y) = -0,5 \cdot cos(y + 0,5) + 0,5 \\
+f(y) = -0,5 \cdot \cos{(y + 0,5)} + 0{,}5 \\
 \label{kap4:cosinterpolation3}
-f(z) = -0,5 \cdot cos(z + 0,5) + 0,5
+f(z) = -0,5 \cdot \cos{(z + 0,5)} + 0{,}5
 \end{eqnarray}
 
-Der in \autoref{kap4:cosinterpolation}, \autoref{kap4:cosinterpolation2} sowie \autoref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. Die Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
+Der in \autoref{kap4:cosinterpolation}, \ref{kap4:cosinterpolation2} sowie \ref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. Die Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
 
 Code-technisch ist das mit drei Variablen umgesetzt, die die aktuelle Zwischenposition bestimmen. Die erste Variable gibt die maximale Zahl der Zwischenpositionen an (\emph{maxTicks}). Die zweite Variable gibt die aktuelle Stelle (\emph{tick}) an, so dass der Algorithmus über die Funktion ausrechnen kann, was die nächste Position sein wird. Die Variable \emph{diff} ist der Vektor von der Start- zur Zielposition. \autoref{interpolationZwischenwerte} zeigt die vollständige Berechnung einer Zwischenposition.
 
@@ -220,7 +220,7 @@ Beim Dreifußgang kann ein Fuß einen von zwei Stati annehmen:
   \item Der Fuß ist für das Verschieben der Körpermitte verantwortlich.
 \end{enumerate}
 
-Zunächst werden die Stati für jeden Fuß in einem Array in C++ gesetzt. Die Füße 1, 4 und 5 starten in der ersten Phase, die Füße 2, 3 und 6 starten in der zweiten Phase. Mit jeder Bewegung wird dies abgewechselt sowie die Positionen relativ zum Fußpunkt gesetzt. Für Phase 1 muss die z-Koordinate positiv gesetzt werden, damit der Fuß angehoben wird. In Phase 2 muss die z-Koordinate auf null gesetzt werden, damit der Fuß die Körpermitte verschieben und stützen kann sowie die Position ein wenig nach hinten verschoben werden, damit der Körper sich nach vorne bewegt. Die stützenden Füße sind so gewählt, dass der Stability Margin größer als null ist, damit der Roboter nicht umkippt. Das Ergebnis wird als Bewegungsdatei exportiert und kann vom Roboter eingelesen werden.
+Zunächst werden die Stati für jeden Fuß in einem Array in C++ gesetzt. Die Füße 1, 4 und 5 starten in der ersten Phase, die Füße 2, 3 und 6 starten in der zweiten Phase. Mit jeder Bewegung wird dies abgewechselt sowie die Positionen relativ zum Fußpunkt gesetzt. Für Phase 1 muss die $z$-Koordinate positiv gesetzt werden, damit der Fuß angehoben wird. In Phase 2 muss die $z$-Koordinate auf null gesetzt werden, damit der Fuß die Körpermitte verschieben und stützen kann sowie die Position ein wenig nach hinten verschoben werden, damit der Körper sich nach vorne bewegt. Die stützenden Füße sind so gewählt, dass der Stability Margin größer als null ist, damit der Roboter nicht umkippt. Das Ergebnis wird als Bewegungsdatei exportiert und kann vom Roboter eingelesen werden.
 
 \section{Aufsetzen des Random Samplings}
 
@@ -245,9 +245,9 @@ Des Weiteren müssen weitere definierte Angaben verändert werden:
   \item Maximale Anzahl von Anhebungen oder Absetzungen von Füßen
 \end{itemize}
 
-\subsection{Nutzung des TF-Frameworks}
+\subsection{Nutzung des \textsc{tf}-Frameworks}
 
-Alle 2D und 3D-Berechnungen werden nun mit dem TF-Framework aus \ac{ROS} berechnet. Dieses nutzt die Klasse \emph{Vector3}, um Berechnungen durchzuführen. Diese Klasse bietet unter anderem folgende wichtige Methoden für Vektoren:
+Alle 2D und 3D-Berechnungen werden nun mit dem \textsc{tf}-Framework aus \ac{ROS} berechnet. Dieses nutzt die Klasse \emph{Vector3}, um Berechnungen durchzuführen. Diese Klasse bietet unter anderem folgende wichtige Methoden für Vektoren:
 \begin{itemize}
   \item Grundlegende Rechenarten: Addition, Subtraktion, Multiplikation, Division
   \item Länge der Vektors mittels \emph{length}

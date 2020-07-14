@@ -91,14 +91,14 @@ Als erstes wird das Robotermodell in das neue \ac{ROS}-Paket integriert. Die vor
 Für das spätere Hinzufügen des Akrobats in die \emph{Gazebo}-Simulation müssen neben der Visualisierung, die für den rviz ausreichend war, noch weitere Anpassungen am Roboter-Modell vorgenommen werden:
 \begin{itemize}
   \item Aufsetzen des Kollisionsmodells durch das Attribut <collission>
-  \item Aufsetzen der Massenträgheit durch das Attribut <inertia>
+  \item Aufsetzen der Massenschwerpunkte und der Trägheitsmomente durch das Attribut <inertia>
 \end{itemize}
 
 \subsubsection{Aufsetzen des Kollisionsmodells}
 
 Das Kollisionsmodell muss für jedes Körperteil einzeln definiert werden. Es wird durch ein Ursprung und einem geometrischen Objekt definiert. Das \ac{ROS} stellt hierfür eine Schnittstelle zur Verfügung, die zwei Möglichkeiten anbietet. Zum einen können einfache geometrische Objekte wie ein Zylinder oder ein Quader als Kollisionsmodell definiert werden. Dies ist in unserem Fall nicht möglich, da sich die Beinsegmente nicht exakt durch einzelne geometrische Objekte modellieren lassen. Daher ist es sinnvoll auf die zweite Variante zurückzugreifen und die exakten 3D-Modelle über die stl-Dateien als Kollisionsmodelle anzugeben. Da diese viel detaillierter sind, wird daher zwar mehr Rechenleistung benötigt, aber auch die physikalischen Bewegungen sehen realer aus. Eine Möglichkeit wäre es die 3D-Modelle mittels MeshLab \autocite{LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136} runterzurechnen, so dass sie später besser von Gazebo verarbeitet werden können, da sie optimiert sind.
 
-\subsubsection{Aufsetzen der Massenträgheit}
+\subsubsection{Aufsetzen der Massenschwerpunkte und der Trägheitsmomente}
 
 \begin{figure}[b!]
   \centering
@@ -191,14 +191,14 @@ Für das Einlesen der XML-Datei wird Pugixml \autocite{pugixml} verwendet, welch
 Das \ac{ROS} läuft in einer Schleife, bei der die Periode definiert werden kann. Als geeignet hat sich ein Wert von 20 Millisekunden herausgestellt. Auf Grund der Tatsache, dass die xml-Datei keine Bewegungsdauern speichert, muss eine Synchronisation zwischen dem \ac{ROS}-Loop und dem Abspielen der Bewegung aufgesetzt werden. Damit die Bewegungen nicht unrealistisch aussehen und linear von Position zu Position wechseln, wird eine Interpolation zwischen den einzelnen Punkten mittels einer trigonometrischen Funktion aufgesetzt.
 \begin{eqnarray}
 \label{kap4:cosinterpolation}
-f(x) = -0,5 \cdot \cos{(x + 0,5)} + 0{,}5 \\
+f(x) = -0,5 \cdot \cos{(x)} + 0{,}5 \\
 \label{kap4:cosinterpolation2}
-f(y) = -0,5 \cdot \cos{(y + 0,5)} + 0{,}5 \\
+f(y) = -0,5 \cdot \cos{(y)} + 0{,}5 \\
 \label{kap4:cosinterpolation3}
-f(z) = -0,5 \cdot \cos{(z + 0,5)} + 0{,}5
+f(z) = -0,5 \cdot \cos{(z)} + 0{,}5
 \end{eqnarray}
 
-Der in \autoref{kap4:cosinterpolation}, \ref{kap4:cosinterpolation2} sowie \ref{kap4:cosinterpolation3} verwendete Cosinus ist so modelliert, dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. Die Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
+Der in \autoref{kap4:cosinterpolation}, \ref{kap4:cosinterpolation2} sowie \ref{kap4:cosinterpolation3} verwendete Cosinus ist skaliert und vertikal verschoben, so dass er von 0 bis 1 reicht. Geht man davon aus, dass eine Bewegung in acht Durchläufen der Schleife abgelaufen sein soll, ergibt sich also für eine Bewegung eine Zeitdauer von mindestens 160 Millisekunden. Diese Zahl kann weiter optimiert werden, so dass die maximale Geschwindigkeit der Beinregler nicht überschritten wird. Die Simulation lässt sich mit diesem Wert allerdings sehr gut testen.
 
 Code-technisch ist das mit drei Variablen umgesetzt, die die aktuelle Zwischenposition bestimmen. Die erste Variable gibt die maximale Zahl der Zwischenpositionen an (\emph{maxTicks}). Die zweite Variable gibt die aktuelle Stelle (\emph{tick}) an, so dass der Algorithmus über die Funktion ausrechnen kann, was die nächste Position sein wird. Die Variable \emph{diff} ist der Vektor von der Start- zur Zielposition. \autoref{interpolationZwischenwerte} zeigt die vollständige Berechnung einer Zwischenposition.
 

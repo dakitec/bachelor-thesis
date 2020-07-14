@@ -11,7 +11,7 @@ Dieser Abschnitt stellt die für diese Arbeit relevanten Laufroboter vor. Dies i
 
 Dieser Unterabschnitt stellt den Lauron vor. Dieser wurde in verschiedener Literatur schon ausführlich dargestellt, welcher für diesen Abschnitt genutzt wird. \autocite{gassmann2000, troilo2007, berns1994adaptive, scholl2001modular, ziegenmeyer2009sechsbeinige}
 
-Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Dabei wurden Teile des Roboters mit traditionellen Techniken, andere Teile wie die Steuerung der Gelenke, die Navigation oder die Interpretation von Sensorinformation mit neuronalen Netzwerken entwickelt. Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische \ac{MCA}-Architektur ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der \emph{Carausius morosus} (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen. \autocite{cruse1976function} Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. Die neuste Version des Laufroboters ist der \emph{Lauron V}.
+Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Dabei wurden Teile des Roboters mit traditionellen Techniken, andere Teile wie die Steuerung der Gelenke, die Navigation oder die Interpretation von Sensorinformation mit neuronalen Netzwerken entwickelt. Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische \ac{MCA}-Architektur ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der \emph{Carausius morosus} (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen \autocite{cruse1976function}. Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. Die neuste Version des Laufroboters ist der \emph{Lauron V}.
 
 \begin{figure}[t!]
   \centering
@@ -196,11 +196,11 @@ Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum
 
 \begin{equation}
   \begin{aligned}
-    \alpha & = \textrm{arctan}(\alpha_{21} / \alpha_{11}) \\
-    \beta & = \textrm{arctan}(-\alpha_{31} / (\alpha_{11} cos \gamma + \alpha_{21} sin \gamma)) \\
-    \gamma & = \textrm{arctan}(\alpha_{32} / \alpha_{33})
+    \alpha & = \arctan{(\frac{\alpha_{21}}{\alpha_{11}})} \\[1em]
+    \beta & = \arctan{(\frac{-\alpha_{31}}{\alpha_{11} \cos{\gamma} + \alpha_{21} \sin{\gamma}})} \\[1em]
+    \gamma & = \arctan{(\frac{\alpha_{32}}{\alpha_{33}})}
   \end{aligned}
-\label{dk6}
+  \label{dk6}
 \end{equation}
 
 \subsection{Inverse Kinematik}
@@ -224,7 +224,7 @@ Da bereits die Funktion der direkten Kinematik eine nichtlineare Funktion ist, i
 
 Bei der analytischen Methode wird versucht, auf Basis der geometrischen Eigenschaften eine Formel herzuleiten. Dies wird umso schwerer, je mehr Freiheitsgrade die kinematische Kette hat. Der Vorteil liegt darin, dass die analytische Lösung ersten alle möglichen Gelenkstellungen für eine Position liefert und zweitens, dass sie wesentlich performanter ist. Die Lösungen sind exakt und Singularitäten können bereits beim Aufstellen der Gleichung festgestellt werden.
 
-Die Software \emph{ikfast} \autocite{kanakia2012inverse} findet Lösungen und erstellt Gleichungen für die inverse Kinematik einer kinematischen Kette. Dabei nutzt die Software im Gegensatz zu anderer Software statt der numerischen die analytische Methode.
+Die Software \emph{ikfast} \autocite{diankov2010ikfast} findet Lösungen und erstellt Gleichungen für die inverse Kinematik einer kinematischen Kette. Dabei nutzt die Software im Gegensatz zu anderer Software statt der numerischen die analytische Methode.
 
 Bei der numerischen Lösung wird mittels einer linearen Annäherung versucht die Lösung für $f^{-1}$ zu finden. Dies lässt sich mit der Jacobi-Matrix berechnen. Dazu werden Teilfunktionen für $x$, $y$, $z$, $\alpha$, $\beta$ und $\gamma$ benötigt, welche sich aus der Transformationsmatrix der direkten Kinematik ergeben. Die Teilfunktionen werden dann nach jeder Variablen partiell abgeleitet. Dies ergibt die $6\,x\,n$ Jacobi-Matrix. Sie beschreibt die Änderung der Position des Endeffektors bei Änderung der Gelenkstellungen.
 
@@ -256,7 +256,7 @@ Zunächst einmal müssen zwei Begriffe definiert werden, welche für die Betrach
 \begin{figure}[b!]
   \centering
   \includegraphics[height=8cm]{kapitel2/freie-gangarten}
-  \caption{Reguläre Laufmuster von Insekten \autocite{ferrell1995comparison} \autocite{wilson1966insect}}
+  \caption[Reguläre Laufmuster von Insekten]{Reguläre Laufmuster von Insekten \autocite{ferrell1995comparison} \autocite{wilson1966insect}}
   \label{Kap2:laufmuster}
 \end{figure}
 
@@ -818,13 +818,13 @@ Der Mittelpunkt des Roboterkörpers kann sich in diesem aktuellen Zustand nur no
 \put(0.25,2.25){\line(1, 0){1}}
 \put(0.75,2.5){\makebox(0,0)[b]{40}}
 \end{picture}
-\caption{\label{validconf}40 zulässige Stützzustände \autocite{herms2004}}
+\caption[40 zulässige Stützzustände]{\label{validconf}40 zulässige Stützzustände \autocite{herms2004}}
 \end{figure}
 
 Mit jedem Übergang eines Stützzustands in einen anderen Stützzustands wird exakt ein Fuß entweder angehoben oder abgesetzt. Es können auch mehrere Füße gleichzeitig angehoben oder abgesetzt werden, indem in dem aktuellen Übergang eine Zeitdauer von \SI{0}{s} angenommen wird. Damit wird der nächste Stützzustand mit dem aktuellen Stützzustand ausgeführt. \autoref{trans_support} gibt alle möglichen Stützzustände an.
 
 \begin{table}[t!]
-  \caption{\label{trans_support} Transitionstabelle der Stützzustände \autocite{herms2004}}
+  \caption[Transitionstabelle der Stützzustände]{\label{trans_support} Transitionstabelle der Stützzustände \autocite{herms2004}}
   \centering
   \sffamily
   \begin{footnotesize}
@@ -933,7 +933,7 @@ Neben dem Random Sampling existieren noch weitere freie Laufmuster, welche im fo
 
 \section{Frameworks}
 
-Dieses Kapitel stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird.
+Dieses Kapitel stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird. Des Weiteren wird auch noch das Vorgängersystem des Laufplaners, das OpenInventor-Framework beschrieben.
 
 \subsection{Robot Operating System}
 
@@ -1006,7 +1006,7 @@ Die Entwicklung des Frameworks Gazebo von Dr. Andrew Howard und seinem Studenten
 \begin{figure}[b!]
   \centering
   \includegraphics[height=10cm]{kapitel2/gazebo}
-  \caption{Architektur des Gazebo-Frameworks \autocite{Koenig-2004-394}}
+  \caption[Architektur des Gazebo-Frameworks]{Architektur des Gazebo-Frameworks \autocite{Koenig-2004-394}}
   \label{Kap2:gazeboarchitektur}
 \end{figure}
 
@@ -1033,3 +1033,11 @@ Die Gazebo-Welt ist eine Sammlung aus verschiedenen Komponenten:
 Aktuell müssen Modelle per Hand erstellt werden. Dies erfolgt in der Regel über das sdf-Format. Kommt \ac{ROS} zum Einsatz, kann mittels der Node urdf\_spawner auch das urdf-Format verwendet werden.}
   
 Abschließend ist noch wichtig, dass Gazebo durch Plugins erweiterbar ist und eine umfangreiche Schnittstelle bietet, die in einem \ac{ROS}-Node mit C++ oder Python aufgerufen werden kann. Des Weiteren lässt Gazebo auch ein Rendering der Simulation auf einem Remote-Server zu, so dass verteilte Anwendungen möglich werden. Dies ist in vielen Fällen aufgrund begrenzter Rechenleistung von Vorteil. 
+
+\subsection{Open Inventor}
+
+TODO
+
+Ich denke, dass hier auch der Open Inventor hinein sollte. Stammt aus den 90ern von SGI. Dateiendung .iv Das wurde nach VRML weiterentwickelt und daraus ging schließlich X3D hervor. Entstanden sind daraus auch Szenengraphensysteme, etwa Open Scene Graph. 
+Den Open Inventor gibt es heute noch. Der wird beispielsweise zur medizinischen Visualisierung benutzt (ggf. Zitat von Bernhard Preim, ich frage dazu auch gern bei Barbara Waldkirch oder Sandy Engelhardt nach. Bernhard kenne ich übrigens auch persönlich ...)
+Eine Alternativ-Implementierung ist Coin3D, verwendet beispielsweise bei OpenRave. Dazu gibt es eine Diss von Rosen Diankov, Aus der ecke kommt auch IKfast. Bitte nachschauen, von wem IKfast tatsächlich ist.

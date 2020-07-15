@@ -44,7 +44,7 @@ Die Brust ist wiederum in weitere drei Teile für jeweils ein Beinpaar unterteil
   \item Unterschenkel (Tibia)
 \end{itemize}
 
-Die Segmente sind durch die Gelenke Subcoxal $\alpha$, Coxa-Trochanter $\beta$ und Femur-Tibia $\gamma$ verbunden. Der Fuß jedes Beines wird Tarsus genannt. Das erste Gelenk Subcoxal besitzt zwei Freiheitsgrade, die weiteren Gelenke besitzen einen Freiheitsgrad. Damit ist für die indische Stabheuschrecke die minimale erforderliche Zahl an Freiheitsgraden erreicht, damit der Fuß beliebig im dreidimensionalen Raum gesetzt werden kann.
+Die Segmente sind durch die Gelenke Subcoxal, Coxa-Trochanter und Femur-Tibia verbunden. Der Fuß jedes Beines wird Tarsus genannt. Das erste Gelenk Subcoxal besitzt zwei Freiheitsgrade, die weiteren Gelenke besitzen einen Freiheitsgrad. Damit ist für die indische Stabheuschrecke die minimale erforderliche Zahl an Freiheitsgraden erreicht, damit der Fuß beliebig im dreidimensionalen Raum gesetzt werden kann.
 
 Unter anderem ist noch wichtig, dass der Kopf der indischen Stabheuschrecke zwei lange Fühler besitzt. Diese könnten in einem Roboter beispielsweise als Laserscanner oder Kamera modelliert werden, welche sich einen Überblick über die Gegend verschaffen können.
 
@@ -232,6 +232,10 @@ Durch weitere Umstellung der Funktion ergibt sich eine Gleichung für die linear
 
 Im Gegensatz zur analytischen Methode liefert die numerische Lösung immer nur einen Wert. Ein weiteres Problem der numerischen Lösung sind Singularitäten, welche auftreten können, wenn die Jacobi-Matrix an Rang verliert und somit singulär wird. Die Folge ist, dass die Matrix nicht mehr invertierbar ist und damit keine Lösung mehr berechnet werden kann.
 
+TODO START:
+Hier bitte überlegen, ob die Formeln für die analytische Lösung gezeigt werden können. Für Akrobat und meine Diss ist das grundsätzlich gleich. Ich empfehle die Formeln von Wilen. 
+TODO END
+
 \section{Laufplanung}
 
 Nun werden die Grundlagen für die Laufplanung dargestellt. Dazu werden verschiedene reguläre Laufmuster und das freie Laufmuster Random Sampling dargestellt. Die regulären Laufmuster wurden in zahlreicher Literatur bei vielen Insekten beobachtet und auf das Thema Robotik übertragen. \autocite{ferrell1995comparison, wilson1966insect}
@@ -347,7 +351,7 @@ Der zulässige Bereich kann nur an zwei Punkten verlassen werden. Damit wird ein
 Der Mittelpunkt des Roboterkörpers kann sich in diesem aktuellen Zustand nur noch vom zuletzt berechneten Start- und Endpunkt des zulässigen Bereichs bewegen. Dies geschieht durch das Verschieben der Körpermitte. Dazu müssen die Füße gehoben und umgesetzt werden. Auch hier müssen die zu Beginn genannten Kriterien beachtet werden. Diese sind unter anderem, dass sich mindestens drei Füße auf dem Boden befinden und dass mindestens ein Fuß auf jeder Seite den Körper stützt, damit der Stability Margin positiv ist. Mit diesen Regeln lassen sich 40 mögliche Fußkonfigurationen, auch Stützzustände genannt, darstellen, welche in \autoref{validconf} abgebildet sind.
 
 \begin{figure}[t!]
-\setlength{\unitlength}{.9cm}
+\setlength{\unitlength}{1.1cm}
 \begin{picture}(1.5,3.5)
 \put(0.25,0.25){\dashbox{0.05}(1,2){} }
 \put(0.25,1.25){\circle*{0.2}}
@@ -995,9 +999,19 @@ Des Weiteren gibt es für einige Standardbefehle aus Linux Wrapper-Funktionen wi
   \label{Kap2:urdtographizakrobat}
 \end{figure}
 
-\subsubsection{Robotermodell und \textsc{tf}-Framework}
+\subsubsection{Robotermodell}
 
-Robotermodelle können in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, die Massenträgheit sowie ein Kollissionsmodell angegeben. Die Visualisierung und die Kollission erfolgt beispielsweise über das Format \ac{STL}, aber auch, falls möglich, über einfache geometrische Objekte. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich. Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacro} zielt vor allem darauf ab das Format lesbarer und kürzer zu gestalten. Über Tools wie den rviz, können Robotermodelle visualisiert werden. Mittels des Kommandozeilen-Tools urdf\_to\_graphiz lässt sich der Transformationsbaum eines Robotermodell visualisieren. Dies wird in \autoref{Kap2:urdtographizakrobat} am Beispiel des Akrobat dargestellt.
+Robotermodelle können in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, der Massenschwerpunkt und die Trägheitsmomente sowie ein Kollissionsmodell angegeben. Die Visualisierung und die Kollission erfolgt beispielsweise über das Format \ac{STL}, aber auch, falls möglich, über einfache geometrische Objekte. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich. Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacro} zielt vor allem darauf ab das Format lesbarer und kürzer zu gestalten. Über Tools wie den rviz, können Robotermodelle visualisiert werden. Mittels des Kommandozeilen-Tools urdf\_to\_graphiz lässt sich der Transformationsbaum eines Robotermodell visualisieren. Dies wird in \autoref{Kap2:urdtographizakrobat} am Beispiel des Akrobat dargestellt.
+
+\subsubsection{\textsc{tf}-Framework}
+
+Das \textsc{tf}-Framework hilft bei Koordinatentransformationen. Damit ist es beispielsweise möglich, die Position des Endeffektors relativ zum Roboterkörper berechnen zu lassen. Des Weiteren bietet das Framework geometrische Klassen, um Berechnungen durchzuführen. Die Klasse \emph{Vector3} bietet unter anderem folgende wichtige Methoden und Funktionen für Vektoren:
+\begin{itemize}
+  \item Grundlegende Rechenarten: Addition, Subtraktion, Multiplikation, Division
+  \item Länge der Vektors mittels \emph{length}
+  \item Normalisierung von Vektoren mittels \emph{normalise}
+  \item Distanz zweier Punkte mittels \emph{distance}
+\end{itemize}
 
 \subsection{Gazebo}
 

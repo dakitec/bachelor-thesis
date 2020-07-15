@@ -1,6 +1,11 @@
 \chapter{Implementierung in ROS und Gazebo}
 \label{kap5}
 
+TODO START:
+Frage: Wäre es sinnvoll, URDF, xacro und Gazebo-Modellierung mit in den Grundlagen zu bringen? Hierzu kann ich mir den Punkt "Robotermodelle und Koordinatensysteme" vorstellen, gegebenenfalls auch in einzelnen Abschnitten. Hier geht es um die Pronzipien, die dann in Implementierung nicht mehr erklärt werden müssen.
+TODO END:
+
+
 Dieses Kapitel stellt eine Implementierung für das in \autoref{kap4} dargestellte Konzept der Entwicklung einer Simulationsumgebung und der Portierung des Algorithmus Random Sampling zur Laufplanung für den Akrobat dar.
 
 \section{Vorgehensweise und Aufbau des Pakets}
@@ -107,15 +112,14 @@ Das Kollisionsmodell muss für jedes Körperteil einzeln definiert werden. Es wi
   \label{Kap4:MeshLabInertia}
 \end{figure}
 
-Ebenfalls muss die Massenträgheit für jedes Körperteil einzeln definiert werden. Dabei wird eine Masse sowie das Trägheitsmoment angegeben. Die Masse lässt sich durch Wiegen der einzelnen Körperteile herausfinden. Um das Trägheitsmoment für das jeweilige Körperteil herauszufinden, bietet Gazebo die Möglichkeit die Werte über MeshLab auszulesen und umzuwandeln \autocite{gazebo-inertial}. \autoref{Kap4:MeshLabInertia} zeigt die Extraktion der Trägheitsmomente aus MeshLab. Dies erfolgt über mehrere Schritte, um möglichst genaue Ergebnisse zu erhalten:
-\begin{itemize}
-  \item Skalierung in MeshLab mit Faktor 10 bis 100
-  \item Automatische Berechnung der Trägheitsmomente in MeshLab
-  \item Teilen des Ergebnisses durch den zuvor skalierten Faktor
-  \item Multiplizieren des Ergebnisses mit der berechneten Masse
-  \item Teilen des Ergebnisses durch das berechnete Volumen
-  \item Eintragen der berechneten Werte in \ac{ROS}
-\end{itemize}
+Ebenfalls muss die Massenträgheit für jedes Körperteil einzeln definiert werden. Dabei wird eine Masse sowie das Trägheitsmoment angegeben. Die Masse lässt sich durch Wiegen der einzelnen Körperteile herausfinden. Um das Trägheitsmoment für das jeweilige Körperteil herauszufinden, bietet Gazebo die Möglichkeit die Werte über MeshLab auszulesen und umzuwandeln \autocite{gazebo-inertial}. \autoref{Kap4:MeshLabInertia} zeigt die Extraktion der Trägheitsmomente aus MeshLab. Da MeshLab das Ergebnis rundet, muss das Körperteil um einen Faktor $s$ skaliert werden, um eine höhere Genauigkeit zu erreichen. Dazu eignet sich ein Faktor von 10 oder 100. Erst dann kann die Berechnung über die berechnete Masse $m$ und dem berechneten Volumen $V$ sowie die Rückskalierung über den Faktor $s$ in \autoref{ml1} mit dem Ergebnis aus MeshLab $Ergebnis_{vorher}$ ausgeführt werden.
+
+\begin{equation}
+  Ergebnis_{nachher} = \frac{Ergebnis_{vorher} \cdot m \cdot V}{s}
+\label{ml1}
+\end{equation}
+
+Zum Abschluss werden die berechneten Trägheitsmomente aus dem $Ergebnis_{nachher}$ in das \ac{URDF}-File des \ac{ROS}-Packages eingetragen.
 
 \subsection{Definition der Gelenkmotoren mittels ros\_control}
 
@@ -232,9 +236,9 @@ Während bei dem vorherigen Laufplaner die aktuelle Fußkonfiguration und die Fu
 
 Außerdem macht dies das Debugging einfacher, da sich in einer gekapselten Klasse beispielsweise Methoden zur Ausgabe definieren lassen. Dadurch lassen sich auch einige redundante Code-Zeilen sparen, da wiederkehrende Funktionen abstrahiert werden.
 
-\subsection{Anpassung aller Maße}
+\subsection{Nutzung des \textsc{tf}-Frameworks und Anpassung aller Maße}
 
-Da die OpenInventor-Simulation alle Angaben in Millimeter gespeichert hat und \ac{ROS} bzw. Gazebo diese als Meterangaben hinterlegt, muss der Algorithmus ebenfalls Meterangaben liefern.
+Alle 2D und 3D-Berechnungen werden nun mit dem \textsc{tf}-Framework aus \ac{ROS} berechnet. Dieses speichert alle Längenangaben in Meter. Da die OpenInventor-Simulation alle Angaben in Millimeter gespeichert hat, muss der Algorithmus ebenfalls Meterangaben liefern.
 
 Des Weiteren müssen weitere definierte Angaben verändert werden:
 \begin{itemize}
@@ -243,16 +247,6 @@ Des Weiteren müssen weitere definierte Angaben verändert werden:
   \item Abschnittslänge für die spiralförmige Suche beim Absetzen des Fußes
   \item Minimal gültiger Stability-Margin
   \item Maximale Anzahl von Anhebungen oder Absetzungen von Füßen
-\end{itemize}
-
-\subsection{Nutzung des \textsc{tf}-Frameworks}
-
-Alle 2D und 3D-Berechnungen werden nun mit dem \textsc{tf}-Framework aus \ac{ROS} berechnet. Dieses nutzt die Klasse \emph{Vector3}, um Berechnungen durchzuführen. Diese Klasse bietet unter anderem folgende wichtige Methoden für Vektoren:
-\begin{itemize}
-  \item Grundlegende Rechenarten: Addition, Subtraktion, Multiplikation, Division
-  \item Länge der Vektors mittels \emph{length}
-  \item Normalisierung von Vektoren mittels \emph{normalise}
-  \item Distanz zweier Punkte mittels \emph{distance}
 \end{itemize}
 
 \subsection{Veränderung der Zufallszahlengenerierung}

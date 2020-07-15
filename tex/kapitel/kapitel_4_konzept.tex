@@ -1,6 +1,21 @@
 \chapter{Konzeption der Lösung}
 \label{kap4}
 
+
+
+TODO START
+
+Gut, dass dieses Kapitel schon vorhanden ist.  Sehr hilfreich wäre ein Architekturbild oder eins, das das Zusammenwirken von ROS+Gazebo zeigt, ggf. auch ROS+Roboter und wie sich der Laufplaner in ROS integriert. 
+Das gibt den Überblick und dann kann es in die Details der einzelnen Komponenten gehen.
+Mir ist klar, dass die erste Realisierung immer von unten nach oben erfolgt. Erst mit Erfahrung lässt sich ein Design von oben nach unten realisieren. Genau das ist für den Leser wichtig: Von der globalen Sicht hinunter zu den Details.
+Ich denke, das wird die Hauptbaustelle. Bei Implementierung und Tests sehe ich weniger Probleme. Das ist das, was Sie mit Ihrer Ausbildung an der HS gut beherrschen. Gerade für Ihre Firma ist die konzeptionelle Ebene sehr wichtig. Darüber vermitteln Sie Ideen dem Kunden. Das ist Ihre "Kunst". Bezüglich Umsetzung wird er Ihnen vertrauen. Das ist "Handwerk".
+Ich bin überzeugt, dass Sie die Fähigkeit haben, an diesem Punkt richtig gut zu sein.
+
+Zum Architekturbild:
+Vielleicht ist hilfreich, auch ein Architekturbild zur alten Lösung zu zeigen, damit der Unterschied deutlich wird.
+
+TODO END
+
 Dieses Kapitel nutzt die in \autoref{kap3} dargestellten verwandten Arbeiten, um ein Konzept für die Portierung des Laufplaners für den Akrobat in \ac{ROS} und Gazebo formal darzustellen. Als Basis dafür werden die Arbeiten von André Herms \autocite{herms2004} und Uli Ruffler \autocite{ruffler2006} herangezogen. Für die Darstellung einer Lösung sind zwei Aspekte von Bedeutung. Dies ist zum einen die Simulationsumgebung. Zum anderen ist dies der Laufplanungsalgorithmus. Beide Aspekte können getrennt voneinander betrachtet werden.
 
 \section{Simulationsumgebung} 

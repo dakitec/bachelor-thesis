@@ -3,9 +3,11 @@
 \nomgroup{A}
   \item [{$\vec{q}$}]\begingroup Gelenkvariablen\nomeqref {\relax 8.0}\nompageref{vii}
   \item [{$\vec{s}$}]\begingroup Position und Orientierung des Endeffektors\nomeqref {\relax 8.0}\nompageref{vii}
-  \item [{$^{a}_{b}T$}]\begingroup Transformationsmatrix von $a$ nach $b$\nomeqref {\relax 8.0}\nompageref{vii}
-  \item [{m}]\begingroup Masse\nomeqref {\relax 8.0}\nompageref{vii}
-  \item [{s}]\begingroup Skalierungsfaktor\nomeqref {\relax 8.0}\nompageref{vii}
-  \item [{V}]\begingroup Volumen\nomeqref {\relax 8.0}\nompageref{vii}
+  \item [{$^{a}_{b}T$}]\begingroup Transformationsmatrix von Gelenk $a$ nach $b$\nomeqref {\relax 8.0}\nompageref{vii}
+  \item [{$_{a}^{b}R$}]\begingroup Rotationsmatrix von Gelenk $a$ nach $b$\nomeqref {\relax 8.0}\nompageref{vii}
+  \item [{$m$}]\begingroup Masse\nomeqref {\relax 8.0}\nompageref{vii}
+  \item [{$P_{n}$}]\begingroup Wegpunkt n des Random Samplings\nomeqref {\relax 8.0}\nompageref{vii}
+  \item [{$s$}]\begingroup Skalierungsfaktor\nomeqref {\relax 8.0}\nompageref{vii}
+  \item [{$V$}]\begingroup Volumen\nomeqref {\relax 8.0}\nompageref{vii}
 
 \end{thenomenclature}

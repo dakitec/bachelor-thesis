@@ -11,7 +11,7 @@ Dieser Abschnitt stellt die für diese Arbeit relevanten Laufroboter vor. Dies i
 
 Dieser Unterabschnitt stellt den Lauron vor. Dieser wurde in verschiedener Literatur schon ausführlich dargestellt, welcher für diesen Abschnitt genutzt wird. \autocite{gassmann2000, troilo2007, berns1994adaptive, scholl2001modular, ziegenmeyer2009sechsbeinige}
 
-Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Dabei wurden Teile des Roboters mit traditionellen Techniken, andere Teile wie die Steuerung der Gelenke, die Navigation oder die Interpretation von Sensorinformation mit neuronalen Netzwerken entwickelt. Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische \ac{MCA}-Architektur ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek OpenInventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der \emph{Carausius morosus} (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen \autocite{cruse1976function}. Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. Die neuste Version des Laufroboters ist der \emph{Lauron V}.
+Die erste Version des Lauron (Laufender Roboter Neuronal gesteuert) wurde 1994 am Forschungszentrum für Informatik (FZI) in Karlsruhe \autocite{fzi} entwickelt. Dabei wurden Teile des Roboters mit traditionellen Techniken, andere Teile wie die Steuerung der Gelenke, die Navigation oder die Interpretation von Sensorinformation mit neuronalen Netzwerken entwickelt. Die zweite Version des Lauron verbessert die Sensorausstattung sowie die Mechanik des Laufroboters. Des Weiteren wurde das Steuerungsprinzip, das auf neuronalen Netzen basierte, durch die hierarichische \ac{MCA}-Architektur ausgetauscht. Für die dritte Version \emph{Lauron III}, siehe \autoref{kap2:lauron3}, existiert der vorliegende und zu übertragende Laufplaner in Form der 3D-Bibliothek Open Inventor \autocite{inventor}. Daher wird nun näher auf diese Version des Laufroboters sowie auf das grundlegende Konzept des Lauron als Nachahmung der \emph{Carausius morosus} (indische Stabheuschrecke) nach den Untersuchen von Holk Cruse eingegangen \autocite{cruse1976function}. Eine weitere Version des Laufroboters ist der \emph{Lauron IVb}, siehe \autoref{kap2:lauron4b}. Beide Laufroboter befinden sich aktuell an der Hochschule Mannheim. Des Weiteren gibt es noch den \emph{Lauron IVc}, der im Jahr 2005 fertiggestellt wurde. Die neuste Version des Laufroboters ist der \emph{Lauron V}.
 
 \begin{figure}[t!]
   \centering
@@ -937,7 +937,7 @@ Neben dem Random Sampling existieren noch weitere freie Laufmuster, welche im fo
 
 \section{Frameworks}
 
-Dieser Abschnitt stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird. Des Weiteren wird auch noch das Vorgängersystem des Laufplaners, das OpenInventor-Framework beschrieben.
+Dieser Abschnitt stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird. Des Weiteren wird auch noch das Vorgängersystem des Laufplaners, das Open Inventor-Framework beschrieben.
 
 \subsection{Robot Operating System}
 
@@ -1039,13 +1039,15 @@ Abschließend ist noch wichtig, dass Gazebo durch Plugins erweiterbar ist und ei
 
 \subsection{Open Inventor}
 
-TODO START
+Dieser Abschnitt handelt vom Open Inventor-Framework. Dieses Framework ist für die Arbeit von großer Bedeutung, da der zu migrierende Laufplaner auf diese Plattform läuft. Um eine verbesserte Lösung zu liefern, muss auch die Vorgängerversion behandelt werden. \autocite{inventor}
 
-Ich denke, dass hier auch der Open Inventor hinein sollte. Stammt aus den 90ern von SGI. Dateiendung .iv Das wurde nach VRML weiterentwickelt und daraus ging schließlich X3D hervor. Entstanden sind daraus auch Szenengraphensysteme, etwa Open Scene Graph. 
-Den Open Inventor gibt es heute noch. Der wird beispielsweise zur medizinischen Visualisierung benutzt (ggf. Zitat von Bernhard Preim, ich frage dazu auch gern bei Barbara Waldkirch oder Sandy Engelhardt nach. Bernhard kenne ich übrigens auch persönlich ...)
-Eine Alternativ-Implementierung ist Coin3D, verwendet beispielsweise bei OpenRave. Dazu gibt es eine Diss von Rosen Diankov, Aus der ecke kommt auch IKfast. Bitte nachschauen, von wem IKfast tatsächlich ist.
+Open Inventor ist ein 3D-Framework, das vollständig auf OpenGL basiert und objektorientiert programmiert ist. Das Framework wurde von der Firma Silicon Graphics im Jahr 1988 entwickelt und unterliegt der \emph{GNU Lesser General Public License}.
 
-TODO END
+Es existieren eine Vielzahl an Objekten und Methoden, um 3D-Anwendungen zu erstellen. Die verwendete Programmiersprache ist C++. Allerdings ist es auch möglich Open Inventor in der Programmiersprache C zu verwenden.
+
+Um möglichst kompatibel mit anderen Schnittstellen zu bleiben, haben sich die Entwickler für ein Dateiformat (.iv) entschieden, welches jegliche Objekte persistieren kann. Somit können Objekte importiert oder exportiert werden, um in- oder von anderen Umgebungen genutzt werden zu können. Das Dateiformat wurde in VRML weiterentwickelt, aus welchem X3D hervorging.
+
+Das OpenInventor-Framework wird auch heute noch, beispielsweise zur medizinischen Visualisierung von chirurgischen Eingriffen \autocite{preim2001interaktive}, genutzt.
 
 \section{Robotermodelle}
 

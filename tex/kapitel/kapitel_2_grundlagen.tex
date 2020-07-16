@@ -1049,7 +1049,7 @@ TODO END
 
 \section{Robotermodelle}
 
-Der folgende Abschnitt gibt einen Überblick über die Verwendung von Robotermodellen in \ac{ROS} und Gazebo.
+Der folgende Abschnitt gibt einen Überblick über die Verwendung von Robotermodellen in \ac{ROS} und Gazebo. Diese Themen werden in zahlreicher Literatur behandelt. \autocite{rosAnOpenSourceRobotOperatingSystem, learningROSForRoboticsProgramming, gentleIntroductionToROS}
 
 Robotermodelle können in \ac{ROS} in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, der Massenschwerpunkt und die Trägheitsmomente sowie ein Kollissionsmodell angegeben. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich.
 
@@ -1064,7 +1064,7 @@ Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacr
 
 Nun wird auf die drei wesentlichen Modelle des \ac{URDF}-Formats eingegangen: Das Visualisierungmodell, das Kollisionsmodell und das Modell für Massenschwerpunkte und Trägheitsmomente.
 
-\subsection{Aufsetzen des Visualisierungsmodells}
+\subsection{Visualisierungsmodell}
 
 Beim Visualisierungsmodell gibt es zwei Möglichkeiten der Angabe eines Segments.
 \begin{itemize}
@@ -1074,11 +1074,11 @@ Beim Visualisierungsmodell gibt es zwei Möglichkeiten der Angabe eines Segments
 
 Gerade bei Robotern wie dem Akrobat oder dem Lauron eignet sich die Verwendung einer \ac{STL}-Datei, da dort alle Details vorhanden sind und der Roboter real aussieht, während bei einem geometrischen Objekt keine Details sondern nur der grundlegende Aufbau erkennbar ist.
 
-\subsection{Aufsetzen des Kollisionsmodells}
+\subsection{Kollisionsmodell}
 
 Auch das Kollssionsmodell kann entweder als \ac{STL}-Datei oder als geometrisches Objekt angegeben werden. Da die \ac{STL}-Dateien viel detaillierter sind, wird daher zwar mehr Rechenleistung benötigt, aber auch die physikalischen Bewegungen sehen damit realer aus. Eine Möglichkeit wäre es die 3D-Modelle mittels MeshLab \autocite{LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136} runterzurechnen, so dass sie später besser von Gazebo verarbeitet werden können, da sie optimiert sind.
 
-\subsection{Aufsetzen des Modells für Massenschwerpunkte und Trägheitsmomente}
+\subsection{Massenschwerpunkt- und Trägheitsmomentmodell}
 
 \begin{figure}[t!]
  \centering

@@ -1,11 +1,6 @@
 \chapter{Implementierung in ROS und Gazebo}
 \label{kap5}
 
-TODO START:
-Frage: Wäre es sinnvoll, URDF, xacro und Gazebo-Modellierung mit in den Grundlagen zu bringen? Hierzu kann ich mir den Punkt "Robotermodelle und Koordinatensysteme" vorstellen, gegebenenfalls auch in einzelnen Abschnitten. Hier geht es um die Pronzipien, die dann in Implementierung nicht mehr erklärt werden müssen.
-TODO END:
-
-
 Dieses Kapitel stellt eine Implementierung für das in \autoref{kap4} dargestellte Konzept der Entwicklung einer Simulationsumgebung und der Portierung des Algorithmus Random Sampling zur Laufplanung für den Akrobat dar.
 
 \section{Vorgehensweise und Aufbau des Pakets}
@@ -84,7 +79,7 @@ Das erste Ziel ist es nun, den Akrobat in Gazebo anzuzeigen. Dazu muss das Robot
 
 \subsection{Aufsetzen des Robotermodells mittels \ac{URDF}}
 
-Als erstes wird das Robotermodell in das neue \ac{ROS}-Paket integriert. Die vorliegende Roboterbeschreibung liegt im \ac{URDF}-Format vor. Desweiteren existieren die 3D-Modelle im \emph{stl}-Format, welche im Robotermodell eingebunden sind. Damit das Robotermodell auch bei späteren Änderungen noch wartbar bleibt, wird die zusammenhängende Datei aufgeteilt, so dass nun eine Datei für die Robotermitte und eine Datei für jedes einzelne Bein existiert. Dabei ist das Wrapper-Format von \ac{URDF} mit dem Namen \ac{Xacro} sehr von Vorteil, da es mehr Flexibilität in \ac{URDF}-Dateien bringt. Dadurch lassen sich unter anderem andere \ac{Xacro}-Dateien per \emph{include} einbinden, was sich in diesem Fall als nützlich herausgestellt hat. Mit diesem Aufbau könnte das Robotermodell nun schon über ein Launch-File im 3D Visualisierungs-Tool "`rviz"' angezeigt werden. \autoref{Kap4:AkrobatRviz} zeigt stellt dies sowie die Koordinatensystemen des Roboters dar.
+Als erstes wird das Robotermodell in das neue \ac{ROS}-Paket integriert. Die vorliegende Roboterbeschreibung liegt im \ac{URDF}-Format vor. Des Weiteren existieren die 3D-Modelle im \emph{stl}-Format, welche im Robotermodell eingebunden sind. Damit das Robotermodell auch bei späteren Änderungen noch wartbar bleibt, wird die zusammenhängende Datei in das \ac{Xacro}-Format umgebaut, so dass nun eine Datei für die Robotermitte und eine Datei für jedes einzelne Bein existiert. Mit diesem Aufbau könnte das Robotermodell nun schon über ein Launch-File im 3D Visualisierungs-Tool "`rviz"' angezeigt werden. \autoref{Kap4:AkrobatRviz} zeigt stellt dies sowie die Koordinatensystemen des Roboters dar.
 
 \begin{figure}[b!]
   \centering
@@ -99,27 +94,7 @@ Für das spätere Hinzufügen des Akrobats in die \emph{Gazebo}-Simulation müss
   \item Aufsetzen der Massenschwerpunkte und der Trägheitsmomente durch das Attribut <inertia>
 \end{itemize}
 
-\subsubsection{Aufsetzen des Kollisionsmodells}
-
-Das Kollisionsmodell muss für jedes Körperteil einzeln definiert werden. Es wird durch ein Ursprung und einem geometrischen Objekt definiert. Das \ac{ROS} stellt hierfür eine Schnittstelle zur Verfügung, die zwei Möglichkeiten anbietet. Zum einen können einfache geometrische Objekte wie ein Zylinder oder ein Quader als Kollisionsmodell definiert werden. Dies ist in unserem Fall nicht möglich, da sich die Beinsegmente nicht exakt durch einzelne geometrische Objekte modellieren lassen. Daher ist es sinnvoll auf die zweite Variante zurückzugreifen und die exakten 3D-Modelle über die stl-Dateien als Kollisionsmodelle anzugeben. Da diese viel detaillierter sind, wird daher zwar mehr Rechenleistung benötigt, aber auch die physikalischen Bewegungen sehen realer aus. Eine Möglichkeit wäre es die 3D-Modelle mittels MeshLab \autocite{LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136} runterzurechnen, so dass sie später besser von Gazebo verarbeitet werden können, da sie optimiert sind.
-
-\subsubsection{Aufsetzen der Massenschwerpunkte und der Trägheitsmomente}
-
-\begin{figure}[b!]
-  \centering
-  \includegraphics[height=8cm]{kapitel4/meshlab-inertia}
-  \caption{Auslesen der Trägheitsmomente mit MeshLab}
-  \label{Kap4:MeshLabInertia}
-\end{figure}
-
-Ebenfalls muss die Massenträgheit für jedes Körperteil einzeln definiert werden. Dabei wird eine Masse sowie das Trägheitsmoment angegeben. Die Masse lässt sich durch Wiegen der einzelnen Körperteile herausfinden. Um das Trägheitsmoment für das jeweilige Körperteil herauszufinden, bietet Gazebo die Möglichkeit die Werte über MeshLab auszulesen und umzuwandeln \autocite{gazebo-inertial}. \autoref{Kap4:MeshLabInertia} zeigt die Extraktion der Trägheitsmomente aus MeshLab. Da MeshLab das Ergebnis rundet, muss das Körperteil um einen Faktor $s$ skaliert werden, um eine höhere Genauigkeit zu erreichen. Dazu eignet sich ein Faktor von 10 oder 100. Erst dann kann die Berechnung über die berechnete Masse $m$ und dem berechneten Volumen $V$ sowie die Rückskalierung über den Faktor $s$ in \autoref{ml1} mit dem Ergebnis aus MeshLab $Ergebnis_{vorher}$ ausgeführt werden.
-
-\begin{equation}
-  Ergebnis_{nachher} = \frac{Ergebnis_{vorher} \cdot m \cdot V}{s}
-\label{ml1}
-\end{equation}
-
-Zum Abschluss werden die berechneten Trägheitsmomente aus dem $Ergebnis_{nachher}$ in das \ac{URDF}-File des \ac{ROS}-Packages eingetragen.
+Danach ist das statische Modell fertig aufgesetzt. Nun müssen die Gelenkmotoren an den Gelenken definiert werden, damit diese von \ac{ROS} angesteuert werden können.
 
 \subsection{Definition der Gelenkmotoren mittels ros\_control}
 

@@ -1,7 +1,7 @@
 \chapter{Grundlagen}
 \label{kap2}
 
-Dieses Kapitel stellt die benötigten Grundlagen für die Portierung des Laufplaners in  \ac{ROS} und Gazebo dar. Zunächst geht das Kapitel auf die relevanten Laufroboter, dann auf Kinematik und verschiedene Laufmuster ein. Zuletzt werden die benötigten Frameworks beschrieben.
+Dieses Kapitel stellt die benötigten Grundlagen für die Portierung des Laufplaners in \ac{ROS} und Gazebo dar. Zunächst geht das Kapitel auf die relevanten Laufroboter, dann auf Kinematik und verschiedene Laufmuster sowie auf die benötigten Frameworks ein. Zuletzt wird noch die Verwendung von Robotermodellen in \ac{ROS} und Gazebo dargestellt.
 
 \section{Laufroboter}
 
@@ -937,7 +937,7 @@ Neben dem Random Sampling existieren noch weitere freie Laufmuster, welche im fo
 
 \section{Frameworks}
 
-Dieses Kapitel stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird. Des Weiteren wird auch noch das Vorgängersystem des Laufplaners, das OpenInventor-Framework beschrieben.
+Dieser Abschnitt stellt die benötigten Frameworks für diese Arbeit dar. Das ist zum einen das \ac{ROS}, welches die Basis der Entwicklung darstellt. Zum anderen ist das Gazebo, welches als Physik-Engine und 3D-Visualisierung genutzt wird. Des Weiteren wird auch noch das Vorgängersystem des Laufplaners, das OpenInventor-Framework beschrieben.
 
 \subsection{Robot Operating System}
 
@@ -992,17 +992,6 @@ Nahezu alle wichtigen \ac{ROS}-Dienste lassen sich über die Kommandozeile steue
 
 Des Weiteren gibt es für einige Standardbefehle aus Linux Wrapper-Funktionen wie \glq ls\grq und \glq cd\grq, welche speziell für \ac{ROS} entwickelt wurden. Diese sind \glq rosls\grq und \glq roscd\grq, welche den \ac{ROS}-Ordner auflisten oder direkt in ein \ac{ROS}-Package wechseln.
 
-\begin{figure}[t!]
-  \centering
-  \includegraphics[height=8cm]{kapitel2/urdtographizakrobat}
-  \caption{Darstellung des Transformationsbaums des Akrobats}
-  \label{Kap2:urdtographizakrobat}
-\end{figure}
-
-\subsubsection{Robotermodell}
-
-Robotermodelle können in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, der Massenschwerpunkt und die Trägheitsmomente sowie ein Kollissionsmodell angegeben. Die Visualisierung und die Kollission erfolgt beispielsweise über das Format \ac{STL}, aber auch, falls möglich, über einfache geometrische Objekte. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich. Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacro} zielt vor allem darauf ab das Format lesbarer und kürzer zu gestalten. Über Tools wie den rviz, können Robotermodelle visualisiert werden. Mittels des Kommandozeilen-Tools urdf\_to\_graphiz lässt sich der Transformationsbaum eines Robotermodell visualisieren. Dies wird in \autoref{Kap2:urdtographizakrobat} am Beispiel des Akrobat dargestellt.
-
 \subsubsection{\textsc{tf}-Framework}
 
 Das \textsc{tf}-Framework hilft bei Koordinatentransformationen. Damit ist es beispielsweise möglich, die Position des Endeffektors relativ zum Roboterkörper berechnen zu lassen. Des Weiteren bietet das Framework geometrische Klassen, um Berechnungen durchzuführen. Die Klasse \emph{Vector3} bietet unter anderem folgende wichtige Methoden und Funktionen für Vektoren:
@@ -1050,8 +1039,59 @@ Abschließend ist noch wichtig, dass Gazebo durch Plugins erweiterbar ist und ei
 
 \subsection{Open Inventor}
 
-TODO
+TODO START
 
 Ich denke, dass hier auch der Open Inventor hinein sollte. Stammt aus den 90ern von SGI. Dateiendung .iv Das wurde nach VRML weiterentwickelt und daraus ging schließlich X3D hervor. Entstanden sind daraus auch Szenengraphensysteme, etwa Open Scene Graph. 
 Den Open Inventor gibt es heute noch. Der wird beispielsweise zur medizinischen Visualisierung benutzt (ggf. Zitat von Bernhard Preim, ich frage dazu auch gern bei Barbara Waldkirch oder Sandy Engelhardt nach. Bernhard kenne ich übrigens auch persönlich ...)
 Eine Alternativ-Implementierung ist Coin3D, verwendet beispielsweise bei OpenRave. Dazu gibt es eine Diss von Rosen Diankov, Aus der ecke kommt auch IKfast. Bitte nachschauen, von wem IKfast tatsächlich ist.
+
+TODO END
+
+\section{Robotermodelle}
+
+Der folgende Abschnitt gibt einen Überblick über die Verwendung von Robotermodellen in \ac{ROS} und Gazebo.
+
+Robotermodelle können in \ac{ROS} in einem \ac{URDF} angegeben werden. Dieses Format beinhaltet jedes Segment und jedes Gelenk sowie deren Zusammenspiel. Dabei wird für jedes Segment die Visualisierung, der Massenschwerpunkt und die Trägheitsmomente sowie ein Kollissionsmodell angegeben. Die Gelenke beinhalten den Verweis auf das Eltern- und auf das Kindelement sowie einen Arbeitsbereich.
+
+\begin{figure}[b!]
+  \centering
+  \includegraphics[height=8cm]{kapitel2/urdtographizakrobat}
+  \caption{Darstellung des Transformationsbaums des Akrobats}
+  \label{Kap2:urdtographizakrobat}
+\end{figure}
+
+Eine Möglichkeit das \ac{URDF}-Format zu verbessern bieten \ac{Xacro}. \ac{Xacro} zielt vor allem darauf ab das Format lesbarer und kürzer zu gestalten. Beispielsweise lassen sich über den \emph{include}-Befehl Dateien einbinden, was in \ac{URDF} nicht möglich ist. Über Tools wie den rviz, können Robotermodelle visualisiert werden. Mittels des Kommandozeilen-Tools urdf\_to\_graphiz lässt sich der Transformationsbaum eines Robotermodells visualisieren. Dies wird in \autoref{Kap2:urdtographizakrobat} am Beispiel des Akrobat dargestellt.
+
+Nun wird auf die drei wesentlichen Modelle des \ac{URDF}-Formats eingegangen: Das Visualisierungmodell, das Kollisionsmodell und das Modell für Massenschwerpunkte und Trägheitsmomente.
+
+\subsection{Aufsetzen der Visualisierung}
+
+Beim Visualisierungsmodell gibt es zwei Möglichkeiten der Angabe eines Segments.
+\begin{itemize}
+\item Als \ac{STL}-Datei
+\item Als geometrisches Objekt (z.B. ein Zylinder oder ein Quader)
+\end{itemize}
+
+Gerade bei Robotern wie dem Akrobat oder dem Lauron eignet sich die Verwendung einer \ac{STL}-Datei, da dort alle Details vorhanden sind und der Roboter real aussieht, während bei einem geometrischen Objekt keine Details sondern nur der grundlegende Aufbau erkennbar ist.
+
+\subsection{Aufsetzen des Kollisionsmodells}
+
+Auch das Kollssionsmodell kann entweder als \ac{STL}-Datei oder als geometrisches Objekt angegeben werden. Da die \ac{STL}-Dateien viel detaillierter sind, wird daher zwar mehr Rechenleistung benötigt, aber auch die physikalischen Bewegungen sehen damit realer aus. Eine Möglichkeit wäre es die 3D-Modelle mittels MeshLab \autocite{LocalChapterEvents:ItalChap:ItalianChapConf2008:129-136} runterzurechnen, so dass sie später besser von Gazebo verarbeitet werden können, da sie optimiert sind.
+
+\subsection{Aufsetzen der Massenschwerpunkte und der Trägheitsmomente}
+
+\begin{figure}[t!]
+ \centering
+ \includegraphics[height=8cm]{kapitel2/meshlab-inertia}
+ \caption{Auslesen der Trägheitsmomente mit MeshLab}
+ \label{Kap2:MeshLabInertia}
+\end{figure}
+
+Ebenfalls muss die Massenträgheit für jedes Körperteil einzeln definiert werden. Dabei wird eine Masse sowie das Trägheitsmoment angegeben. Die Masse lässt sich durch Wiegen der einzelnen Körperteile herausfinden. Um das Trägheitsmoment für das jeweilige Körperteil herauszufinden, bietet Gazebo die Möglichkeit die Werte über MeshLab auszulesen und umzuwandeln \autocite{gazebo-inertial}. \autoref{Kap2:MeshLabInertia} zeigt die Extraktion der Trägheitsmomente aus MeshLab. Da MeshLab das Ergebnis rundet, muss das Körperteil um einen Faktor $s$ skaliert werden, um eine höhere Genauigkeit zu erreichen. Dazu eignet sich ein Faktor von 10 oder 100. Erst dann kann die Berechnung über die berechnete Masse $m$ und dem berechneten Volumen $V$ sowie die Rückskalierung über den Faktor $s$ in \autoref{ml1} mit dem Ergebnis aus MeshLab $Ergebnis_{vorher}$ ausgeführt werden.
+
+\begin{equation}
+ Ergebnis_{nachher} = \frac{Ergebnis_{vorher} \cdot m \cdot V}{s}
+\label{ml1}
+\end{equation}
+
+Zum Abschluss können die berechneten Trägheitsmomente aus dem $Ergebnis_{nachher}$ in die \ac{URDF}-Datei eingetragen werden.

@@ -1,10 +1,6 @@
 \chapter{Testen der Ergebnisse}
 \label{kap6}
 
-TODO START:
-Grafiken auf mathplotlib2tikz umbauen und die Fußbewegungen 3D darstellen
-TODO END
-
 Dieses Kapitel testet die Implementierung des nach \ac{ROS} und Gazebo migrierten Laufplaners. Zum einen können die Ergebnisse durch die Visualisierung in Gazebo überprüft werden. Eine weitere Möglichkeit der Auswertung, welche sich auch zur Fehleranalyse eignet, ist die Nutzung eines Frameworks, um mathematische Darstellungen anzufertigen. Dazu nutzt diese Arbeit das auf Python basierende Framework matplotlib \autocite{barrett2005matplotlib}. Dieses wird mit Hilfe einem Header für C++ eingebunden, welcher die Befehle im Hintergrund in Python ausführt. Damit lassen sich unter anderem Bewegungen der Füße und des Roboterkörpers in einem Graphen darstellen.
 
 Das Random Sampling erfolgt wie in \autoref{kap3} beschrieben. Dabei gibt es einige Schritte, die bei der Implementierung fehlerhaft sein können, da sie auf verschiedenen Robotern mit anderen Werten ablaufen müssen. 
@@ -50,11 +46,17 @@ Sind diese Werte angepasst, ergeben sich wie in \autoref{kap5:footDownNormal1} u
 
 \begin{figure}[b!]
     \begin{center}
-    \includegraphics[width=0.94\textwidth]{kapitel5/footmov1}\hfill
+    \resizebox{0.75\linewidth}{!}{
+      \input{bilder/kapitel5/footmov1.pgf}
+    }
     \\[\smallskipamount]
-    \includegraphics[width=0.94\textwidth]{kapitel5/footmov2}\hfill
+    \resizebox{0.75\linewidth}{!}{
+      \input{bilder/kapitel5/footmov2.pgf}
+    }
     \\[\smallskipamount]
-    \includegraphics[width=0.94\textwidth]{kapitel5/footmov3}\hfill
+    \resizebox{0.75\linewidth}{!}{
+      \input{bilder/kapitel5/footmov3.pgf}
+    }
     \caption{Auswertung von Bewegungen von Körper und Füßen}\label{kap5:footCenterMovements}
     \end{center}
 \end{figure}

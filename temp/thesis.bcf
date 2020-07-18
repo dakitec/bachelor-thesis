@@ -2041,16 +2041,18 @@
     <bcf:citekey order="31">herms2004</bcf:citekey>
     <bcf:citekey order="32">inventor</bcf:citekey>
     <bcf:citekey order="33">ruffler2006</bcf:citekey>
-    <bcf:citekey order="34">herms2004</bcf:citekey>
-    <bcf:citekey order="35">ruffler2006</bcf:citekey>
+    <bcf:citekey order="34">chitta2017ros_control</bcf:citekey>
+    <bcf:citekey order="35">chitta2017ros_control</bcf:citekey>
     <bcf:citekey order="36">herms2004</bcf:citekey>
-    <bcf:citekey order="37">inventor</bcf:citekey>
-    <bcf:citekey order="38">akrobat</bcf:citekey>
-    <bcf:citekey order="39">hopper</bcf:citekey>
-    <bcf:citekey order="40">pugixml</bcf:citekey>
-    <bcf:citekey order="41">matsumoto1998mersenne</bcf:citekey>
-    <bcf:citekey order="42">barrett2005matplotlib</bcf:citekey>
-    <bcf:citekey order="43">fellmann2007</bcf:citekey>
+    <bcf:citekey order="37">ruffler2006</bcf:citekey>
+    <bcf:citekey order="38">herms2004</bcf:citekey>
+    <bcf:citekey order="39">inventor</bcf:citekey>
+    <bcf:citekey order="40">akrobat</bcf:citekey>
+    <bcf:citekey order="41">hopper</bcf:citekey>
+    <bcf:citekey order="42">pugixml</bcf:citekey>
+    <bcf:citekey order="43">matsumoto1998mersenne</bcf:citekey>
+    <bcf:citekey order="44">barrett2005matplotlib</bcf:citekey>
+    <bcf:citekey order="45">fellmann2007</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

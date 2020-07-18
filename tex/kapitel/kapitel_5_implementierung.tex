@@ -7,11 +7,11 @@ Dieses Kapitel stellt eine Implementierung für das in \autoref{kap4} dargestell
 
 Da eine komplette Kopie des vorherigen Algorithmus zur Laufplanung auf Grund verschiedener Umgebungen nicht möglich ist, ist die Vorgehensweise schrittweise wichtige Codestellen zu übertragen und zu testen. Dies hat den Vorteil, dass Funktionen unabhängig voneinander getestet werden können. Damit ergibt sich der folgende Gesamtablauf für die Portierung:
 \begin{enumerate}
-  \item Aufsetzen des \ac{ROS}-Pakets
-  \item Aufsetzen des Pakets
+  \item Aufsetzen der Simulation
   \begin{enumerate}
     \item Aufsetzen des Roboter-Modells
     \item Aufsetzen der Gelenkmotoren
+    \item Aufsetzen der Umgebung mittels Gazebo
   \end{enumerate}
   \item Aufsetzen der Fußsteuerung
   \item Testen der Fußsteuerung

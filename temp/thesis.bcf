@@ -2050,9 +2050,7 @@
     <bcf:citekey order="40">pugixml</bcf:citekey>
     <bcf:citekey order="41">matsumoto1998mersenne</bcf:citekey>
     <bcf:citekey order="42">barrett2005matplotlib</bcf:citekey>
-    <bcf:citekey order="43">herms2004</bcf:citekey>
-    <bcf:citekey order="44">ruffler2006</bcf:citekey>
-    <bcf:citekey order="45">fellmann2007</bcf:citekey>
+    <bcf:citekey order="43">fellmann2007</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

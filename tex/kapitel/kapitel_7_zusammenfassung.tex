@@ -1,18 +1,14 @@
 \chapter{Zusammenfassung}
 \label{kap7}
 
-TODO START:
-Tipp:
-Fassen Sie alle Erkenntnisse und Ergebnisse der Arbeit sorgsam ("buchhalterisch genau") zusammen. Das ist wie das Etikett auf der Mineralwasserflasche. Was da nicht drauf steht, ist an Mineralien nicht drin. Beim strategischen lesen liest man das gleich nach dem Abstract.
-Ich meine, dass das Reflektieren einzelner Kapitel hier nicht sinnvoll ist, da Grundlagenkapitel naturgemäß keine neuen Ergebnisse darstellen.
-Neue Erkenntnisse über den alten Laufplaner sind aber durchaus sinnvoll.
-Wenn Sie alles zusammengetragen haben, bringen Sie noch ein "Fazit über alles", sozusagen die "Zusammenfassung der Zusammenfassung".
-TODO END
-
 Das Ziel dieser Arbeit war es den Laufplaner für den Lauron III von André Herms, welcher über die OpenInventor-Simulation entwickelt wurde, für den Akrobat auf \ac{ROS} und Gazebo bereitzustellen.
 
-Um dieses Ziel zu erreichen, mussten in \autoref{kap2} die Grundlagen gelegt werden. Das Kapitel beschäftigt sich zunächst mit den beiden relevanten Laufrobotern Lauron und Akrobat, um die Unterschiede, welche für eine  Portierung wichtig sind, herauszuarbeiten. Danach wurden die Grundlagen für die direkte und inverse Kinematik gelegt, welche für die Fußsteuerung des Laufroboters benötigt werden. Danach geht das Kapitel auf verschiedene Arten der Laufplanung ein. Zuletzt führt das Kapitel noch in die Zielsysteme \acf{ROS} und Gazebo ein.
+Dazu geht diese Arbeit in \autoref{kap3} zunächst auf die relevanten verwandten Arbeiten von André Herms und Uli Ruffler ein. André Herms hat verschiedene Algorithmen zur Laufplanung verglichen und anschließend über vier Bewertungskriterien das Random Sampling ausgewählt. Dieses nutzt er, um einen Laufplaner in OpenInventor für den Lauron III zu entwickeln. Dieser Laufplaner wird anschließend von Uli Ruffler auf eine inkrementelle Arbeitsweise weiterentwickelt.
 
-Danach werden die verwandte Arbeiten von André Herms \autocite{herms2004} und Uli Ruffler \autocite{ruffler2006} in \autoref{kap3} dargestellt. Diese werden als Basis genutzt, um den neuen Laufplaner für den Akrobat in \ac{ROS} und Gazebo zu entwickeln. \autoref{kap4} stellt ein Konzept zur Entwicklung einer solchen Software dar. \autoref{kap5} stellt die mögliche Implementierung dieses Konzepts dar.
+Da es sich als schwierig herausgestellt hat, den Laufplaner von André Herms auf den Akrobat zu übertragen, da dieser zunächst ausschließlich für die Simulation entwickelt wurde, stellt diese Arbeit in \autoref{kap4} ein Konzept zur Migration in ein neues System vor, welches \ac{ROS} und Gazebo nutzt. Hier wird die Architektur sowie die Schnittstellen zu \ac{ROS} und der Laufplanung dargestellt.
+
+\autoref{kap5} implementiert dann das dargelegte Konzept. Im Kapitel wird zunächst die Simulation aufgesetzt. Dazu gehört das Setup des Roboter-Modells in \ac{URDF} bzw. \ac{Xacro} sowie das Setup der Gelenkmotoren mittels ros\_control. Außerdem wird die Gazebo-Simulation im Paket definiert. Dann wird die Ausgangsposition des Roboters mit Hilfe des \textsc{tf}-Frameworks definiert. Als nächstes muss es eine Möglichkeit der Generierung und der Einlesung von Bewegungen als xml-Datei geben. Dies wird mit dem Dreifußgang getestet, so dass anschließend der Laufplanungsalgorithmus Random Sampling implementiert werden kann.
 
 Zum Abschluss werden die generierten Bewegungen des Random Samplings, insbesondere die Fuß- und Körperbewegungen, in \autoref{kap6} grafisch mit Hilfe der Bibliothek matplotlib ausgewertet.
+
+Zusammenfassend existiert nun ein \ac{ROS}-Paket mit einer Simulationsumgebung, die sich unkompliziert durch echte Hardware austauschen lassen kann, da beide das \ac{ROS} verwenden und auf die selben Schnittstellen zugreifen.

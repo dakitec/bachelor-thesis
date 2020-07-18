@@ -77,7 +77,7 @@ Während der Arbeit hat es sich als sinnvoll herausgestellt, die Portierung des 
 
 Das erste Ziel ist es nun, den Akrobat in Gazebo anzuzeigen. Dazu muss das Robotermodell integriert werden, die Gelenkmotoren definiert werden und die Gazebo-Welt aufgesetzt werden.
 
-\subsection{Aufsetzen des Robotermodells mittels \ac{URDF}}
+\subsection{Aufsetzen des Robotermodells mittels URDF}
 
 Als erstes wird das Robotermodell in das neue \ac{ROS}-Paket integriert. Die vorliegende Roboterbeschreibung liegt im \ac{URDF}-Format vor. Des Weiteren existieren die 3D-Modelle im \emph{stl}-Format, welche im Robotermodell eingebunden sind. Damit das Robotermodell auch bei späteren Änderungen noch wartbar bleibt, wird die zusammenhängende Datei in das \ac{Xacro}-Format umgebaut, so dass nun eine Datei für die Robotermitte und eine Datei für jedes einzelne Bein existiert. Mit diesem Aufbau könnte das Robotermodell nun schon über ein Launch-File im 3D Visualisierungs-Tool "`rviz"' angezeigt werden. \autoref{Kap4:AkrobatRviz} zeigt stellt dies sowie die Koordinatensystemen des Roboters dar.
 

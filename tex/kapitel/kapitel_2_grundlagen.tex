@@ -196,9 +196,9 @@ Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum
 
 \begin{equation}
   \begin{aligned}
-    \alpha & = \arctan{(\frac{\alpha_{21}}{\alpha_{11}})} \\[1em]
-    \beta & = \arctan{(\frac{-\alpha_{31}}{\alpha_{11} \cos{\gamma} + \alpha_{21} \sin{\gamma}})} \\[1em]
-    \gamma & = \arctan{(\frac{\alpha_{32}}{\alpha_{33}})}
+    \alpha & = \arctan{\left(\frac{\alpha_{21}}{\alpha_{11}}\right)} \\[1em]
+    \beta & = \arctan{\left(\frac{-\alpha_{31}}{\alpha_{11} \cos{\gamma} + \alpha_{21} \sin{\gamma}}\right)} \\[1em]
+    \gamma & = \arctan{\left(\frac{\alpha_{32}}{\alpha_{33}}\right)}
   \end{aligned}
   \label{dk6}
 \end{equation}
@@ -212,7 +212,7 @@ Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum
   \label{Kap2:inversekinematik}
 \end{figure}
 
-Mit Hilfe der inversen Kinematik lässt sich nun berechnen, wie die Gelenkswinkel ausgerichtet werden müssen, damit der Endeffektor an eine bestimmte Position kommt (\autoref{Kap2:inversekinematik}). Dies ist gleichbedeutend mit der inversen Funktion der direkten Kinematik (\autoref{ik1}).
+Mit Hilfe der inversen Kinematik lässt sich nun berechnen, wie die Gelenkwinkel ausgerichtet werden müssen, damit der Endeffektor an eine bestimmte Position kommt (\autoref{Kap2:inversekinematik}). Dies ist gleichbedeutend mit der inversen Funktion der direkten Kinematik (\autoref{ik1}).
 \begin{equation}
   \vec{q} = f^{-1}(\vec{s})
 \label{ik1}
@@ -222,19 +222,63 @@ Dabei ist zu beachten, dass es in den meisten Fällen für eine Eingabe mehrere 
 
 Da bereits die Funktion der direkten Kinematik eine nichtlineare Funktion ist, ist auch die inverse Funktion eine nichtlineare Funktion. Das Problem gehört damit in die Kategorie der Lösung eines nichtlinearen Gleichungssystems. Dies lässt sich über eine analytisches Verfahren oder annähernd über ein numerisches Verfahren lösen.
 
-Bei der analytischen Methode wird versucht, auf Basis der geometrischen Eigenschaften eine Formel herzuleiten. Dies wird umso schwerer, je mehr Freiheitsgrade die kinematische Kette hat. Der Vorteil liegt darin, dass die analytische Lösung ersten alle möglichen Gelenkstellungen für eine Position liefert und zweitens, dass sie wesentlich performanter ist. Die Lösungen sind exakt und Singularitäten können bereits beim Aufstellen der Gleichung festgestellt werden.
+\subsubsection{Analytische Lösung}
+
+Bei der analytischen Lösung wird versucht, auf Basis der geometrischen Eigenschaften eine Formel herzuleiten. Dies wird umso schwerer, je mehr Freiheitsgrade die kinematische Kette hat. Der Vorteil liegt darin, dass die analytische Lösung ersten alle möglichen Gelenkstellungen für eine Position liefert und zweitens, dass sie wesentlich performanter ist. Die Lösungen sind exakt und Singularitäten können bereits beim Aufstellen der Gleichung festgestellt werden.
 
 Die Software \emph{ikfast} \autocite{diankov2010ikfast} findet Lösungen und erstellt Gleichungen für die inverse Kinematik einer kinematischen Kette. Dabei nutzt die Software im Gegensatz zu anderer Software statt der numerischen die analytische Methode.
+
+Der folgende Abschnitt stellt die Berechnung der inversen Kinematik eines Beines nach der Arbeit von Thomas Ihme \autocite{ihme02} dar, welche sich auch für den Akrobat und den Lauron nutzen lassen.
+
+\autoref{kap2:inversekinematik1} stellt die geometrischen Parameter eines Beines dar. \autoref{kap2:inversekinematik2} zeigt die geometrischen Beziehungen der Gelenkwinkel im RZ-System. Daraus lassen sich die Hilfsvariablen $R$ in \autoref{ik1} und $X$ sowie $Y$ in \autoref{ik2} definieren.
+
+\begin{equation}
+  R &= \sqrt{r^{2}_{x_1} + \left(r_{x_2} - A_{x_2}^2 \right)} - B
+  \label{ik1}
+\end{equation}
+
+\begin{equation}
+  \begin{pmatrix}
+    X\\ 
+    Y\\ 
+    1\\
+  \end{pmatrix} &= {^{XY}_{B}T} \cdot {^{B}\vec{r}_{O,F}} = 
+  \begin{pmatrix}
+    1 & 0 & 0\\ 
+    0 & 1 & -A_{x_2}\\ 
+    0 & 0 & 1\\
+  \end{pmatrix} \cdot
+  \begin{pmatrix}
+    x_1\\ 
+    x_2\\ 
+    1\\
+  \end{pmatrix} =
+  \begin{pmatrix}
+    x_1\\ 
+    x_2 - A_{x_2}\\ 
+    1\\
+  \end{pmatrix}
+  \label{ik2}
+\end{equation}
+
+Diese Hilfsvariablen werden für die Herleitung der Winkel der Gelenke in \autoref{ik3} genutzt.
+  
+\begin{equation}
+  \begin{aligned}
+    \alpha & = \arctan{\left(\frac{X}{Y}\right)} \\[1em]
+    \gamma & = \arccos{\left(\frac{1}{2} \cdot \frac{R^2 + Z^2 - C^2 - D^2}{C \cdot D}\right)} \\[1em]
+    \beta & = \arctan{\left(\frac{Z \cdot C + Z \cdot D \cdot \cos{(\gamma)} - R \cdot D \cdot \sin{(\gamma)}}{R \cdot C + R \cdot D \cdot \cos{(\gamma)} + Z \cdot D \cdot \sin{(\gamma)}}\right)}
+  \end{aligned}
+  \label{ik3}
+\end{equation}
+
+\subsubsection{Numerische Lösung}
 
 Bei der numerischen Lösung wird mittels einer linearen Annäherung versucht die Lösung für $f^{-1}$ zu finden. Dies lässt sich mit der Jacobi-Matrix berechnen. Dazu werden Teilfunktionen für $x$, $y$, $z$, $\alpha$, $\beta$ und $\gamma$ benötigt, welche sich aus der Transformationsmatrix der direkten Kinematik ergeben. Die Teilfunktionen werden dann nach jeder Variablen partiell abgeleitet. Dies ergibt die $6\,x\,n$ Jacobi-Matrix. Sie beschreibt die Änderung der Position des Endeffektors bei Änderung der Gelenkstellungen.
 
 Durch weitere Umstellung der Funktion ergibt sich eine Gleichung für die lineare Annäherung an die gewünschte Funktion. Diese Lösung wird dann mittels direkter Kinematik überprüft. Ist die Abweichung zu groß, wird die Jacobi-Matrix mit den zuvor berechneten Gelenkstellungen erneut berechnet. Dies ergibt die lineare Annäherung an die Lösung. Wichtig ist dabei, dass eine maximale Zahl an Iterationen für den Algorithmus angegeben ist, da es manchmal auch gar keine Lösung geben kann.
 
 Im Gegensatz zur analytischen Methode liefert die numerische Lösung immer nur einen Wert. Ein weiteres Problem der numerischen Lösung sind Singularitäten, welche auftreten können, wenn die Jacobi-Matrix an Rang verliert und somit singulär wird. Die Folge ist, dass die Matrix nicht mehr invertierbar ist und damit keine Lösung mehr berechnet werden kann.
-
-TODO START:
-Hier bitte überlegen, ob die Formeln für die analytische Lösung gezeigt werden können. Für Akrobat und meine Diss ist das grundsätzlich gleich. Ich empfehle die Formeln von Wilen. 
-TODO END
 
 \section{Laufplanung}
 

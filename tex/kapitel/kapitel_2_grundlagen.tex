@@ -224,13 +224,37 @@ Da bereits die Funktion der direkten Kinematik eine nichtlineare Funktion ist, i
 
 \subsubsection{Analytische Lösung}
 
+\begin{figure}[b!]
+  \centering
+  \includegraphics[height=8cm]{kapitel2/ik1}
+  \caption{Geometrischen Parameter eines Beines}
+  \label{kap2:inversekinematik1}
+\end{figure}
+
 Bei der analytischen Lösung wird versucht, auf Basis der geometrischen Eigenschaften eine Formel herzuleiten. Dies wird umso schwerer, je mehr Freiheitsgrade die kinematische Kette hat. Der Vorteil liegt darin, dass die analytische Lösung ersten alle möglichen Gelenkstellungen für eine Position liefert und zweitens, dass sie wesentlich performanter ist. Die Lösungen sind exakt und Singularitäten können bereits beim Aufstellen der Gleichung festgestellt werden.
 
 Die Software \emph{ikfast} \autocite{diankov2010ikfast} findet Lösungen und erstellt Gleichungen für die inverse Kinematik einer kinematischen Kette. Dabei nutzt die Software im Gegensatz zu anderer Software statt der numerischen die analytische Methode.
 
 Der folgende Abschnitt stellt die Berechnung der inversen Kinematik eines Beines nach der Arbeit von Thomas Ihme \autocite{ihme02} dar, welche sich auch für den Akrobat und den Lauron nutzen lassen.
 
-\autoref{kap2:inversekinematik1} stellt die geometrischen Parameter eines Beines dar. \autoref{kap2:inversekinematik2} zeigt die geometrischen Beziehungen der Gelenkwinkel im RZ-System. Daraus lassen sich die Hilfsvariablen $R$ in \autoref{ik1} und $X$ sowie $Y$ in \autoref{ik2} definieren.
+\begin{figure}[t!]
+  \centering
+  \begin{subfigure}[b]{.45\linewidth}
+    \centering
+    \includegraphics[width=6cm]{kapitel2/ik2}
+  \end{subfigure}%
+  \qquad
+  \begin{subfigure}[b]{.45\linewidth}
+    \centering
+    \includegraphics[width=6cm]{kapitel2/ik2}
+  \end{subfigure}\\
+  \caption{Geometrische Beziehungen der Gelenkwinkel im RZ}
+  \label{kap2:inversekinematik2}
+\end{figure}
+
+\autoref{kap2:inversekinematik1} stellt die geometrischen Parameter eines Beines dar.
+
+\autoref{kap2:inversekinematik2} zeigt die geometrischen Beziehungen der Gelenkwinkel im RZ-System. Daraus lassen sich die Hilfsvariablen $R$ in \autoref{ik1} und $X$ sowie $Y$ in \autoref{ik2} definieren.
 
 \begin{equation}
   R &= \sqrt{r^{2}_{x_1} + \left(r_{x_2} - A_{x_2}^2 \right)} - B

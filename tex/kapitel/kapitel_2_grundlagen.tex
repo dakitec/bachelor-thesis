@@ -1,7 +1,7 @@
 \chapter{Grundlagen}
 \label{kap2}
 
-Dieses Kapitel stellt die benötigten Grundlagen für die Portierung des Laufplaners in \ac{ROS} und Gazebo dar. Zunächst geht das Kapitel auf die relevanten Laufroboter, dann auf Kinematik und verschiedene Laufmuster sowie auf die benötigten Frameworks ein. Zuletzt wird noch die Verwendung von Robotermodellen in \ac{ROS} und Gazebo dargestellt.
+Dieses Kapitel stellt die benötigten Grundlagen für die Portierung des Laufplaners nach \ac{ROS} und Gazebo dar. Zunächst geht das Kapitel auf die relevanten Laufroboter, dann auf Kinematik und verschiedene Laufmuster sowie auf die benötigten Frameworks ein. Zuletzt wird noch die Verwendung von Robotermodellen in \ac{ROS} und Gazebo dargestellt.
 
 \section{Laufroboter}
 
@@ -44,7 +44,7 @@ Die Brust ist wiederum in weitere drei Teile für jeweils ein Beinpaar unterteil
   \item Unterschenkel (Tibia)
 \end{itemize}
 
-Die Segmente sind durch die Gelenke Subcoxal, Coxa-Trochanter und Femur-Tibia verbunden. Der Fuß jedes Beines wird Tarsus genannt. Das erste Gelenk Subcoxal besitzt zwei Freiheitsgrade, die weiteren Gelenke besitzen einen Freiheitsgrad. Damit ist für die indische Stabheuschrecke die minimale erforderliche Zahl an Freiheitsgraden erreicht, damit der Fuß beliebig im dreidimensionalen Raum gesetzt werden kann.
+Die Segmente sind durch die Gelenke Subcoxal, Coxa-Trochanter und Femur-Tibia verbunden. Der Fuß jedes Beines wird Tarsus genannt. Das erste Gelenk Subcoxal besitzt zwei Freiheitsgrade, die weiteren Gelenke besitzen einen Freiheitsgrad. Damit ist für die indische Stabheuschrecke die minimal erforderliche Zahl an Freiheitsgraden erreicht, damit der Fuß beliebig im dreidimensionalen Raum gesetzt werden kann.
 
 Unter anderem ist noch wichtig, dass der Kopf der indischen Stabheuschrecke zwei lange Fühler besitzt. Diese könnten in einem Roboter beispielsweise als Laserscanner oder Kamera modelliert werden, welche sich einen Überblick über die Gegend verschaffen können.
 
@@ -58,9 +58,9 @@ Auch der \emph{Akrobat} (\autoref{Kap2:akrobat}) ist der Form einer Stabheuschre
 
 Jedes der Gelenke hat exakt einen Freiheitsgrad, sodass das gesamte Bein drei Freiheitsgrade hat. Wie auch beim Lauron ermöglicht dies die beliebige Positionierung im dreidimensionalen Raum. Die Gelenke sind mit dem Servomotor Dynamixel RX64 ausgestattet. Außerdem hat jedes Gelenk einen definierten Arbeitsbereich, welcher nicht unter- oder überschritten werden darf.
 \begin{itemize}
-  \item $\alpha=\SIrange{-50}{50}{^\circ}$
-  \item $\beta=\SIrange{-106}{106}{^\circ}$
-  \item $\gamma=\SIrange{-135}{135}{^\circ}$
+  \item $\upalpha=\SIrange{-50}{50}{\degree}$
+  \item $\upbeta=\SIrange{-106}{106}{\degree}$
+  \item $\upgamma=\SIrange{-135}{135}{\degree}$
 \end{itemize}  
 
 Außerdem besitzt der Roboter am Kopf eine fest verbaute Kamera. Der Roboterkörper verfügt über genügend Freiraum für Batterien im mittleren Gehäuse. Im hinteren Gehäuse ist der Steuerrechner sowie die restliche Elektronik platziert.
@@ -93,9 +93,9 @@ Mit Hilfe der direkten Kinematik lässt sich auf Grund der Gelenkausrichtungen b
 
 \subsection{Denavit-Hartenberg-Verfahren}
 
-Denavit und Hartenberg entwickelten ein Verfahren zur Beschreibung von kinematischen Ketten. Durch dieses Verfahren können mit Hilfe von nur vier Parametern, den DH-Parametern, die gegenseitige Lage zweier Elemente beschrieben werden. Dies macht die Berechnung von kinematischen Ketten wesentlich einfacher.
+Denavit und Hartenberg entwickelten ein Verfahren zur Beschreibung von kinematischen Ketten. Durch dieses Verfahren können mit Hilfe von nur vier Parametern, den DH-Parametern, die gegenseitige Lage zweier Elemente beschrieben werden. Dies macht die Berechnung von kinematischen Ketten wesentlich einfacher. Die vier Parameter (\autoref{kap2:dhparams}) können wie folgt berechnet werden:
 
-\begin{figure}[b!]
+\begin{figure}[t!]
   \centering
   \begin{subfigure}[b]{.4\linewidth}
     \centering
@@ -112,11 +112,10 @@ Denavit und Hartenberg entwickelten ein Verfahren zur Beschreibung von kinematis
   \label{kap2lauron}
 \end{figure}
 
-Die vier Parameter (\autoref{kap2:dhparams}) können wie folgt berechnet werden:
 \begin{enumerate}
   \item Entspricht der Länge der gemeinsamen Normale zwischen den Achsen $L_n$ und $L_{n+1}$. Dies ist im Schaubild die Variable $a_n$.
   \item Entspricht dem Versatz zwischen dieser und der vorherigen Normalen. Im Schaubild ist das die Variable $d_n$.
-  \item Entspricht dem Drehwinkel zwischen $L_n$ und $L_{n+1}$. Im Schaubild ist das die Variable $\alpha_n$.
+  \item Entspricht dem Drehwinkel zwischen $L_n$ und $L_{n+1}$. Im Schaubild ist das die Variable $\upalpha_n$.
   \item Entspricht der Drehung um die Achse $L_n$. Im Schaubild ist dies die Variable $\theta_n$.
 \end{enumerate} 
 
@@ -131,7 +130,7 @@ Des Weiteren ist es eine Voraussetzung für das Verfahren, dass für jedes Gelen
   \label{Kap2:direktekinematik}
 \end{figure}
 
-Mit Hilfe der direkten Kinematik lässt sich nun berechnen, an welcher Position sich der sogenannte Endeffektor befindet (\autoref{Kap2:direktekinematik}). Gegeben sind hierbei die Winkel der Gelenke. Der Vektor $ \vec{s} = (x,y,z,\alpha,\beta,\gamma)^T $  entspricht der Position und der Orientierung des Endeffektors. Der Vektor $ \vec{q} = (q_1, ...,q_n)^T $, bei dem $n$ die Anzahl der Gelenke ist, entspricht den Gelenkvariablen. Dann lässt sich die direkte Kinematik wie in \autoref{dk1} ausdrücken.
+Mit Hilfe der direkten Kinematik lässt sich nun berechnen, an welcher Position sich der sogenannte Endeffektor befindet (\autoref{Kap2:direktekinematik}). Gegeben sind hierbei die Winkel der Gelenke. Der Vektor $ \vec{s} = (x,y,z,\upalpha,\upbeta,\upgamma)^T $  entspricht der Position und der Orientierung des Endeffektors. Der Vektor $ \vec{q} = (q_1, ...,q_n)^T $, bei dem $n$ die Anzahl der Gelenke ist, entspricht den Gelenkvariablen. Dann lässt sich die direkte Kinematik wie in \autoref{dk1} ausdrücken.
 \begin{equation}
   \vec{s} = f(\vec{q})
 \label{dk1}
@@ -139,7 +138,7 @@ Mit Hilfe der direkten Kinematik lässt sich nun berechnen, an welcher Position 
 
 Mittels der DH-Parameter aus dem vorherigen Kapitel lässt sich nun eine homogene Transformationsmatrix vom Ausgangskoordinatensystem in das Koordinatensystem des Endeffektors abhängig der Gelenkvariablen, siehe \autoref{dk2}, erstellen.
 \begin{equation}
-  ^{n-1}_{n}T = \textrm{rot}(z_{n-1},\theta_n) \cdot \textrm{trans}(0,0,d_{n}) \cdot \textrm{trans}(a_{n},0,0) \cdot \textrm{rot}(x_{n},\alpha_{n})
+  ^{n-1}_{n}T = \textrm{rot}(z_{n-1},\theta_n) \cdot \textrm{trans}(0,0,d_{n}) \cdot \textrm{trans}(a_{n},0,0) \cdot \textrm{rot}(x_{n},\upalpha_{n})
 \label{dk2}
 \end{equation}
 
@@ -160,8 +159,8 @@ Als nächstes ersetzt man die Transformationen und Rotationen in \autoref{dk2} d
   0 & 0 & 0 & 1\\
 \end{pmatrix} \cdot \begin{pmatrix}
   1 & 0 & 0 & 0\\ 
-  0 & \textrm{cos}\: \alpha_n & -\textrm{sin}\: \alpha_n & 0\\ 
-  0 & \textrm{sin}\: \alpha_n & \textrm{cos}\: \alpha_n & 0\\ 
+  0 & \textrm{cos}\: \upalpha_n & -\textrm{sin}\: \upalpha_n & 0\\ 
+  0 & \textrm{sin}\: \upalpha_n & \textrm{cos}\: \upalpha_n & 0\\ 
   0 & 0 & 0 & 1\\
 \end{pmatrix}
 \label{dk3}
@@ -169,9 +168,9 @@ Als nächstes ersetzt man die Transformationen und Rotationen in \autoref{dk2} d
 
 \begin{equation}
 ^{n-1}_{n}T = \begin{pmatrix}
-  \textrm{cos}\: \theta_n  & -\textrm{sin}\: \theta_n\; \textrm{cos}\: \alpha_n    & \textrm{sin}\: \theta_n\; \textrm{sin}\: \alpha_n & a_n\: \textrm{cos}\: \theta_n\\ 
-  \textrm{sin}\: \theta_n  & \textrm{cos}\: \theta_n\; \textrm{cos}\: \alpha_n     & -\textrm{cos}\: \theta_n\; \textrm{sin}\: \alpha_n & a_n\: \textrm{sin}\: \theta_n\\ 
-  0               & \textrm{sin}\: \alpha_n                & \textrm{cos}\: \alpha_n & d_n\\ 
+  \textrm{cos}\: \theta_n  & -\textrm{sin}\: \theta_n\; \textrm{cos}\: \upalpha_n    & \textrm{sin}\: \theta_n\; \textrm{sin}\: \upalpha_n & a_n\: \textrm{cos}\: \theta_n\\ 
+  \textrm{sin}\: \theta_n  & \textrm{cos}\: \theta_n\; \textrm{cos}\: \upalpha_n     & -\textrm{cos}\: \theta_n\; \textrm{sin}\: \upalpha_n & a_n\: \textrm{sin}\: \theta_n\\ 
+  0               & \textrm{sin}\: \upalpha_n                & \textrm{cos}\: \upalpha_n & d_n\\ 
   0               & 0                             & 0 & 1\\
 \end{pmatrix}
 \label{dk3-2}
@@ -196,9 +195,9 @@ Dabei ist der Vektor $^{0}\vec{r}$ der gesuchte Vektor vom Koordinatensystem zum
 
 \begin{equation}
   \begin{aligned}
-    \alpha & = \arctan{\left(\frac{\alpha_{21}}{\alpha_{11}}\right)} \\[1em]
-    \beta & = \arctan{\left(\frac{-\alpha_{31}}{\alpha_{11} \cos{\gamma} + \alpha_{21} \sin{\gamma}}\right)} \\[1em]
-    \gamma & = \arctan{\left(\frac{\alpha_{32}}{\alpha_{33}}\right)}
+    \upalpha & = \arctan{\left(\frac{\upalpha_{21}}{\upalpha_{11}}\right)} \\[1em]
+    \upbeta & = \arctan{\left(\frac{-\upalpha_{31}}{\upalpha_{11} \cos{\upgamma} + \upalpha_{21} \sin{\upgamma}}\right)} \\[1em]
+    \upgamma & = \arctan{\left(\frac{\upalpha_{32}}{\upalpha_{33}}\right)}
   \end{aligned}
   \label{dk6}
 \end{equation}
@@ -246,7 +245,7 @@ Der folgende Abschnitt stellt die Berechnung der inversen Kinematik eines Beines
   \qquad
   \begin{subfigure}[b]{.45\linewidth}
     \centering
-    \includegraphics[width=6cm]{kapitel2/ik2}
+    \includegraphics[width=6cm]{kapitel2/ik3}
   \end{subfigure}\\
   \caption{Geometrische Beziehungen der Gelenkwinkel im RZ}
   \label{kap2:inversekinematik2}
@@ -289,18 +288,18 @@ Diese Hilfsvariablen werden für die Herleitung der Winkel der Gelenke in \autor
   
 \begin{equation}
   \begin{aligned}
-    \alpha & = \arctan{\left(\frac{X}{Y}\right)} \\[1em]
-    \gamma & = \arccos{\left(\frac{1}{2} \cdot \frac{R^2 + Z^2 - C^2 - D^2}{C \cdot D}\right)} \\[1em]
-    \beta & = \arctan{\left(\frac{Z \cdot C + Z \cdot D \cdot \cos{(\gamma)} - R \cdot D \cdot \sin{(\gamma)}}{R \cdot C + R \cdot D \cdot \cos{(\gamma)} + Z \cdot D \cdot \sin{(\gamma)}}\right)}
+    \upalpha & = \arctan{\left(\frac{X}{Y}\right)} \\[1em]
+    \upgamma & = \arccos{\left(\frac{1}{2} \cdot \frac{R^2 + Z^2 - C^2 - D^2}{C \cdot D}\right)} \\[1em]
+    \upbeta & = \arctan{\left(\frac{Z \cdot C + Z \cdot D \cdot \cos(\upgamma) - R \cdot D \cdot \sin(\upgamma)}{R \cdot C + R \cdot D \cdot \cos(\upgamma) + Z \cdot D \cdot \sin(\upgamma)}\right)}
   \end{aligned}
   \label{ik3}
 \end{equation}
 
 \subsubsection{Numerische Lösung}
 
-Bei der numerischen Lösung wird mittels einer linearen Annäherung versucht die Lösung für $f^{-1}$ zu finden. Dies lässt sich mit der Jacobi-Matrix berechnen. Dazu werden Teilfunktionen für $x$, $y$, $z$, $\alpha$, $\beta$ und $\gamma$ benötigt, welche sich aus der Transformationsmatrix der direkten Kinematik ergeben. Die Teilfunktionen werden dann nach jeder Variablen partiell abgeleitet. Dies ergibt die $6\,x\,n$ Jacobi-Matrix. Sie beschreibt die Änderung der Position des Endeffektors bei Änderung der Gelenkstellungen.
+Bei der numerischen Lösung wird mittels einer linearen Annäherung versucht die Lösung für $f^{-1}$ zu finden. Dies lässt sich mit der Jacobi-Matrix berechnen. Dazu werden Teilfunktionen für $x$, $y$, $z$, $\upalpha$, $\upbeta$ und $\upgamma$ benötigt, welche sich aus der Transformationsmatrix der direkten Kinematik ergeben. Die Teilfunktionen werden dann nach jeder Variablen partiell abgeleitet. Dies ergibt die $6\,x\,n$ Jacobi-Matrix. Sie beschreibt die Änderung der Position des Endeffektors bei Änderung der Gelenkstellungen.
 
-Durch weitere Umstellung der Funktion ergibt sich eine Gleichung für die lineare Annäherung an die gewünschte Funktion. Diese Lösung wird dann mittels direkter Kinematik überprüft. Ist die Abweichung zu groß, wird die Jacobi-Matrix mit den zuvor berechneten Gelenkstellungen erneut berechnet. Dies ergibt die lineare Annäherung an die Lösung. Wichtig ist dabei, dass eine maximale Zahl an Iterationen für den Algorithmus angegeben ist, da es manchmal auch gar keine Lösung geben kann.
+Durch weitere Umstellung der Funktion ergibt sich eine Gleichung für die lineare Annäherung an die gewünschte Funktion. Diese Lösung wird dann mittels direkter Kinematik überprüft. Ist die Abweichung zu groß, wird die Jacobi-Matrix mit den zuvor berechneten Gelenkstellungen erneut berechnet. Dies ergibt die lineare Annäherung an die Lösung. Wichtig ist dabei, dass eine maximale Zahl an Iterationen für den Algorithmus angegeben wird, da es manchmal auch gar keine Lösung geben kann.
 
 Im Gegensatz zur analytischen Methode liefert die numerische Lösung immer nur einen Wert. Ein weiteres Problem der numerischen Lösung sind Singularitäten, welche auftreten können, wenn die Jacobi-Matrix an Rang verliert und somit singulär wird. Die Folge ist, dass die Matrix nicht mehr invertierbar ist und damit keine Lösung mehr berechnet werden kann.
 
@@ -1157,11 +1156,11 @@ Auch das Kollssionsmodell kann entweder als \ac{STL}-Datei oder als geometrische
  \label{Kap2:MeshLabInertia}
 \end{figure}
 
-Ebenfalls muss die Massenträgheit für jedes Körperteil einzeln definiert werden. Dabei wird eine Masse sowie das Trägheitsmoment angegeben. Die Masse lässt sich durch Wiegen der einzelnen Körperteile herausfinden. Um das Trägheitsmoment für das jeweilige Körperteil herauszufinden, bietet Gazebo die Möglichkeit die Werte über MeshLab auszulesen und umzuwandeln \autocite{gazebo-inertial}. \autoref{Kap2:MeshLabInertia} zeigt die Extraktion der Trägheitsmomente aus MeshLab. Da MeshLab das Ergebnis rundet, muss das Körperteil um einen Faktor $s$ skaliert werden, um eine höhere Genauigkeit zu erreichen. Dazu eignet sich ein Faktor von 10 oder 100. Erst dann kann die Berechnung über die berechnete Masse $m$ und dem berechneten Volumen $V$ sowie die Rückskalierung über den Faktor $s$ in \autoref{ml1} mit dem Ergebnis aus MeshLab $Ergebnis_{vorher}$ ausgeführt werden.
+Ebenfalls muss die Massenträgheit für jedes Körperteil einzeln definiert werden. Dabei wird eine Masse sowie das Trägheitsmoment angegeben. Die Masse lässt sich durch Wiegen der einzelnen Körperteile herausfinden. Um das Trägheitsmoment für das jeweilige Körperteil herauszufinden, bietet Gazebo die Möglichkeit die Werte über MeshLab auszulesen und umzuwandeln \autocite{gazebo-inertial}. \autoref{Kap2:MeshLabInertia} zeigt die Extraktion der Trägheitsmomente aus MeshLab. Da MeshLab das Ergebnis rundet, muss das Körperteil um einen Faktor $s$ skaliert werden, um eine höhere Genauigkeit zu erreichen. Dazu eignet sich ein Faktor von 10 oder 100. Erst dann kann die Berechnung über die berechnete Masse $m$ und dem berechneten Volumen $V$ sowie die Rückskalierung über den Faktor $s$ in \autoref{ml1} mit dem Ergebnis aus MeshLab $E_{before}$ ausgeführt werden.
 
 \begin{equation}
- Ergebnis_{nachher} = \frac{Ergebnis_{vorher} \cdot m \cdot V}{s}
+ E = \frac{E_{\textrm{before}} \cdot m \cdot V}{s}
 \label{ml1}
 \end{equation}
 
-Zum Abschluss können die berechneten Trägheitsmomente aus dem $Ergebnis_{nachher}$ in die \ac{URDF}-Datei eingetragen werden.
+Zum Abschluss können die berechneten Trägheitsmomente aus dem Ergebnis $E$ in die \ac{URDF}-Datei eingetragen werden.

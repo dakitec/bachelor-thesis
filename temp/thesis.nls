@@ -3,8 +3,10 @@
 \nomgroup{A}
   \item [{$\vec{q}$}]\begingroup Gelenkvariablen\nomeqref {\relax 8.0}\nompageref{ix}
   \item [{$\vec{s}$}]\begingroup Position und Orientierung des Endeffektors\nomeqref {\relax 8.0}\nompageref{ix}
+  \item [{$^{a}_{b}R$}]\begingroup Rotationsmatrix von Gelenk $a$ nach $b$\nomeqref {\relax 8.0}\nompageref{ix}
   \item [{$^{a}_{b}T$}]\begingroup Transformationsmatrix von Gelenk $a$ nach $b$\nomeqref {\relax 8.0}\nompageref{ix}
-  \item [{$_{a}^{b}R$}]\begingroup Rotationsmatrix von Gelenk $a$ nach $b$\nomeqref {\relax 8.0}\nompageref{ix}
+  \item [{$E$}]\begingroup Ergebnis nach der Anpassung durch MeshLab\nomeqref {\relax 8.0}\nompageref{ix}
+  \item [{$E_{\textrm{before}}$}]\begingroup Ergebnis vor der Anpassung durch MeshLab\nomeqref {\relax 8.0}\nompageref{ix}
   \item [{$m$}]\begingroup Masse\nomeqref {\relax 8.0}\nompageref{ix}
   \item [{$P_{n}$}]\begingroup Wegpunkt n des Random Samplings\nomeqref {\relax 8.0}\nompageref{ix}
   \item [{$s$}]\begingroup Skalierungsfaktor für MeshLab\nomeqref {\relax 8.0}\nompageref{ix}

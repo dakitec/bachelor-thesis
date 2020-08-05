@@ -1,0 +1,36 @@
+% -------------------------------------------------------
+% Daten für die Arbeit
+% Wenn hier alles korrekt eingetragen wurde, wird das Titelblatt
+% automatisch generiert. D.h. die Datei titelblatt.tex muss nicht mehr
+% angepasst werden.
+
+% Titel der Arbeit auf Deutsch
+\newcommand{\hsmatitelde}{Portierung eines Laufplaners für sechsbeinige Laufroboter in das Robot Operating System}
+
+% Titel der Arbeit auf Englisch
+\newcommand{\hsmatitelen}{Transferring of a gait planner for a six-legged walking robot into the robot operating system}
+
+% Weitere Informationen zur Arbeit
+\newcommand{\hsmaort}{Mannheim}    % Ort
+\newcommand{\hsmaautorvname}{Daniel} % Vorname(n)
+\newcommand{\hsmaautornname}{Koch} % Nachname(n)
+\newcommand{\hsmadatum}{22.07.2020} % Datum der Abgabe
+\newcommand{\hsmajahr}{2020} % Jahr der Abgabe
+\newcommand{\hsmafirma}{} % Firma bei der die Arbeit durchgeführt wurde
+\newcommand{\hsmabetreuer}{Prof. Dr. Thomas Ihme, Hochschule Mannheim} % Betreuer an der Hochschule
+\newcommand{\hsmazweitkorrektor}{Prof. Dr. Jörn Fischer, Hochschule Mannheim} % Betreuer im Unternehmen oder Zweitkorrektor
+\newcommand{\hsmafakultaet}{I} % I für Informatik oder E, S, B, D, M, N, W, V
+\newcommand{\hsmastudiengang}{IB} % IB IMB UIB IM MTB (weitere siehe titleblatt.tex)
+
+% Zustimmung zur Veröffentlichung
+\setboolean{hsmapublizieren}{true}   % Einer Veröffentlichung wird zugestimmt
+\setboolean{hsmasperrvermerk}{false} % Die Arbeit hat keinen Sperrvermerk
+
+% -------------------------------------------------------
+% Abstract
+
+% Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Deutsch
+\newcommand{\hsmaabstractde}{Diese Bachelorarbeit beschäftigt sich mit dem Thema der Laufplanung von sechsbeinigen Laufrobotern. Die Arbeit stellt eine Lösung zur Portierung der Visualisierung mit OpenInventor nach Gazebo dar. Der Vorteil dabei ist, dass Gazebo eine Physik-Engine mitbringt, so dass der Laufplaner unter wesentlich realeren Bedingungen getestet werden kann. Zur Lösung dieser Portierung wird das Robot Operating System (ROS) genutzt, so dass auch die spätere Anwendung auf einem realen Roboter unkompliziert möglich ist. Das Ergebnis ist ein umfassendes ROS-Package, welches alle nötigen Komponenten zur Visualisierung und zum Laufalgorithmus enthält.}
+
+% Kurze (maximal halbseitige) Beschreibung, worum es in der Arbeit geht auf Englisch
+\newcommand{\hsmaabstracten}{This bachelor thesis is about gait planning of six-legged walking-robots. This thesis offers a solution to migrate from the visualisation in OpenInventor to Gazebo. Since Gazebo uses a physics engine more realistic scenarios can be tested with this new solution. To implement this solution the Robot Operating System is used, so that the gait planner can easily be used on a real robot. The result is an extensive ROS package which contains all components of visualisation and gait planning.}

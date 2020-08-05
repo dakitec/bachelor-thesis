@@ -1,0 +1,10 @@
+\chapter{Ausblick}
+\label{kap8}
+
+Zukünftig wäre ein wichtiger nächster Schritt, einen virtuellen Sensor, analog zum bereits verbauten PMD-Sensor am Akrobat, in der Simulation zu implementieren. Eine virtuelle Neuplatzierung des Sensors hilft dabei, die real zu realisierende beste Position zu finden. 
+
+Der aktuelle Laufplaner liefert die Lösung für eine generelle Wegplanung, die sich an bekannten und unüberwindbaren Hindernissen orientiert. Im nächsten Schritt wäre eine Verbesserung, sich hauptsächlich auf das sichtbare Gelände zu beschränken und Lösungen nur dafür zu generieren. Mit jeder Bewegung nach vorne würde der Roboter mehr sehen und könnte weitere Lösungen generieren.
+
+Aktuell werden die Fußbewegungen mittels einer trigonometrischen Funktion interpoliert. Dies kann durch eine Spline-Interpolation wie bei Jörg Fellmann \autocite{fellmann2007} wesentlich verbessert werden. Während bei einer reinen Winkelfunktion der Körper nur vertikale Bewegungen vollführt, was vergleichbar mit einem fixen Standbein ist, dass die Gelenkwinkel nicht mehr verändert, bietet die Spline-Interpolation eine Verbesserung dafür. Außerdem lässt die Spline-Interpolation die Bewegung realer aussehen.
+
+Ein weiterer Aspekt ist die Verarbeitung der Höheninformationen in der Simulation. Mit dieser könnte die Simulation die Füße richtig auf dem Boden platzieren, da der Algorithmus aktuell noch nicht weiß, wo sich dieser befindet. Dadurch ergeben sich aktuell noch einige suboptimale Bewegungen der Füße und des Körpers.
